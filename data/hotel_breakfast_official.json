@@ -1,0 +1,54 @@
+{
+  "checked_at": "2026-10-12",
+  "hotels": [
+    {
+      "policy_id": "HD04",
+      "restaurant": "美食汇 Central Market",
+      "summary": "酒店一层的国际风味自助早餐；官网列出成人单买价 ¥194。",
+      "hours": "周一至周五 06:30–10:00；周六至周日 06:30–10:30",
+      "family_note": "官网儿童餐计划有住店、香格里拉会会员、同行成人及每房人数条件；不能直接当作本次房价的免费早餐权益。",
+      "source_url": "https://www.shangri-la.com/cn/restaurants-bars/hangzhou/midtownshangrila/central-market/"
+    },
+    {
+      "policy_id": "HD07",
+      "restaurant": "盛宴标帜",
+      "summary": "酒店内付费早餐；官网称自助餐供应包含亚洲风味的国际美食。",
+      "hours": "每日 06:30–10:30",
+      "family_note": "官网餐厅页没有可直接套用到本次房价的儿童早餐权益。",
+      "source_url": "https://www.marriott.com.cn/hotels/hghhs-sheraton-grand-hangzhou-wetland-park-resort/dining/"
+    },
+    {
+      "policy_id": "HD09",
+      "restaurant": "MoMo Café",
+      "summary": "官网称供应自助或单点早餐。",
+      "hours": "官网页面列周一至周六 06:30–10:30，周日标注关闭",
+      "family_note": "官网的周日信息与第三方政策快照可能不一致；周日入住请直接向酒店核对。",
+      "source_url": "https://www.marriott.com.cn/hotels/hghcy-courtyard-hangzhou-wulin/dining/"
+    },
+    {
+      "policy_id": "HD14",
+      "restaurant": "City Bistro",
+      "summary": "官网确认付费早餐；全日制餐厅设现场烹饪台与开放式厨房。",
+      "hours": "每日 06:30–10:30",
+      "family_note": "未在餐厅页核到儿童单买价；按本次商品与酒店说明确认。",
+      "source_url": "https://www.marriott.com.cn/hotels/hghqi-hangzhou-marriott-hotel-qianjiang/dining/"
+    },
+    {
+      "policy_id": "HD16",
+      "restaurant": "West Lake Bistro",
+      "summary": "西子湖四季官网列有早餐服务；套餐页另有特定亲子套餐的早餐权益。",
+      "hours": "早餐 07:00–11:00",
+      "family_note": "官网亲子套餐包含两位成人及一位 12 岁以下儿童早餐，但仅适用该套餐，其他房型不可套用。",
+      "source_url": "https://www.fourseasons.com/hangzhou/dining/restaurants/wlb/",
+      "extra_source_url": "https://www.fourseasons.com/hangzhou/offers/family-getaway/"
+    },
+    {
+      "policy_id": "HD25",
+      "restaurant": "GELI Café & Bar",
+      "summary": "希尔顿官网确认餐厅供应早餐、午餐和晚餐，强调杭州本地食材；官网未给出早餐单买价或房型权益。",
+      "hours": "官网同页两个模块对开始时间写法不同：早餐介绍写 06:30，餐厅营业栏写 06:00；结束时间为工作日 10:00、周末 10:30。",
+      "family_note": "开始时间不能当作已核定；出门早的住客请向酒店确认。官网未核到儿童单买价或本次房型权益。",
+      "source_url": "https://www.hilton.com/en/hotels/hghpypy-canopy-hangzhou-jinsha-lake/dining/"
+    }
+  ]
+}

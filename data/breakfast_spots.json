@@ -1,0 +1,32 @@
+{
+  "checked_at": "2026-10-12",
+  "spots": [
+    {
+      "id": "B001",
+      "name": "王氏烧饼（西溪路）",
+      "district": "西湖区",
+      "address": "西溪路60号",
+      "foods": "现做烧饼、油条，可配豆浆、豆腐脑或粢饭团",
+      "dietary_signal": "油炸、面食和豆制品；过敏原与交叉接触须向店家确认",
+      "source_url": "https://guide.michelin.com/us/en/zhe-jiang/hangzhou_1027184/restaurant/wang-shi-shao-bing"
+    },
+    {
+      "id": "B002",
+      "name": "泮芳春煎饺（中山南路）",
+      "district": "上城区",
+      "address": "中山南路479–481号",
+      "foods": "猪肉煎饺、豆浆、小馄饨",
+      "dietary_signal": "招牌煎饺含猪肉；过敏原与交叉接触须向店家确认",
+      "source_url": "https://guide.michelin.com/ca/en/zhe-jiang/hangzhou_1027184/restaurant/fang-chun-jian-jiao-zhongshan-south-road"
+    },
+    {
+      "id": "B003",
+      "name": "王日顺号（上城）",
+      "district": "上城区",
+      "address": "中山南路418号",
+      "foods": "猪肉葱香烧饼、葱肉包、甜或咸豆浆",
+      "dietary_signal": "招牌烧饼与包子含猪肉；过敏原与交叉接触须向店家确认",
+      "source_url": "https://guide.michelin.com/gb/en/zhe-jiang/hangzhou_1027184/restaurant/wang-ri-shun-hao"
+    }
+  ]
+}

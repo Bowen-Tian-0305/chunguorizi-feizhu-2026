@@ -1,0 +1,9 @@
+{
+  "name": "chunguorizi-hangzhou",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "data": "python3 scripts/build_evidence.py",
+    "start": "node server.mjs"
+  }
+}
