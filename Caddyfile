@@ -1,0 +1,11 @@
+{$DOMAIN} {
+  encode zstd gzip
+  header {
+    X-Content-Type-Options nosniff
+    Referrer-Policy strict-origin-when-cross-origin
+    Permissions-Policy "microphone=(self), camera=(), geolocation=()"
+  }
+  reverse_proxy app:4173 {
+    header_up X-Forwarded-For {http.request.remote.host}
+  }
+}

@@ -1,0 +1,47 @@
+name: chunguorizi
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 4173
+      MODEL_QUOTA_FILE: /app/state/model-quota.json
+      TRUST_PROXY: '1'
+      ALLOW_LOCAL_BAILIAN_CONFIG: '0'
+    volumes:
+      - app-state:/app/state
+    expose:
+      - '4173'
+    mem_limit: 512m
+    cpus: 1
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '2'
+  web:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env before starting}
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - app
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '2'
+volumes:
+  app-state:
+  caddy-data:
+  caddy-config:

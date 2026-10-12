@@ -5,3 +5,7 @@ scripts/
 .env
 .env.*
 *.key
+.git
+state/
+*.pem
+docs/

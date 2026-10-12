@@ -1,4 +1,5 @@
 import http from 'node:http';
+import {createModelQuota} from './model-quota.mjs';
 import { readFile, stat } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -21,10 +22,7 @@ const venuesById = new Map(evidence.venues.map(venue => [venue.venue_id, venue])
 const sourcesById = new Map(evidence.sources.map(source => [source.source_id, source]));
 const cityVenues = evidence.venues.filter(venue => venue.venue_id.startsWith('CV'));
 const cache = new Map();
-const modelRate = new Map();
-const modelDailyRate = new Map();
-let modelDay = -1;
-let modelDayCalls = 0;
+const reserveModelCall = createModelQuota();
 const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || '127.0.0.1';
 const flyaiBin = process.env.FLYAI_BIN || path.join(os.homedir(), '.npm-global-user/bin/flyai');
@@ -39,22 +37,8 @@ function clean(value, max = 100) {
 }
 
 function limitModelCalls(req) {
-  const now = Date.now();
-  const day = Math.floor(now / 86_400_000);
-  if (day !== modelDay) {modelDay = day; modelDayCalls = 0; modelRate.clear();modelDailyRate.clear();}
-  const forwarded = process.env.TRUST_PROXY === '1' ? clean(req.headers['x-forwarded-for'], 200).split(',')[0] : '';
-  const address = forwarded || req.socket.remoteAddress || 'unknown';
-  const hour = Math.floor(now / 3_600_000);
-  const key = `${address}:${hour}`;
-  const count = modelRate.get(key) || 0;
-  const hourlyLimit = Math.max(1, Number(process.env.MODEL_CALLS_PER_IP_HOUR) || 5);
-  const perIpDailyLimit = Math.max(1, Number(process.env.MODEL_CALLS_PER_IP_DAY) || 5);
-  const dailyLimit = Math.max(1, Number(process.env.MAX_MODEL_CALLS_PER_DAY) || 30);
-  if (count >= hourlyLimit || (modelDailyRate.get(address) || 0) >= perIpDailyLimit || modelDayCalls >= dailyLimit)
-    throw Object.assign(new Error('今天的实时 AI 体验次数已用完。仍可查看不耗百炼额度的示例方案，明天再试。'), {status: 429});
-  modelRate.set(key, count + 1);
-  modelDailyRate.set(address, (modelDailyRate.get(address) || 0) + 1);
-  modelDayCalls++;
+  const forwarded = process.env.TRUST_PROXY === '1' ? clean(req.headers['x-forwarded-for'], 200).split(',')[0].trim() : '';
+  reserveModelCall(forwarded || req.socket.remoteAddress || 'unknown');
 }
 
 function norm(value) {
