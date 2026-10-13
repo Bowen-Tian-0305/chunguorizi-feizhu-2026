@@ -4,7 +4,7 @@
 
 > 多买的早餐用得上吗？孩子那份怎么算？走出去吃会不会太折腾？套餐晚餐能安排在哪一天？
 
-[公网体验](https://47.238.228.164/) · [观看演示视频（投稿页内播放）](https://github.com/modelstudioai/modelstudioai.github.io/issues/177) · [下载视频](docs/demo/纯过日子-参赛演示.mp4) · [演示脚本](docs/demo/script.md) · [数据说明](docs/data-scope.md) · [公开文件检查](docs/privacy-check.md)
+[公网体验](https://47.238.228.164/) · [观看演示视频（投稿页内播放）](https://github.com/modelstudioai/modelstudioai.github.io/issues/179) · [下载视频](docs/demo/纯过日子-参赛演示.mp4) · [演示脚本](docs/demo/script.md) · [数据说明](docs/data-scope.md) · [公开文件检查](docs/privacy-check.md)
 
 ![实际运行首页](docs/screenshots/01-home.jpg)
 
