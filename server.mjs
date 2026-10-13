@@ -250,22 +250,8 @@ async function route(origin, destination) {
 
 
 async function cities() {
-  if (!process.env.AMAP_KEY) return {...citySnapshot, offline:true, source:'公开行政区列表快照'};
-  const cached = cache.get('cities');
-  if (cached && Date.now() - cached.time < 24 * 3600_000) return cached.value;
-  const data = await amapRequest('/v3/config/district', {keywords: '中国', subdistrict: 2, extensions: 'base'});
-  const municipalities = ['北京市','天津市','上海市','重庆市'];
-  const groups = (data.districts?.[0]?.districts || []).map(province => ({
-    province: province.name,
-    cities: municipalities.includes(province.name) || /香港|澳门/.test(province.name)
-      ? [province.name] : (province.districts || []).map(city => city.name)
-  })).filter(group => group.cities.length);
-  if (!groups.some(group => group.province.includes('台湾'))) groups.push({province: '台湾地区 · 酒店查询', cities: ['台北','台中','台南','高雄','花莲']});
-  groups.sort((a,b)=>a.province.localeCompare(b.province,'zh-CN'));
-  groups.forEach(group=>group.cities.sort((a,b)=>a.localeCompare(b,'zh-CN')));
-  const value = {groups, source: '高德行政区域查询', queried_at: new Date().toISOString(), taiwan_routes: false};
-  cache.set('cities', {time: Date.now(), value});
-  return value;
+  // The city chooser must remain available after live-query limits are reached.
+  return {...citySnapshot, source:'公开行政区列表快照', offline:true};
 }
 async function demo() {
   const hotel = hotelsById.get('H09');
@@ -493,7 +479,7 @@ async function serveStatic(res, pathname) {
 http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://127.0.0.1:${port}`);
-    if (req.method === 'GET' && ['/api/cities', '/api/hotels', '/api/nearby', '/api/geocode', '/api/route'].includes(url.pathname)) limitLiveQueries(req);
+    if (req.method === 'GET' && ['/api/hotels', '/api/nearby', '/api/geocode', '/api/route'].includes(url.pathname)) limitLiveQueries(req);
     if (req.method === 'GET' && url.pathname === '/api/health')
       return json(res, 200, {ok: true, reviewed_hotels: evidence.hotels.length,
         verified_venues: evidence.venues.length, amap_ready: Boolean(process.env.AMAP_KEY),

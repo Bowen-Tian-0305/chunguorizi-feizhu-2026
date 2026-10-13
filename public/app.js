@@ -1,3 +1,4 @@
+import {compareBreakfast, breakfastDates} from './breakfast-decision.js';
 const $ = id => document.getElementById(id);
 const introSplash = $('introSplash');
 try {
@@ -58,6 +59,8 @@ document.addEventListener('click', event => {
   else if (button.matches('.primary, .secondary')) playUiSound('confirm');
   else playUiSound('tap');
 }, true);
+const selectedBreakfastDates = new Set();
+let breakfastDateSignature = '';
 const state = {hotel: null, evidence: null, hotelPolicy: null, nearby: [], extracted: null, savedPlaces: [], demo: false, pane: "hotel", voiceCandidates: []};
 let explainRevision = 0;
 let nearbyRevision = 0;
@@ -471,6 +474,7 @@ $('searchForm').addEventListener('submit', async event => {
 });
 
 async function selectHotel(item) {
+  selectedBreakfastDates.clear();breakfastDateSignature='';
   state.hotel = item; state.evidence = null; state.hotelPolicy=null; state.nearby = [];state.savedPlaces=[];mealSelections.clear();explainRevision++;nearbyRevision++;
   mapState.selectedId=null;mapState.draftId=null;resetMapView();expandNearbyMap(false);
   $('selectedName').textContent = item.name; $('selectedAddress').textContent = item.address || '飞猪未提供地址';
@@ -727,6 +731,43 @@ function stays() {
 }
 
 function breakfastUseDays(){const n=nights(),value=number('breakfastDays');return value===null?n:Math.min(n,Math.max(0,Math.floor(value)));}
+function breakfastDecision() {
+  return compareBreakfast({plain:number('roomOnly'),included:number('roomWith'),adults:number('adults'),children:number('children'),count:number('breakfastCount'),days:breakfastUseDays(),nights:nights(),budget:number('outsideBudget'),comparable:$('comparable').checked});
+}
+function syncBreakfastDates() {
+  const dates=breakfastDates($('checkIn').value,$('checkOut').value),days=breakfastUseDays();
+  const signature=[$('checkIn').value,$('checkOut').value,days].join('|');
+  if(signature!==breakfastDateSignature){selectedBreakfastDates.clear();dates.slice(0,days).forEach(date=>selectedBreakfastDates.add(date));breakfastDateSignature=signature;}
+  return dates;
+}
+function renderBreakfastComparison() {
+  const dates=syncBreakfastDates(),decision=breakfastDecision();
+  const usable=['ready','children-unknown','missing-budget'].includes(decision.status);
+  const family=decision.status==='children-unknown';
+  const earliest=state.hotelPolicy?.policies.map(policy=>policy.start_time).filter(Boolean).sort()[0];
+  const departure=$('morningDeparture').value;
+  const timingWarning=departure&&earliest&&departure<=earliest&&selectedBreakfastDates.size?`<p class="breakfast-time-warning">你通常 ${escapeHtml(departure)} 出门，公开参考早餐最早 ${escapeHtml(earliest)} 开始。先问酒店能否提前或打包；否则，把赶车的日期改为外出，别把吃不到的早餐算进去。</p>`:'';
+  $('breakfastComparison').innerHTML=`<div class="decision-heading"><div><span class="mini-label">MAKE IT WORTH YOUR MORNING</span><h3>把早餐钱，算到每一个早晨</h3><p>${family?'以下只比较成人；儿童费用与权益未确认。':'含早套餐按全程付钱，真正吃几次由你决定。'}</p></div><span class="decision-badge">可调整 · 即时重算</span></div><div class="breakfast-calendar" role="group" aria-label="选择在酒店吃早餐的日期">${dates.map(date=>`<button type="button" class="breakfast-day ${selectedBreakfastDates.has(date)?'active':''}" data-breakfast-date="${date}" aria-pressed="${selectedBreakfastDates.has(date)}"><span>${date.slice(5).replace('-','月')}日</span><b>${selectedBreakfastDates.has(date)?'酒店早餐':'留给外出'}</b><small>${date===$('checkOut').value?'退房日':'住店日'}</small></button>`).join('')}</div>${timingWarning}<p class="calendar-help">点日期切换吃法。默认先安排前几个早晨；早餐权益、菜单和营业时间仍需核对。</p>${usable?`<div class="breakfast-options"><article><span>不含早 + 全部外出</span><strong>${decision.outsideAll===null?'填外出预算':money(decision.outsideAll)}</strong><p>${number('adults')}位成人 × ${dates.length}个早晨${number('outsideBudget')!==null?` × ${money(number('outsideBudget'))}/人`:''}</p></article><article><span>含早 + 剩余早晨外出</span><strong>${decision.packageAll===null?'填外出预算':money(decision.packageAll)}</strong><p>套餐增量 ${money(decision.premium)} + ${dates.length-selectedBreakfastDates.size}次外出预算</p></article></div><p class="comparison-scope">两边都是房费之外的早餐增量预算，未含儿童、交通与其他餐费；${state.demo?'当前使用示例价格。':'按你确认的同条件价格计算。'}</p><div class="break-even"><span>含早的持平点</span><strong>${money(decision.threshold.toFixed(2))} / 成人 / 次</strong><p>外出早餐人均低于这个数，更省钱；高于这个数，含早费用更低。省心和当地味，由你衡量。</p></div><details class="breakfast-scenarios"><summary>如果多吃几次酒店早餐，会怎样？</summary><div>${decision.scenarios.map(item=>`<button type="button" data-breakfast-days="${item.days}" class="${item.days===selectedBreakfastDates.size?'active':''}"><span>用${item.days}次</span><b>${money(item.perUse.toFixed(2))}</b><small>/成人/次</small></button>`).join('')}</div><p>只改变实际使用次数，套餐增量保持 ${money(decision.premium)}。</p></details>`:`<div class="comparison-incomplete"><strong>${escapeHtml(breakfastAssessment().headline)}</strong><p>${decision.status==='unused'?'你已把所有早晨留给外出。点选日期可重新比较。':'先核对价格、份数和可比条件，再显示金额比较；日期安排可以先选。'}</p></div>`}`;
+  $('breakfastComparison').querySelectorAll('[data-breakfast-date]').forEach(button=>button.addEventListener('click',()=>{
+    const date=button.dataset.breakfastDate;
+    if(selectedBreakfastDates.has(date))selectedBreakfastDates.delete(date);else{selectedBreakfastDates.add(date);mealSelections.delete(date+'早餐');}
+    updateBreakfastSelection();
+  }));
+  $('breakfastComparison').querySelectorAll('[data-breakfast-days]').forEach(button=>button.addEventListener('click',()=>{
+    selectedBreakfastDates.clear();dates.slice(0,Number(button.dataset.breakfastDays)).forEach(date=>{selectedBreakfastDates.add(date);mealSelections.delete(date+'早餐');});updateBreakfastSelection();
+  }));
+}
+function updateBreakfastSelection() {
+  $('breakfastDays').value=selectedBreakfastDates.size;
+  breakfastDateSignature=[$('checkIn').value,$('checkOut').value,selectedBreakfastDates.size].join('|');
+  const breakfast=breakfastAssessment();
+  $('breakfastHeadline').textContent=breakfast.headline;$('breakfastDetails').innerHTML=breakfast.html+publicBreakfastPolicy();
+  renderOverview(breakfast);renderBreakfastComparison();renderTimeline();
+  setResultTab(document.querySelector('[data-result-tab].active')?.dataset.resultTab||'all');
+  const previousList=$('aiExplainResult').querySelector('ul');
+  if(previousList)$('aiExplainResult').replaceChildren(previousList);else $('aiExplainResult').replaceChildren();
+  explainRevision++;$('aiExplainStatus').textContent=$('aiExplainResult').innerText?'早餐日期与金额已更新；下方为此前的清单，可点击“更新核对清单”。':'早餐日期与金额已更新。点击“更新核对清单”，或直接复制问店的话。';
+}
 function publicBreakfastPolicy(){
   const item=state.hotelPolicy;if(!item?.policies?.length)return '';
   const days={daily:'每天','Mon-Fri':'周一至周五','Sat-Sun':'周六至周日'};
@@ -739,7 +780,7 @@ function publicBreakfastPolicy(){
   const departureNote=departure&&earliest&&departure<=earliest?`<p>你计划 ${escapeHtml(departure)} 出门，参考早餐最早 ${escapeHtml(earliest)} 开始；这天可能赶不上。</p>`:'';
   const official=item.official_breakfast;
   const officialHtml=official?`<div class="official-breakfast"><strong>酒店官网 · ${escapeHtml(official.restaurant)}</strong><p>${escapeHtml(official.summary)}</p><p>${escapeHtml(official.hours)}</p><p>${escapeHtml(official.family_note)}</p><small>${escapeHtml(official.checked_at)} 查阅官网；菜单、价格、时段与房型权益以入住日为准。</small><a href="${safeUrl(official.source_url)}" target="_blank" rel="noopener noreferrer">查看酒店官网 ↗</a>${official.extra_source_url?`<a href="${safeUrl(official.extra_source_url)}" target="_blank" rel="noopener noreferrer">查看套餐条件 ↗</a>`:''}</div>`:'';
-  return `<div class="policy-note">${officialHtml}<strong>公开早餐政策参考</strong><p>${unique.map(escapeHtml).join('；')}</p>${child}${departureNote}<small>网络公开酒店政策资料 · ${escapeHtml(item.collected_at)} 采集；房型权益和当前价格以飞猪预订页及酒店确认为准。</small><a href="${safeUrl(source.url)}" target="_blank" rel="noopener noreferrer">查看政策来源 ↗</a></div>`;
+  return `<details class="policy-note"><summary>看看这家酒店的早餐、时段与儿童政策</summary>${officialHtml}<strong>公开早餐政策参考</strong><p>${unique.map(escapeHtml).join('；')}</p>${child}${departureNote}<small>网络公开酒店政策资料 · ${escapeHtml(item.collected_at)} 采集；房型权益和当前价格以飞猪预订页及酒店确认为准。</small><a href="${safeUrl(source.url)}" target="_blank" rel="noopener noreferrer">查看政策来源 ↗</a></details>`;
 }
 function breakfastAssessment() {
   const n=nights(),plain=number('roomOnly'),withBreakfast=number('roomWith'),count=number('breakfastCount');
@@ -761,19 +802,21 @@ function breakfastAssessment() {
   const comparableOutside=outside*adults*days,difference=delta-comparableOutside;
   const preferred=$('mealPriority').value;
   const preferenceNote=preferred==='easy'?'你更在意省心：带行李、下雨或早上赶时间时，少一次外出也有价值。':preferred==='local'?'你更想尝当地味：可以留一两个早晨给街头小吃，同时减少酒店早餐的实际使用天数再算一遍。':'你更在意预算：先看这份差额，再确认外出餐馆实际菜单价格。';
-  const headline=difference>0?'按你填的预算，外出早餐省一些':'按你填的预算，含早更划算';
-  const comparison=`<p>只比较这 ${days} 次早餐：外出预算约 ${money(comparableOutside)}，${difference>0?'比含早增量少':'比含早增量多'} ${money(Math.abs(difference))}。其他早晨的外出花费两边相同。</p>`;
+  const headline=difference===0?'按你填的预算，两种吃法费用相同':difference>0?'按你填的预算，外出早餐省一些':'按你填的预算，含早更划算';
+  const comparison=`<p>只比较这 ${days} 次早餐：外出预算约 ${money(comparableOutside)}，${difference===0?'与含早增量相同':`${difference>0?'比含早增量少':'比含早增量多'} ${money(Math.abs(difference))}`}。其他早晨的外出花费两边相同。</p>`;
   return {headline,html:detail+actual+comparison+`<p>${preferenceNote}</p>`+timeNote};
 }
 function renderOverview(breakfast) {
   const n=nights(),days=breakfastUseDays(),delta=number('roomOnly')!==null&&number('roomWith')!==null?number('roomWith')-number('roomOnly'):null;
-  const per=delta!==null&&delta>=0&&days>0?money((delta/(days*(number('adults')||1))).toFixed(2)):'待补价格';
+  const decision=breakfastDecision();
+  const per=decision.perUse!==undefined?money(decision.perUse.toFixed(2)):'暂不能比较';
   const closest=state.nearby.filter(place=>place.route).sort((a,b)=>a.route.minutes-b.route.minutes)[0];
   $('resultTripSummary').textContent=`${state.hotel.name} · ${cityName()} · ${n} 晚 · ${number('adults')} 成人${number('children')?' + '+number('children')+' 儿童':''}${state.demo?' · 示例价格':''}`;
   const preference={local:'想尝当地味，给外出吃饭留一点空间。',easy:'更在意省心，先考虑酒店早餐和短距离外出。',budget:'先看确定的价差，把每顿饭花在哪儿看清楚。'}[$('mealPriority').value];
-  $('planOverview').innerHTML=`<strong>${escapeHtml(breakfast.headline)}</strong><p>${preference}${state.demo?' 当前房价是示例测试值。':''}金额按你填写的价格和实际使用次数计算。</p><div class="plan-metrics"><div><span>含早全程增量</span><b>${delta===null||delta<0?'待核对':money(delta)}</b></div><div><span>实际每位成人每次</span><b>${per}</b></div><div><span>最近已查路线的餐馆</span><b id="closestWalkMetric">${closest?closest.route.minutes+' 分钟':'正在查'}</b></div></div>`;
+  $('planOverview').innerHTML=`<strong>${escapeHtml(breakfast.headline)}</strong><p>${preference}${state.demo?' 当前房价是示例测试值。':''}金额按你填写的价格和实际使用次数计算。</p><div class="plan-metrics"><div><span>含早全程增量</span><b>${delta===null||delta<0?'待核对':money(delta)}</b></div><div><span>实际每位成人每次</span><b>${per}</b></div><div><span>最近已查路线的餐馆</span><b id="closestWalkMetric">${closest?closest.route.minutes+' 分钟':state.nearby.length?'路线待查':'暂无路线'}</b></div></div>`;
 }
 $('walkLimit').addEventListener('change',()=>{renderNearby();if(!$('planSection').classList.contains('hidden'))renderOverview(breakfastAssessment());});
+$('refreshQuestions').addEventListener('click',()=>loadPlanExplanation(breakfastAssessment(),buffetAssessment()));
 $('copyQuestions').addEventListener('click',async()=>{
   const questions=[`您好，我们有 ${number('adults')} 位成人、${number('children')||0} 位儿童，想确认以下信息：`];
   if(number('children'))questions.push(`儿童年龄 ${$('childAges').value||'待补'}，早餐按年龄还是身高收费？套餐早餐份数是否可用于儿童？`);
@@ -784,8 +827,53 @@ $('copyQuestions').addEventListener('click',async()=>{
   try{await navigator.clipboard.writeText(questions.join('\n'));$('copyQuestions').textContent='已复制 ✓';}catch{$('aiExplainResult').textContent=questions.join('\n');}
 });
 $('savePlan').addEventListener('click',()=>{
-  const content=['纯过日子 · 我的吃饭方案',$('resultTripSummary').innerText,state.demo?'示例房价与权益为测试值。':'价格基于本次填写，非平台最终报价。',$('planOverview').innerText,$('breakfastDetails').innerText,$('buffetDetails').innerText,$('aiExplainResult').innerText,'逐餐候选（营业、菜单与忌口请另确认）',$('timeline').innerText,'餐馆候选',...state.savedPlaces.map(place=>{const review=reviewFor(place);return `${place.name} | ${place.address} | 步行 ${place.route?.minutes??'?'} 分钟 | ${place.map_url}${review.rating||review.note?`\n我的评价：${review.rating?'★'.repeat(review.rating):'未评分'} ${review.note||''}`:''}`;})].join('\n\n');
+  const content=['纯过日子 · 我的吃饭方案',$('resultTripSummary').innerText,state.demo?'示例房价与权益为测试值。':'价格基于本次填写，非平台最终报价。',$('planOverview').innerText,$('breakfastComparison').innerText,$('breakfastDetails').innerText,$('buffetDetails').innerText,$('aiExplainResult').innerText,'逐餐候选（营业、菜单与忌口请另确认）',$('timeline').innerText,'餐馆候选',...state.savedPlaces.map(place=>{const review=reviewFor(place);return `${place.name} | ${place.address} | 步行 ${place.route?.minutes??'?'} 分钟 | ${place.map_url}${review.rating||review.note?`\n我的评价：${review.rating?'★'.repeat(review.rating):'未评分'} ${review.note||''}`:''}`;})].join('\n\n');
   const blob=new Blob([content],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='纯过日子-吃饭方案.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+
+$('sharePlan').addEventListener('click', async () => {
+  const decision=breakfastDecision(), dates=syncBreakfastDates();
+  const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1440;
+  const ctx=canvas.getContext('2d');
+  if(!ctx)return;
+  ctx.fillStyle='#f7f4eb';ctx.fillRect(0,0,1080,1440);
+  const heading=(text,y,size=34,color='#183f35')=>{ctx.font=`600 ${size}px "PingFang SC", "Microsoft YaHei", sans-serif`;ctx.fillStyle=color;ctx.fillText(text,64,y);};
+  const lines=(text,y,size=25,color='#647467')=>{
+    ctx.font=`${size}px "PingFang SC", "Microsoft YaHei", sans-serif`;ctx.fillStyle=color;
+    let line='';
+    for(const char of text){if(ctx.measureText(line+char).width>950){ctx.fillText(line,64,y);line=char;y+=size*1.6;}else line+=char;}
+    if(line){ctx.fillText(line,64,y);y+=size*1.6;}return y;
+  };
+  heading('纯过日子',100,43);heading('订酒店，也把饭算明白',152,26,'#9f7152');
+  ctx.strokeStyle='#dce2d2';ctx.beginPath();ctx.moveTo(64,190);ctx.lineTo(1016,190);ctx.stroke();
+  let y=lines(state.hotel.name,258,38,'#183f35');
+  y=lines(`${$('checkIn').value} — ${$('checkOut').value} · ${number('adults')} 成人${number('children')?' + '+number('children')+' 儿童':''}`,y+18,25);
+  y=lines(breakfastAssessment().headline,y+42,31,'#183f35');
+  if(decision.outsideAll!==undefined&&decision.outsideAll!==null){
+    y=lines(`成人早餐增量预算：全部外出 ${money(decision.outsideAll)}；含早与剩余外出 ${money(decision.packageAll)}。`,y+16,29);
+  }
+  if(decision.perUse!==undefined)y=lines(`含早全程多 ${money(decision.premium)}，实际用 ${selectedBreakfastDates.size} 次：${money(decision.perUse.toFixed(2))}/成人/次。`,y+12,28,'#9f7152');
+  if(number('children'))y=lines('儿童收费与套餐份数待核；上述金额不是全家总价。',y+8,25,'#9f7152');
+  y+=30;heading('早晨留给谁',y,30);y+=42;
+  const shownDates=dates.slice(0,5);
+  for(const date of shownDates){
+    const place=state.savedPlaces.find(place=>place.id===mealSelections.get(date+'早餐'));
+    y=lines(`${date.slice(5)}  ${selectedBreakfastDates.has(date)?'酒店早餐（权益待核）':place?place.name+'（外出候选）':'外出早餐，门店待选'}`,y,25);
+  }
+  if(dates.length>shownDates.length)y=lines(`另有 ${dates.length-shownDates.length} 个早晨，完整安排见文字方案。`,y,23);
+  if(state.savedPlaces.length&&y<1110){y+=22;heading('想去的店',y,30);y+=42;for(const place of state.savedPlaces.slice(0,2))y=lines(`${place.name}${place.route?' · 从酒店步行 '+place.route.minutes+' 分钟':''}`,y,25);}
+  ctx.fillStyle='#eaf0e5';ctx.fillRect(0,1260,1080,180);
+  lines(state.demo?'示例价格与权益为测试值；酒店资料另有真实出处。':'按本次填写的价格与同条件确认计算，非平台最终报价。',1310,22);
+  lines('门店营业、菜单、儿童政策、忌口与套餐适用条件，出发前向商家确认。',1365,22);
+  canvas.toBlob(blob=>{
+    if(!blob)return;
+    const url=URL.createObjectURL(blob),dialog=document.createElement('dialog');dialog.className='share-dialog';
+    dialog.innerHTML='<div class="share-dialog-heading"><h3>一起决定，早上怎么吃</h3><button type="button" aria-label="关闭分享卡">×</button></div><p>这张卡只在你的浏览器生成。保存图片后，可以发给同行人。</p><img alt="本次酒店早餐预算与逐日安排分享卡"><a class="primary" download="纯过日子-同行分享卡.png">保存图片 ↓</a>';
+    dialog.querySelector('img').src=url;dialog.querySelector('a').href=url;
+    dialog.querySelector('button').addEventListener('click',()=>dialog.close());
+    dialog.addEventListener('close',()=>{dialog.remove();URL.revokeObjectURL(url);});
+    document.body.append(dialog);dialog.showModal();
+  },'image/png');
 });
 
 function buffetAssessment() {
@@ -811,9 +899,9 @@ function addMeal(date, type, title, note, stateText, unknown = false) {
     select.append(new Option('选一家外出餐馆（候选）',''));
     state.savedPlaces.forEach(place=>select.append(new Option(`${place.name} · 步行 ${place.route?.minutes??'?'} 分钟`,place.id)));
     const key=date+type;select.value=mealSelections.get(key)||'';
-    select.addEventListener('change',()=>{mealSelections.set(key,select.value);const place=state.savedPlaces.find(p=>p.id===select.value);if(place){row.querySelector('strong').textContent=place.name;row.querySelector('p').textContent=`从酒店步行 ${place.route?.minutes??'?'} 分钟；营业、菜单、忌口与本餐次供应请确认。`;row.querySelector('.meal-state').textContent='外出候选';}else{renderTimeline();}});
+    select.addEventListener('change',()=>{mealSelections.set(key,select.value);const place=state.savedPlaces.find(p=>p.id===select.value);if(place){if(type==='早餐'&&selectedBreakfastDates.has(date)){selectedBreakfastDates.delete(date);updateBreakfastSelection();return;}row.querySelector('strong').textContent=place.name;row.querySelector('p').textContent=`从酒店步行 ${place.route?.minutes??'?'} 分钟；营业、菜单、忌口与本餐次供应请确认。`;row.querySelector('.meal-state').textContent='外出候选';}else{renderTimeline();}});
     row.querySelector('strong').parentElement.append(select);
-    if(select.value){const place=state.savedPlaces.find(p=>p.id===select.value);row.querySelector('strong').textContent=place.name;row.querySelector('p').textContent=`从酒店步行 ${place.route?.minutes??'?'} 分钟；营业、菜单和忌口请确认。`;}
+    if(select.value){const place=state.savedPlaces.find(p=>p.id===select.value);row.querySelector('strong').textContent=place.name;row.querySelector('p').textContent=`从酒店步行 ${place.route?.minutes??'?'} 分钟；营业、菜单和忌口请确认。`;row.querySelector('.meal-state').textContent='外出候选';}
   }
   $('timeline').append(row);
 }
@@ -842,8 +930,7 @@ function weekdayStatus(date, rule) {
 function renderTimeline() {
   $('timeline').innerHTML = '';
   const dates = stays();
-  const breakfastChoice=breakfastAssessment();
-  const preferOutside=$('mealPriority').value==='local'||breakfastChoice.headline.includes('外出')||breakfastUseDays()===0;
+  syncBreakfastDates();
   const onsite = state.evidence?.venues.flatMap(v => v.services.map(s => ({...s, venue:v}))) || [];
   function matchingService(date, type) {
     const candidates = onsite.filter(s => s.meal_type === type && weekdayStatus(date, s.weekdays) !== 'closed');
@@ -863,6 +950,7 @@ function renderTimeline() {
   dates.forEach((date, index) => {
     if (index > 0) {
       const breakfast = matchingService(date, 'breakfast');
+      const preferOutside=!selectedBreakfastDates.has(date);
       const title = preferOutside ? '找一顿外出早餐' : breakfast ? `${breakfast.venue.name} · 早餐（可调整）` : '早餐地点待选';
       addMeal(date, '早餐', title, preferOutside?'可以从下方加入餐馆候选；先确认早餐供应、营业和忌口。':`${breakfast && weekdayStatus(date, breakfast.weekdays) === 'unknown' ? '营业日请确认；' : ''}以房型是否含早、份数和时间为准`, '待核权益', true);
       mealOption(date, 'lunch');
@@ -872,6 +960,7 @@ function renderTimeline() {
   const checkout = new Date(`${$('checkOut').value}T12:00:00`);
   if (Number.isFinite(checkout.getTime())) {
     const breakfast = matchingService(day(checkout), 'breakfast');
+    const preferOutside=!selectedBreakfastDates.has(day(checkout));
     const title = preferOutside ? '退房日外出早餐' : breakfast ? `${breakfast.venue.name} · 早餐（可调整）` : '退房日早餐待选';
     addMeal(day(checkout), '早餐', title, preferOutside?'如果要赶车，提前确认开门时间和步行路线。':'退房日仍需核对早餐权益和开放时间', '待核权益', true);
   }
@@ -918,12 +1007,16 @@ async function loadPlanExplanation(breakfast, buffet) {
 
 $('makePlan').addEventListener('click', () => {
   if (!state.hotel) {notice('searchNotice', '请先查找并选择酒店。', true);window.scrollTo({top:0,behavior:'smooth'});return;}
-  if (stays().length === 0) {notice('searchNotice', '入住与退房日期需相隔 1–30 晚。', true);return;}
+  if (stays().length === 0) {showPane('preferences');notice('preferenceNotice', '入住与退房日期需相隔 1–30 晚，请返回住处页修改日期。', true);return;}
+  const inputs=['adults','children','roomOnly','roomWith','breakfastCount','outsideBudget','breakfastDays','mealRights'];
+  const invalid=inputs.map($).find(input=>!input.checkValidity());
+  if(invalid || (number('breakfastDays')!==null&&number('breakfastDays')>nights())){showPane('preferences');notice('preferenceNotice',invalid?'请检查人数、份数、天数和价格是否在允许范围内。':'酒店早餐天数不能超过住宿晚数。',true);invalid?.focus();return;}
+  notice('preferenceNotice','');
   const b = breakfastAssessment(), f = buffetAssessment();
   b.html+=publicBreakfastPolicy();
   $('breakfastHeadline').textContent = b.headline; $('breakfastDetails').innerHTML = b.html;
   $('buffetHeadline').textContent = f.headline; $('buffetDetails').innerHTML = f.html;
-  renderOverview(b); renderTimeline(); $('planSection').classList.remove('hidden');showPane('result');
+  renderOverview(b); renderBreakfastComparison(); renderTimeline(); $('planSection').classList.remove('hidden');showPane('result');
   setResultTab('all');
   loadPlanExplanation(b, f);
   window.scrollTo({top:0,behavior:'smooth'});
