@@ -737,7 +737,7 @@ function breakfastDecision() {
 function syncBreakfastDates() {
   const dates=breakfastDates($('checkIn').value,$('checkOut').value),days=breakfastUseDays();
   const signature=[$('checkIn').value,$('checkOut').value,days].join('|');
-  if(signature!==breakfastDateSignature){selectedBreakfastDates.clear();dates.slice(0,days).forEach(date=>selectedBreakfastDates.add(date));breakfastDateSignature=signature;}
+  if(signature!==breakfastDateSignature){selectedBreakfastDates.clear();dates.slice(0,days).forEach(date=>{selectedBreakfastDates.add(date);mealSelections.delete(date+'早餐');});breakfastDateSignature=signature;}
   return dates;
 }
 function renderBreakfastComparison() {
