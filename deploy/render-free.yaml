@@ -1,0 +1,42 @@
+# Free compute only. No persistent disk or paid database. Enable after account login and final approval.
+services:
+  - type: web
+    name: travel-meals-2026
+    runtime: docker
+    repo: https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026
+    branch: main
+    plan: free
+    region: singapore
+    autoDeployTrigger: off
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: '4173'
+      - key: MODEL_QUOTA_BACKEND
+        value: supabase
+      - key: MAX_MODEL_CALLS_PER_DAY
+        value: '30'
+      - key: MODEL_CALLS_PER_IP_DAY
+        value: '5'
+      - key: MODEL_CALLS_PER_IP_HOUR
+        value: '5'
+      - key: TRUST_PROXY
+        value: '1'
+      - key: ALLOW_LOCAL_BAILIAN_CONFIG
+        value: '0'
+      - key: AMAP_KEY
+        sync: false
+      - key: DASHSCOPE_API_KEY
+        sync: false
+      - key: FLYAI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: QUOTA_HASH_SECRET
+        generateValue: true

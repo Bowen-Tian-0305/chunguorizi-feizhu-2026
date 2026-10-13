@@ -1,5 +1,6 @@
 import http from 'node:http';
 import {createModelQuota} from './model-quota.mjs';
+import {createRemoteModelQuota} from './remote-model-quota.mjs';
 import {validateWavAudio} from './wav-audio.mjs';
 import { readFile, stat } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
@@ -23,7 +24,7 @@ const venuesById = new Map(evidence.venues.map(venue => [venue.venue_id, venue])
 const sourcesById = new Map(evidence.sources.map(source => [source.source_id, source]));
 const cityVenues = evidence.venues.filter(venue => venue.venue_id.startsWith('CV'));
 const cache = new Map();
-const reserveModelCall = createModelQuota();
+const reserveModelCall = process.env.MODEL_QUOTA_BACKEND === 'supabase' ? createRemoteModelQuota() : createModelQuota();
 const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || '127.0.0.1';
 const flyaiBin = process.env.FLYAI_BIN || path.join(os.homedir(), '.npm-global-user/bin/flyai');
@@ -37,9 +38,9 @@ function clean(value, max = 100) {
   return String(value || '').trim().slice(0, max);
 }
 
-function limitModelCalls(req) {
+async function limitModelCalls(req) {
   const forwarded = process.env.TRUST_PROXY === '1' ? clean(req.headers['x-forwarded-for'], 200).split(',')[0].trim() : '';
-  reserveModelCall(forwarded || req.socket.remoteAddress || 'unknown');
+  await reserveModelCall(forwarded || req.socket.remoteAddress || 'unknown');
 }
 
 function norm(value) {
@@ -494,20 +495,20 @@ http.createServer(async (req, res) => {
       return json(res, 200, await route(...coords));
     }
     if (req.method === 'POST' && url.pathname === '/api/transcribe') {
-      limitModelCalls(req); const body=await readBody(req);
+      await limitModelCalls(req); const body=await readBody(req);
       return json(res,200,await transcribeAudio(body.audio));
     }
     if (req.method === 'POST' && url.pathname === '/api/understand') {
-      limitModelCalls(req); const body=await readBody(req);
+      await limitModelCalls(req); const body=await readBody(req);
       return json(res,200,await understandTrip(body));
     }
     if (req.method === 'POST' && url.pathname === '/api/extract') {
-      limitModelCalls(req);
+      await limitModelCalls(req);
       const body = await readBody(req);
       return json(res, 200, await extractScreenshot(body.image));
     }
     if (req.method === 'POST' && url.pathname === '/api/explain') {
-      limitModelCalls(req);
+      await limitModelCalls(req);
       const body = await readBody(req, 20_000);
       return json(res, 200, await explainPlan(body));
     }

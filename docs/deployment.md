@@ -31,3 +31,9 @@
 - 本地限流模块验证包括重启保留计数、全站及个人限制、跨日重置、损坏账本关闭调用；结果另见本地核验记录。
 
 这些准备不代表程序已经上线。
+
+## 无自备域名、零托管费用方案（准备中）
+
+用户选择完全免费后，新增 `deploy/render-free.yaml` 和 `deploy/supabase-quota.sql`。Render Free 承载现有Docker后端；Supabase Free仅保存模型体验次数。设置 `MODEL_QUOTA_BACKEND=supabase`，服务端配置专用项目URL、service_role密钥及至少32字符的 `QUOTA_HASH_SECRET`。数据库故障时停止实时模型调用，不回退到内存计数。两边均保持Free，且不绑定支付方式。
+
+免费资源有休眠、暂停及使用限额，百炼等上游额度需单独核验；配置文件不是已经部署的证据。当前等用户完成新平台登录，再进行云端配置与最终验收。
