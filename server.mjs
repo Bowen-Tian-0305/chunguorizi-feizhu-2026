@@ -25,6 +25,14 @@ const sourcesById = new Map(evidence.sources.map(source => [source.source_id, so
 const cityVenues = evidence.venues.filter(venue => venue.venue_id.startsWith('CV'));
 const cache = new Map();
 const reserveModelCall = process.env.MODEL_QUOTA_BACKEND === 'supabase' ? createRemoteModelQuota() : createModelQuota();
+const reserveLiveQuery = createModelQuota({
+  ...process.env,
+  REALTIME_AI_ENABLED: process.env.REALTIME_QUERY_ENABLED || '1',
+  MODEL_QUOTA_FILE: process.env.MODEL_QUOTA_FILE ? path.join(path.dirname(process.env.MODEL_QUOTA_FILE), 'live-query-quota.json') : undefined,
+  MAX_MODEL_CALLS_PER_DAY: process.env.MAX_LIVE_QUERIES_PER_DAY || '100',
+  MODEL_CALLS_PER_IP_DAY: process.env.LIVE_QUERIES_PER_IP_DAY || '20',
+  MODEL_CALLS_PER_IP_HOUR: process.env.LIVE_QUERIES_PER_IP_HOUR || '20'
+});
 const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || '127.0.0.1';
 const flyaiBin = process.env.FLYAI_BIN || path.join(os.homedir(), '.npm-global-user/bin/flyai');
@@ -41,6 +49,17 @@ function clean(value, max = 100) {
 async function limitModelCalls(req) {
   const forwarded = process.env.TRUST_PROXY === '1' ? clean(req.headers['x-forwarded-for'], 200).split(',')[0].trim() : '';
   await reserveModelCall(forwarded || req.socket.remoteAddress || 'unknown');
+}
+
+function limitLiveQueries(req) {
+  const forwarded = process.env.TRUST_PROXY === '1' ? clean(req.headers['x-forwarded-for'], 200).split(',')[0].trim() : '';
+  try { reserveLiveQuery(forwarded || req.socket.remoteAddress || 'unknown'); }
+  catch (error) {
+    const message = error.status === 429
+      ? '今天的实时酒店与周边查询次数已用完，仍可使用示例方案和已收录餐饮资料。'
+      : '实时酒店与周边查询暂时关闭，仍可使用示例方案和已收录餐饮资料。';
+    throw Object.assign(new Error(message), {status:error.status || 503});
+  }
 }
 
 function norm(value) {
@@ -216,7 +235,16 @@ async function route(origin, destination) {
   });
   const first = payload.route?.paths?.[0];
   if (!first) throw Object.assign(new Error('高德未返回步行路线'), {status: 404});
-  return {meters: Number(first.distance), minutes: Math.ceil(Number(first.cost?.duration || 0) / 60),
+  const [lng1, lat1] = origin.split(',').map(Number);
+  const [lng2, lat2] = destination.split(',').map(Number);
+  const rad = Math.PI / 180;
+  const hav = Math.sin((lat2-lat1)*rad/2)**2 + Math.cos(lat1*rad)*Math.cos(lat2*rad)*Math.sin((lng2-lng1)*rad/2)**2;
+  const straight = 6_371_000 * 2 * Math.asin(Math.min(1, Math.sqrt(hav)));
+  const meters = Number(first.distance), seconds = Number(first.cost?.duration);
+  // Some off-road coordinates snap to the same entrance. Do not promise a near-zero walk.
+  if (!Number.isFinite(meters) || meters < 0 || !Number.isFinite(seconds) || seconds < 0 || meters + 50 < straight * 0.6)
+    throw Object.assign(new Error('位置可能偏离道路，暂时无法确认可靠的步行时间，请在地图核对酒店和门店入口。'), {status:422});
+  return {meters, minutes: Math.max(1, Math.ceil(seconds / 60)),
     queried_at: new Date().toISOString(), source: '高德步行路径规划 2.0'};
 }
 
@@ -242,7 +270,7 @@ async function cities() {
 async function demo() {
   const hotel = hotelsById.get('H09');
   const offline = !process.env.AMAP_KEY;
-  const locations = offline ? {items:[{location:`${demoHotelSnapshot.longitude},${demoHotelSnapshot.latitude}`}]} : await geocodeHotel('杭州市拱墅区长寿路6号', '杭州');
+  const locations = {items:[{location:`${demoHotelSnapshot.longitude},${demoHotelSnapshot.latitude}`}]};
   const location = locations.items[0];
   const coords = (location?.location || '').split(',').map(Number);
   return {offline,hotel: {id:'demo-H09',name:hotel.name,address:hotel.address,
@@ -293,7 +321,7 @@ async function extractScreenshot(dataUrl) {
     })
   });
   const payload = await response.json();
-  if (!response.ok) throw Object.assign(new Error(payload.error?.message || '百炼识别失败'), {status: 502});
+  if (!response.ok) throw bailianFailure(payload, '百炼识别失败');
   let content = payload.choices?.[0]?.message?.content || '{}';
   content = content.replace(/^```(?:json)?\s*|\s*```$/g, '');
   const extracted = JSON.parse(content);
@@ -316,6 +344,14 @@ async function extractScreenshot(dataUrl) {
     note: '请核对后再使用；原图未写明的权益不会自动补齐。'};
 }
 
+function bailianFailure(payload, fallback) {
+  const detail = String(payload.code || payload.error?.code || '') + ' ' + String(payload.message || payload.error?.message || '');
+  const freeExhausted = /FreeTierOnly|free.?tier.*(?:exhaust|quota)/i.test(detail);
+  return Object.assign(new Error(freeExhausted
+    ? '百炼免费体验额度已用完，实时 AI 暂时关闭。仍可查看示例方案、手动算价差和选择餐馆。'
+    : payload.error?.message || payload.message || fallback), {status:freeExhausted ? 429 : 502});
+}
+
 async function modelJson(model, messages, options = {}) {
   const key = await bailianKey();
   if (!key) throw Object.assign(new Error('语音服务暂未配置，请先用文字或手动填写'), {status:503});
@@ -325,7 +361,7 @@ async function modelJson(model, messages, options = {}) {
     body:JSON.stringify({model,messages,...options})
   });
   const payload = await response.json();
-  if (!response.ok) throw Object.assign(new Error(payload.error?.message || '百炼暂时没有返回结果'),{status:502});
+  if (!response.ok) throw bailianFailure(payload, '百炼暂时没有返回结果');
   return payload;
 }
 async function transcribeAudio(audio) {
@@ -340,7 +376,7 @@ async function transcribeAudio(audio) {
       parameters:{format:'wav',sample_rate:'16000'}})
   });
   const payload = await response.json();
-  if (!response.ok || payload.code) throw Object.assign(new Error(payload.message || payload.error?.message || '百炼语音暂时没有返回结果'), {status:502});
+  if (!response.ok || payload.code) throw bailianFailure(payload, '百炼语音暂时没有返回结果');
   const content = payload.output?.text || payload.output?.sentence?.text || payload.output?.output?.sentence?.text || payload.output?.choices?.[0]?.message?.content;
   const transcript = clean(typeof content==='string'?content:(content||[]).map(item=>item.text||'').join(''),2500);
   if (!transcript) throw Object.assign(new Error('没听到清楚的需求，请再说一次或直接输入文字'),{status:422});
@@ -413,7 +449,7 @@ async function explainPlan(input) {
     })
   });
   const payload = await response.json();
-  if (!response.ok) throw Object.assign(new Error(payload.error?.message || '百炼解释失败'), {status: 502});
+  if (!response.ok) throw bailianFailure(payload, '百炼解释失败');
   const raw = String(payload.choices?.[0]?.message?.content || '{}').replace(/^```(?:json)?\s*|\s*```$/g, '');
   const answer = JSON.parse(raw);
   const reason = facts.hotel_breakfast_result.includes('份数不够')
@@ -457,6 +493,7 @@ async function serveStatic(res, pathname) {
 http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://127.0.0.1:${port}`);
+    if (req.method === 'GET' && ['/api/cities', '/api/hotels', '/api/nearby', '/api/geocode', '/api/route'].includes(url.pathname)) limitLiveQueries(req);
     if (req.method === 'GET' && url.pathname === '/api/health')
       return json(res, 200, {ok: true, reviewed_hotels: evidence.hotels.length,
         verified_venues: evidence.venues.length, amap_ready: Boolean(process.env.AMAP_KEY),
