@@ -103,7 +103,7 @@ const cityCuisine={杭州:'杭帮菜',北京:'北京菜',上海:'本帮菜',成�
 function applyCityVisual(){
   const name=cityName(),theme=cityPalettes[name]||'ink';
   document.body.dataset.city=name;document.body.dataset.theme=theme;
-  document.querySelector('meta[name="theme-color"]').content={jade:'#183f35',ink:'#284962',vermilion:'#813e35',chili:'#8a4634',ochre:'#69553e',coast:'#176479',citrus:'#48604a'}[theme];
+  document.querySelector('meta[name="theme-color"]').content={jade:'#3d5347',ink:'#445261',vermilion:'#874536',chili:'#823d2e',ochre:'#76603e',coast:'#3a5a60',citrus:'#536344'}[theme];
   $('cityPosterWord').textContent=name.slice(0,4);
   $('heroCityLabel').textContent=`${cityEnglish[name]||'CITY NOTES'} / ${name}旅居灵感`;
   $('heroCityCaption').textContent=name==='杭州'?'把早晨，留给喜欢的那一口。':`到${name}，把一日三餐过得有滋味。`;
@@ -836,24 +836,25 @@ $('sharePlan').addEventListener('click', async () => {
   const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1440;
   const ctx=canvas.getContext('2d');
   if(!ctx)return;
-  ctx.fillStyle='#f7f4eb';ctx.fillRect(0,0,1080,1440);
-  const heading=(text,y,size=34,color='#183f35')=>{ctx.font=`600 ${size}px "PingFang SC", "Microsoft YaHei", sans-serif`;ctx.fillStyle=color;ctx.fillText(text,64,y);};
-  const lines=(text,y,size=25,color='#647467')=>{
+  const theme=getComputedStyle(document.body), palette={paper:theme.getPropertyValue('--theme-page').trim(),ink:theme.getPropertyValue('--ink').trim(),main:theme.getPropertyValue('--theme-main').trim(),warm:theme.getPropertyValue('--theme-warm').trim(),soft:theme.getPropertyValue('--theme-soft').trim(),quiet:theme.getPropertyValue('--quiet').trim(),rule:theme.getPropertyValue('--rule').trim()};
+  ctx.fillStyle=palette.paper;ctx.fillRect(0,0,1080,1440);
+  const heading=(text,y,size=34,color=palette.ink)=>{ctx.font=`600 ${size}px "Songti SC", "STSong", "SimSun", serif`;ctx.fillStyle=color;ctx.fillText(text,64,y);};
+  const lines=(text,y,size=25,color=palette.quiet)=>{
     ctx.font=`${size}px "PingFang SC", "Microsoft YaHei", sans-serif`;ctx.fillStyle=color;
     let line='';
     for(const char of text){if(ctx.measureText(line+char).width>950){ctx.fillText(line,64,y);line=char;y+=size*1.6;}else line+=char;}
     if(line){ctx.fillText(line,64,y);y+=size*1.6;}return y;
   };
-  heading('纯过日子',100,43);heading('订酒店，也把饭算明白',152,26,'#9f7152');
-  ctx.strokeStyle='#dce2d2';ctx.beginPath();ctx.moveTo(64,190);ctx.lineTo(1016,190);ctx.stroke();
-  let y=lines(state.hotel.name,258,38,'#183f35');
+  heading('纯过日子',100,43);heading('订酒店，也把饭算明白',152,26,palette.warm);
+  ctx.strokeStyle=palette.rule;ctx.beginPath();ctx.moveTo(64,190);ctx.lineTo(1016,190);ctx.stroke();
+  let y=lines(state.hotel.name,258,38,palette.ink);
   y=lines(`${$('checkIn').value} — ${$('checkOut').value} · ${number('adults')} 成人${number('children')?' + '+number('children')+' 儿童':''}`,y+18,25);
-  y=lines(breakfastAssessment().headline,y+42,31,'#183f35');
+  y=lines(breakfastAssessment().headline,y+42,31,palette.ink);
   if(decision.outsideAll!==undefined&&decision.outsideAll!==null){
     y=lines(`成人早餐增量预算：全部外出 ${money(decision.outsideAll)}；含早与剩余外出 ${money(decision.packageAll)}。`,y+16,29);
   }
-  if(decision.perUse!==undefined)y=lines(`含早全程多 ${money(decision.premium)}，实际用 ${selectedBreakfastDates.size} 次：${money(decision.perUse.toFixed(2))}/成人/次。`,y+12,28,'#9f7152');
-  if(number('children'))y=lines('儿童收费与套餐份数待核；上述金额不是全家总价。',y+8,25,'#9f7152');
+  if(decision.perUse!==undefined)y=lines(`含早全程多 ${money(decision.premium)}，实际用 ${selectedBreakfastDates.size} 次：${money(decision.perUse.toFixed(2))}/成人/次。`,y+12,28,palette.warm);
+  if(number('children'))y=lines('儿童收费与套餐份数待核；上述金额不是全家总价。',y+8,25,palette.warm);
   y+=30;heading('早晨留给谁',y,30);y+=42;
   const shownDates=dates.slice(0,5);
   for(const date of shownDates){
@@ -862,7 +863,7 @@ $('sharePlan').addEventListener('click', async () => {
   }
   if(dates.length>shownDates.length)y=lines(`另有 ${dates.length-shownDates.length} 个早晨，完整安排见文字方案。`,y,23);
   if(state.savedPlaces.length&&y<1110){y+=22;heading('想去的店',y,30);y+=42;for(const place of state.savedPlaces.slice(0,2))y=lines(`${place.name}${place.route?' · 从酒店步行 '+place.route.minutes+' 分钟':''}`,y,25);}
-  ctx.fillStyle='#eaf0e5';ctx.fillRect(0,1260,1080,180);
+  ctx.fillStyle=palette.soft;ctx.fillRect(0,1260,1080,180);
   lines(state.demo?'示例价格与权益为测试值；酒店资料另有真实出处。':'按本次填写的价格与同条件确认计算，非平台最终报价。',1310,22);
   lines('门店营业、菜单、儿童政策、忌口与套餐适用条件，出发前向商家确认。',1365,22);
   canvas.toBlob(blob=>{
