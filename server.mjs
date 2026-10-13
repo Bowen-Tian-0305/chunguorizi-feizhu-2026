@@ -1,5 +1,6 @@
 import http from 'node:http';
 import {createModelQuota} from './model-quota.mjs';
+import {validateWavAudio} from './wav-audio.mjs';
 import { readFile, stat } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -327,11 +328,7 @@ async function modelJson(model, messages, options = {}) {
   return payload;
 }
 async function transcribeAudio(audio) {
-  if (typeof audio !== 'string' || audio.length > 6_000_000 || !/^data:audio\/wav;base64,[A-Za-z0-9+/=]+$/.test(audio))
-    throw Object.assign(new Error('请提交90秒以内的WAV录音'),{status:400});
-  const bytes = Buffer.from(audio.split(',')[1],'base64');
-  if (bytes.subarray(0,4).toString() !== 'RIFF' || bytes.subarray(8,12).toString() !== 'WAVE')
-    throw Object.assign(new Error('录音格式无法读取，请重新录制'),{status:400});
+  validateWavAudio(audio);
   const key = await bailianKey();
   if (!key) throw Object.assign(new Error('语音服务暂未配置，请先用文字或手动填写'), {status:503});
   const model = 'qwen-audio-3.1-asr-flash';

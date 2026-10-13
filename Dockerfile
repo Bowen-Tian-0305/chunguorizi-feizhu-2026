@@ -1,7 +1,7 @@
 FROM node:22-bookworm-slim
 RUN npm install --global --no-audit --no-fund @fly-ai/flyai-cli@1.0.16
 WORKDIR /app
-COPY --chown=node:node server.mjs model-quota.mjs ./
+COPY --chown=node:node server.mjs model-quota.mjs wav-audio.mjs ./
 COPY --chown=node:node public ./public
 COPY --chown=node:node data/evidence.json ./data/evidence.json
 COPY --chown=node:node data/ranking.json ./data/ranking.json
