@@ -1,0 +1,47 @@
+name: chunguorizi-ip
+services:
+  app:
+    build: ..
+    restart: unless-stopped
+    env_file: ../.env
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 4173
+      MODEL_QUOTA_BACKEND: file
+      MODEL_QUOTA_FILE: /app/state/model-quota.json
+      TRUST_PROXY: '1'
+      ALLOW_LOCAL_BAILIAN_CONFIG: '0'
+    volumes:
+      - app-state:/app/state
+    ports:
+      - '127.0.0.1:4173:4173'
+    mem_limit: 512m
+    cpus: 1
+    logging: &logs
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '2'
+  web:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./runtime/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./runtime/challenges:/var/www/acme:ro
+      - ./runtime/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - app
+    logging: *logs
+  certbot:
+    image: certbot/certbot:v5.8.0
+    profiles: [tools]
+    volumes:
+      - ./runtime/challenges:/var/www/acme
+      - ./runtime/letsencrypt:/etc/letsencrypt
+      - ./runtime/certbot-log:/var/log/letsencrypt
+volumes:
+  app-state:
