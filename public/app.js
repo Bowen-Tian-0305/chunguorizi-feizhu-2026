@@ -206,12 +206,16 @@ function showPane(pane) {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 document.querySelectorAll('[data-pane]').forEach(button => button.addEventListener('click',()=>showPane(button.dataset.pane)));
-$('startTrip').addEventListener('click',()=>$('voiceWorkspace').scrollIntoView({behavior:'smooth'}));
+$('startTrip').addEventListener('click',()=>{
+  $('voiceWorkspace').scrollIntoView({behavior:'smooth'});
+  $('tripVoiceText').focus({preventScroll:true});
+});
 $('manualEntryJump').addEventListener('click',()=>$('hotelWorkspace').scrollIntoView({behavior:'smooth'}));
 $('continuePreferences').addEventListener('click',()=>showPane('preferences'));
 function setEntry(mode) {
   document.querySelectorAll('[data-entry]').forEach(button=>button.classList.toggle('active',button.dataset.entry===mode));
-  $('uploadEntry').classList.toggle('hidden',mode!=='upload');
+  $('uploadEntry').classList.remove('hidden');
+  if(mode==='upload')$('uploadEntry').scrollIntoView({behavior:'smooth',block:'center'});
 }
 document.querySelectorAll('[data-entry]').forEach(button=>button.addEventListener('click',()=>setEntry(button.dataset.entry)));
 $('showExample').addEventListener('click',()=>$('examplePanel').classList.toggle('hidden'));
@@ -993,11 +997,22 @@ function breakfastAssessment() {
 function renderOverview(breakfast) {
   const n=nights(),days=breakfastUseDays(),delta=quoteAssessment(quoteBook).premium;
   const decision=breakfastDecision();
-  const per=decision.perUse!==undefined?money(decision.perUse.toFixed(2)):'暂不能比较';
   const closest=state.nearby.filter(place=>place.route).sort((a,b)=>a.route.minutes-b.route.minutes)[0];
   $('resultTripSummary').textContent=`${state.hotel.name} · ${cityName()} · ${n} 晚 · ${number('adults')} 成人${number('children')?' + '+number('children')+' 儿童':''}${state.demo?' · 示例价格':''}`;
-  const preference={local:'想尝当地味，给外出吃饭留一点空间。',easy:'更在意省心，先考虑酒店早餐和短距离外出。',budget:'先看确定的价差，把每顿饭花在哪儿看清楚。'}[$('mealPriority').value];
-  $('planOverview').innerHTML=`<strong>${escapeHtml(breakfast.headline)}</strong><p>${preference}${state.demo?' 当前房价是示例测试值。':''}金额按你填写的价格和实际使用次数计算。</p><div class="plan-metrics"><div><span>含早全程增量</span><b>${delta===null||delta<0?'待核对':money(delta)}</b></div><div><span>实际每位成人每次</span><b>${per}</b></div><div><span>最近已查路线的餐馆</span><b id="closestWalkMetric">${closest?closest.route.minutes+' 分钟':state.nearby.length?'路线待查':'暂无路线'}</b></div></div>`;
+  const usable=['ready','children-unknown'].includes(decision.status)&&decision.saving!==null;
+  const difference=usable?Math.abs(decision.saving):null;
+  const headline=usable?(difference===0?'两种吃法，成人早餐预算持平':decision.saving<0?'按你的预算，外出早餐更省一些':'按你的预算，含早套餐更省一些'):breakfast.headline;
+  const reasons=[];
+  if(delta!==null&&delta>=0)reasons.push(`含早套餐全程多 ${money(delta)}，少吃几次也不会退回差价。`);
+  if(decision.perUse!==undefined)reasons.push(`计划在酒店吃 ${days} 次，折合每位成人每次 ${money(decision.perUse.toFixed(2))}。`);
+  if(usable)reasons.push(`全程成人早餐增量：全部外出 ${money(decision.outsideAll)}；含早搭配剩余外出 ${money(decision.packageAll)}。`);
+  const preference={local:'你想尝当地味，可以把外出早餐留给最想去的店。',easy:'你更在意省心，也把往返、排队和出门时间一起考虑。',budget:'你更在意预算，先比较相同范围的金额，再决定在哪里吃。'}[$('mealPriority').value];
+  reasons.push(preference);
+  const unknowns=[];
+  if(number('children'))unknowns.push('儿童收费与套餐份数未核清，以上只比较成人。');
+  if(!usable)unknowns.push(quoteAssessment(quoteBook).reasons[0]?.message||'先核对早餐份数和外出人均预算。');
+  unknowns.push('外出金额是你设定的预算；入住日供应、菜单和忌口还需向商家确认。');
+  $('planOverview').innerHTML=`<span class="decision-scope">${state.demo?'示例价格 · ':''}房费之外的成人早餐增量</span><div class="decision-main"><h3>${escapeHtml(headline)}</h3><div class="decision-money">${usable?(difference===0?'持平':money(difference.toFixed(2))):'待核对'}<small>${usable?(difference===0?'按当前成人预算计算':decision.saving<0?'外出预算少花':'含早预算少花'):'补齐条件后再比较'}</small></div></div><ul class="decision-reasons">${reasons.map(text=>`<li>${escapeHtml(text)}</li>`).join('')}</ul><p class="decision-unknown">${unknowns.map(escapeHtml).join(' ')}</p><div class="decision-costs"><span>从住处出发，最近已查路线的餐馆</span><b id="closestWalkMetric">${closest?closest.route.minutes+' 分钟':state.nearby.length?'路线待查':'暂无路线'}</b></div>`;
 }
 $('walkLimit').addEventListener('change',()=>{renderNearby();if(!$('planSection').classList.contains('hidden'))renderOverview(breakfastAssessment());});
 $('refreshQuestions').addEventListener('click',()=>loadPlanExplanation(breakfastAssessment(),buffetAssessment()));
