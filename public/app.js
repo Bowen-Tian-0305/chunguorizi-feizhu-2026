@@ -1,4 +1,5 @@
 import {compareBreakfast, breakfastDates} from './breakfast-decision.js';
+import {createQuoteBook, setQuoteContext, replaceQuote, removeQuote, editQuoteFields, confirmQuote, confirmComparison, quoteAssessment, quoteInputFromExtraction, bindQuoteInputToContext} from './quote-context.js';
 const $ = id => document.getElementById(id);
 const introSplash = $('introSplash');
 try {
@@ -62,6 +63,15 @@ document.addEventListener('click', event => {
 const selectedBreakfastDates = new Set();
 let breakfastDateSignature = '';
 const state = {hotel: null, evidence: null, hotelPolicy: null, nearby: [], extracted: null, savedPlaces: [], demo: false, pane: "hotel", voiceCandidates: []};
+let quoteBook = createQuoteBook();
+let captureSequence = 0, captureRevision = 0;
+const bookingCaptures = [];
+let pendingVoiceQuote = null;
+let hotelSelectionRevision = 0, hotelSearchRevision = 0, tripContextRevision = 0;
+document.addEventListener('input',event=>{
+  if(event.target.matches('input,select,textarea'))tripContextRevision++;
+  if(event.target.matches('#preferencesPane input,#preferencesPane select,#searchForm input,#searchForm select'))$('planSection').classList.add('hidden');
+});
 let explainRevision = 0;
 let nearbyRevision = 0;
 const routeCache = new Map();
@@ -75,6 +85,71 @@ const today = new Date();
 const start = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 6);
 const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1);
 $('checkIn').value = day(start); $('checkOut').value = day(end);
+
+function currentQuoteContext(hotel = state.hotel) {
+  return {city: cityName(), hotel: hotel ? {id: hotel.manual?'':hotel.id || hotel.hotel_id || '', name: hotel.name, address: hotel.address || ''} : {}, checkIn: $('checkIn').value, checkOut: $('checkOut').value};
+}
+function readQuoteField(slot, field) {return quoteBook.quotes[slot]?.fields[field]?.value ?? null;}
+function updateQuoteForm() {
+  $('roomOnly').value = readQuoteField('A','total') ?? '';
+  $('roomWith').value = readQuoteField('B','total') ?? '';
+  $('breakfastCount').value = readQuoteField('B','breakfastCount') ?? '';
+  $('mealRights').value = readQuoteField('B','mealRights') ?? '';
+  $('mealRightType').value = readQuoteField('B','mealRightType') || 'unknown';
+  $('comparable').checked = quoteAssessment(quoteBook).comparable;
+  for(const slot of ['A','B'])for(const field of ['roomType','cancellation','otherTerms'])$('quote'+slot+field).value=readQuoteField(slot,field)??'';
+}
+function quoteSourceLabel(quote) {
+  if(!quote)return '尚未填写';
+  if(quote.demo)return '示例测试值';
+  const labels=[...new Set(Object.values(quote.fields).map(field=>field.source?.label).filter(Boolean))];
+  return labels.join('、') || quote.source.label || '手动填写';
+}
+function renderQuoteStatus(message = '') {
+  const assessment=quoteAssessment(quoteBook),hasQuotes=Boolean(quoteBook.quotes.A||quoteBook.quotes.B);
+  const attribution=hasQuotes?`${state.hotel?.name || '酒店待确认'} · ${$('checkIn').value} 至 ${$('checkOut').value}。不含早：${quoteSourceLabel(quoteBook.quotes.A)}；含早：${quoteSourceLabel(quoteBook.quotes.B)}。`:'';
+  const problem=hasQuotes&&!assessment.comparable?assessment.reasons[0]?.message||'':'';
+  notice('quoteContextStatus',[message,attribution,problem].filter(Boolean).join(' '),Boolean(message||problem));
+}
+function changeQuoteContext(hotel = state.hotel, {leaveDemo = false, message = ''} = {}) {
+  const before=quoteBook, next=setQuoteContext(before,currentQuoteContext(hotel),{clearDemo:leaveDemo});
+  if(JSON.stringify(before.context)!==JSON.stringify(next.context)||leaveDemo)for(const capture of bookingCaptures)capture.confirmed=false;
+  const removed=['A','B'].some(slot=>before.quotes[slot]&&!next.quotes[slot]);
+  quoteBook=next;
+  if(leaveDemo||removed){state.demo=false;notice('demoNotice','');if(state.hotel?.demo){state.hotel={...state.hotel,demo:false};$('evidenceBadge').textContent='酒店公开资料 · 价格待核对';}}
+  if(state.hotel)$('tripSummary').textContent=`${state.hotel.name} · ${nights()} 晚，按你们的习惯来安排。`;
+  updateQuoteForm();
+  if(removed||message){
+    $('planSection').classList.add('hidden');
+    renderQuoteStatus(message||'住处或入住日期已变化，旧报价已移出本次比较。请填写或核对这次的价格。');
+  }else renderQuoteStatus();
+  renderBookingCaptures();
+}
+function saveManualQuote(slot, patch) {
+  if(!state.hotel)return;
+  if(patch.total!==undefined)patch.priceBasis='total';
+  const confirmation=$('comparable').checked;
+  quoteBook=editQuoteFields(quoteBook,slot,patch,{source:{id:`manual-${slot}-${Date.now()}`,kind:state.demo?'demo':'manual',label:state.demo?'示例测试值':'手动核对'}});
+  if(confirmation)$('comparable').checked=false;
+  renderQuoteStatus();
+  if(!$('planSection').classList.contains('hidden'))$('planSection').classList.add('hidden');
+}
+for(const [id,slot,field] of [['roomOnly','A','total'],['roomWith','B','total'],['breakfastCount','B','breakfastCount'],['mealRights','B','mealRights'],['mealRightType','B','mealRightType']]){
+  $(id).addEventListener('input',()=>saveManualQuote(slot,{[field]:id==='mealRightType'?$(id).value:number(id)}));
+}
+for(const slot of ['A','B'])for(const field of ['roomType','cancellation','otherTerms'])$('quote'+slot+field).addEventListener('input',event=>saveManualQuote(slot,{[field]:event.target.value}));
+$('comparable').addEventListener('change',()=>{
+  $('planSection').classList.add('hidden');
+  if($('comparable').checked){quoteBook=confirmQuote(confirmQuote(quoteBook,'A'),'B');}
+  quoteBook=confirmComparison(quoteBook,$('comparable').checked);
+  $('comparable').checked=quoteAssessment(quoteBook).comparable;
+  renderQuoteStatus();
+});
+for(const id of ['checkIn','checkOut'])$(id).addEventListener('change',()=>{
+  tripContextRevision++;
+  changeQuoteContext(state.hotel);
+  selectedBreakfastDates.clear();breakfastDateSignature='';mealSelections.clear();
+});
 
 async function api(url, options) {
   const response = await fetch(url, options);
@@ -156,6 +231,7 @@ api('/api/cities').then(data => {
   applyCityVisual();
 }).catch(()=>notice('searchNotice','城市列表暂时没有加载成功，当前可先体验杭州。请稍后刷新重试。',true));
 $('city').addEventListener('change',()=>{
+  hotelSelectionRevision++;hotelSearchRevision++;tripContextRevision++;
   state.hotel=null;state.evidence=null;state.hotelPolicy=null;state.savedPlaces=[];state.nearby=[];state.voiceCandidates=[];state.demo=false;explainRevision++;nearbyRevision++;
   mapState.selectedId=null;mapState.draftId=null;resetMapView();expandNearbyMap(false);
   for(const id of ['selectedPanel','planSection','nearbySection']) $(id).classList.add('hidden');
@@ -163,26 +239,37 @@ $('city').addEventListener('change',()=>{
   $('cityBadge').textContent=cityName()==='杭州'?'杭州示范':cityName();
   $('cityScope').textContent=cityName()==='杭州'?'杭州可查看精选餐饮信息。其他城市可查酒店、算含早差价和找周边餐饮，深度餐饮资料正在扩充。':'已切换到'+cityName()+'。可查酒店、算早餐价差和找周边；杭州特色与酒店深度资料不会套到这里。台湾地区暂不支持高德路线。';
   applyCityVisual();
+  changeQuoteContext(null,{leaveDemo:true});
   notice('searchNotice','');
 });
 applyCityVisual();
 function applyPreset(name) {
   $('adults').value=2;$('children').value=name==='family'?1:0;$('childAges').value=name==='family'?'6':'';
   $('mealPriority').value=name==='family'?'easy':'local';$('walkLimit').value=name==='family'?'10':'15';
-  if(state.demo){$('roomOnly').value=1200;$('roomWith').value=1440;$('outsideBudget').value=35;$('breakfastCount').value=2;$('breakfastDays').value=name==='package'?1:2;$('comparable').checked=true;}
-  $('mealRights').value=name==='package'?1:'';$('mealRightType').value=name==='package'?'dinner':'unknown';
+  if(state.demo){
+    const source={id:'demo-fixed',kind:'demo',label:'示例测试值'};
+    quoteBook=replaceQuote(quoteBook,'A',{context:currentQuoteContext(),fields:{total:1200,priceBasis:'total'},source});
+    quoteBook=replaceQuote(quoteBook,'B',{context:currentQuoteContext(),fields:{total:1440,priceBasis:'total',breakfastCount:2,...(name==='package'?{mealRights:1,mealRightType:'dinner'}:{})},source});
+    quoteBook=confirmComparison(quoteBook);updateQuoteForm();renderQuoteStatus();
+    $('outsideBudget').value=35;$('breakfastDays').value=name==='package'?1:2;
+  }
   document.querySelector('.package-fields').open=name==='package';
   document.querySelectorAll('[data-preset]').forEach(button=>button.classList.toggle('active',button.dataset.preset===name));
 }
 document.querySelectorAll('[data-preset]').forEach(button=>button.addEventListener('click',()=>applyPreset(button.dataset.preset)));
 async function tryDemo() {
+  const revision=captureRevision;
   const button=$('tryDemo');button.disabled=true;button.textContent='准备杭州示例…';
   try {
-    if($('city').value!=='杭州'){$('city').value='杭州';$('city').dispatchEvent(new Event('change'));}const data=await api('/api/demo');
+    if($('city').value!=='杭州'){$('city').value='杭州';$('city').dispatchEvent(new Event('change'));}
+    const intent=tripContextRevision,data=await api('/api/demo');
+    if(revision!==captureRevision||intent!==tripContextRevision)return;
     const checkIn=new Date();checkIn.setDate(checkIn.getDate()+6);const checkout=new Date(checkIn);checkout.setDate(checkout.getDate()+2);
     $('checkIn').value=day(checkIn);$('checkOut').value=day(checkout);$('query').value=data.hotel.name;
+    const selection=selectHotel(data.hotel),selectionIntent=tripContextRevision;
+    const selected=await selection;if(!selected||revision!==captureRevision||selectionIntent!==tripContextRevision)return;
     state.demo=true;applyPreset('couple');notice('demoNotice',data.offline?'正在体验离线示例：房价 ¥1200 / ¥1440 为测试值，酒店位置为公开快照。实时语音、截图与地图服务需配置自己的密钥。':'正在体验示例：房价 ¥1200 / ¥1440 和套餐权益为测试值。酒店餐饮信息有真实出处，周边路线按当前地图查询。');
-    await selectHotel(data.hotel);$('makePlan').click();
+    $('makePlan').click();
   } catch(error) {notice('searchNotice','示例暂时无法加载：'+error.message,true);showPane('hotel');}
   finally {button.disabled=false;button.textContent='先试试杭州示例 ↗';}
 }
@@ -208,10 +295,28 @@ function applyVoiceFields(fields){
   if(fields.check_out)setField('checkOut',fields.check_out);
   else if(fields.check_in&&fields.nights){const d=new Date(`${fields.check_in}T12:00:00`);d.setDate(d.getDate()+fields.nights);setField('checkOut',day(d));}
   else if(fields.nights){const d=new Date(`${$('checkIn').value}T12:00:00`);d.setDate(d.getDate()+fields.nights);setField('checkOut',day(d));}
-  for(const [field,id] of Object.entries({adults:'adults',children:'children',child_ages:'childAges',dietary:'dietary',meal_priority:'mealPriority',walk_limit_minutes:'walkLimit',outside_breakfast_budget:'outsideBudget',room_only_total:'roomOnly',breakfast_room_total:'roomWith',breakfast_count_per_night:'breakfastCount',breakfast_use_days:'breakfastDays',morning_departure:'morningDeparture',meal_rights:'mealRights',meal_right_type:'mealRightType'}))setField(id,fields[field]);
-  if(fields.meal_rights)document.querySelector('.package-fields').open=true;
-  if(fields.same_room_terms===true)$('comparable').checked=true;
+  changeQuoteContext(state.hotel);
+  for(const [field,id] of Object.entries({adults:'adults',children:'children',child_ages:'childAges',dietary:'dietary',meal_priority:'mealPriority',walk_limit_minutes:'walkLimit',outside_breakfast_budget:'outsideBudget',breakfast_use_days:'breakfastDays',morning_departure:'morningDeparture'}))setField(id,fields[field]);
+  if(['room_only_total','breakfast_room_total','breakfast_count_per_night','meal_rights','meal_right_type'].some(key=>fields[key]!==null&&fields[key]!==undefined)){
+    pendingVoiceQuote={fields,context:{...currentQuoteContext(),hotel:{name:fields.hotel_name||state.hotel?.name||''}}};
+    if(state.hotel&&(!fields.hotel_name||fields.hotel_name.normalize('NFKC').trim()===state.hotel.name.normalize('NFKC').trim()))applyPendingVoiceQuote();
+  }
   if(fields.hotel_name)setField('query',fields.hotel_name);
+}
+function applyPendingVoiceQuote(){
+  if(!pendingVoiceQuote||!state.hotel)return;
+  const {fields,context}=pendingVoiceQuote;
+  const selected=currentQuoteContext();
+  if(context.city!==selected.city||context.checkIn!==selected.checkIn||context.checkOut!==selected.checkOut){pendingVoiceQuote=null;renderQuoteStatus('口述报价的城市或日期已变化，请重新核对本次价格。');return;}
+  if(context.hotel.name&&context.hotel.name.normalize('NFKC').replace(/\s/g,'')!==selected.hotel.name.normalize('NFKC').replace(/\s/g,'')){
+    renderQuoteStatus('口述报价中的酒店名称与所选候选不同，请核对后在下方填写本次价格。');return;
+  }
+  for(const [slot,key] of [['A','room_only_total'],['B','breakfast_room_total']]){
+    const patch={};if(fields[key]!==undefined){patch.total=fields[key];patch.priceBasis='total';}
+    if(slot==='B')for(const [from,to] of [['breakfast_count_per_night','breakfastCount'],['meal_rights','mealRights'],['meal_right_type','mealRightType']])if(fields[from]!==undefined)patch[to]=fields[from];
+    if(Object.keys(patch).length){quoteBook=editQuoteFields(quoteBook,slot,patch,{source:{id:`voice-${Date.now()}-${slot}`,kind:'voice',label:'口述待核对'}});}
+  }
+  pendingVoiceQuote=null;updateQuoteForm();renderQuoteStatus('口述价格已放入当前酒店与日期，请核对数值后再确认两档条件相同。');
 }
 function voiceSummary(data){
   const f=data.fields,items=[];
@@ -230,12 +335,13 @@ function voiceSummary(data){
   box.innerHTML=`<strong>我听到的是</strong><p>${escapeHtml(data.summary||'已提取你说出的旅行需求。')}</p><div>${items.map(item=>`<span>${escapeHtml(item)}</span>`).join('')}</div><small>识别有误，可以修改文字后再点“帮我安排”。${data.questions?.length?' 还想确认：'+escapeHtml(data.questions.join('；')):''}</small>`;
   box.classList.remove('hidden');
 }
-function normalizeHotelName(name){return String(name||'').replace(/[·\s（）()酒店大饭店]/g,'').toLowerCase();}
+function normalizeHotelName(name){return String(name||'').normalize('NFKC').replace(/\s+/g,'').toLowerCase();}
 async function selectVoiceHotel(item){
   $('voiceCandidates').innerHTML='';notice('voiceStatus',`已选「${item.name}」，正在整理早餐、餐券与附近吃饭选择…`);
-  await selectHotel(item);$('makePlan').click();
+  if(await selectHotel(item)){applyPendingVoiceQuote();$('makePlan').click();}
 }
 async function findVoiceHotels(fields){
+  const revision=tripContextRevision;
   const q=fields.hotel_name||fields.lodging_area;
   if(!q){
     if(state.hotel){$('makePlan').click();return;}
@@ -246,6 +352,7 @@ async function findVoiceHotels(fields){
   notice('voiceStatus',`正在查${fields.hotel_name?'酒店':'区域'}候选，请核对名称和地址…`);
   const params=new URLSearchParams({q,city:cityName(),checkIn:$('checkIn').value,checkOut:$('checkOut').value});
   const result=await api(`/api/hotels?${params}`);
+  if(revision!==tripContextRevision){notice('voiceStatus','你已修改住处或条件，旧查询结果没有套用。请按当前条件继续。');return;}
   state.voiceCandidates=result.items||[];
   const target=normalizeHotelName(fields.hotel_name);
   const exact=fields.hotel_name?result.items.filter(item=>normalizeHotelName(item.name)===target):[];
@@ -264,15 +371,18 @@ async function planFromVoice(text,refining=false){
   text=String(text||'').trim();const statusId=refining?'refineStatus':'voiceStatus';
   if(text.length<4){notice(statusId,'请先说说住哪里、谁同行，以及你想怎么吃。',true);return;}
   if(voiceBusy)return;voiceBusy=true;$('understandTrip').disabled=true;$('refinePlan').disabled=true;
+  const revision=tripContextRevision;
   notice(statusId,'正在理解你的需求…');
   try{
     const data=await api('/api/understand',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
+    if(revision!==tripContextRevision){notice(statusId,'你已修改住处或输入，刚才的识别结果没有覆盖新条件。文字已保留，可重新提交。');return;}
     if(state.demo){
       state.demo=false;state.hotel=null;state.evidence=null;state.hotelPolicy=null;state.savedPlaces=[];state.nearby=[];
       mapState.selectedId=null;mapState.draftId=null;resetMapView();expandNearbyMap(false);
       for(const id of ['roomOnly','roomWith','outsideBudget','breakfastCount','breakfastDays','mealRights'])$(id).value='';
       $('comparable').checked=false;$('mealRightType').value='unknown';$('selectedPanel').classList.add('hidden');
       $('planSection').classList.add('hidden');$('nearbySection').classList.add('hidden');notice('demoNotice','');
+      quoteBook=setQuoteContext(quoteBook,currentQuoteContext(),{clearDemo:true});
     }
     applyVoiceFields(data.fields);voiceSummary(data);
     const chosen=Number(data.fields.hotel_selection_index);
@@ -308,10 +418,12 @@ async function toWavDataUrl(blob){
   return 'data:audio/wav;base64,'+btoa(binary);
 }
 async function submitAudio(blob,target){
+  const revision=tripContextRevision;
   const statusId=target==='refine'?'refineStatus':'voiceStatus';notice(statusId,'正在转写你说的话…');
   const audio=await toWavDataUrl(blob);if(audio.length>6_000_000)throw new Error('录音太大，请缩短到90秒以内');
   const result=await api('/api/transcribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({audio})});
   const input=target==='refine'?'refineText':'tripVoiceText';$(input).value=result.transcript;
+  if(revision!==tripContextRevision){notice(statusId,'转写文字已保留。你刚修改了条件，请核对文字后重新提交，旧录音没有覆盖新安排。');return;}
   await planFromVoice(result.transcript,target==='refine');
 }
 async function toggleRecord(target){
@@ -453,6 +565,8 @@ Promise.all([api('/api/city-food'),fetch('/city-dining.json').then(response=>res
 
 $('searchForm').addEventListener('submit', async event => {
   event.preventDefault();
+  const revision=++hotelSearchRevision;hotelSelectionRevision++;tripContextRevision++;
+  if(state.demo){quoteBook=setQuoteContext(quoteBook,quoteBook.context,{clearDemo:true});updateQuoteForm();renderQuoteStatus('已退出示例。请核对这次真实预订的价格与权益。');}
   state.hotel = null; state.evidence = null; state.hotelPolicy=null; state.nearby = []; state.savedPlaces=[]; state.demo=false;notice('demoNotice','');explainRevision++;nearbyRevision++;
   $('selectedPanel').classList.add('hidden'); $('planSection').classList.add('hidden'); $('nearbySection').classList.add('hidden');
   const q = $('query').value.trim();
@@ -461,6 +575,7 @@ $('searchForm').addEventListener('submit', async event => {
   try {
     const params = new URLSearchParams({q, city: cityName(), checkIn: $('checkIn').value, checkOut: $('checkOut').value});
     const result = await api(`/api/hotels?${params}`);
+    if(revision!==hotelSearchRevision)return;
     notice('searchNotice', result.limited_mode
       ? `找到 ${result.items.length} 家候选酒店，先核对名称和地址。准确房型价格请打开预订页或上传截图。`
       : `这次查询返回 ${result.items.length} 条候选；请按名称和地址确认酒店。`, result.limited_mode);
@@ -470,12 +585,15 @@ $('searchForm').addEventListener('submit', async event => {
       card.innerHTML = `<div class="hotel-photo" ${item.image ? `style="background-image:url('${escapeHtml(item.image)}')"` : ''}></div><div class="hotel-body"><div class="hotel-tags"><span class="hotel-tag">飞猪候选</span><span class="hotel-tag muted">${item.reviewed_id ? '有酒店餐饮信息' : '可找周边餐馆'}</span></div><strong>${escapeHtml(item.name)}</strong><p>${escapeHtml(item.address || '地址未提供')}</p><div class="hotel-card-footer"><span>${escapeHtml(item.star || '酒店')}</span><b>${escapeHtml(item.price_band || '查价格')}</b></div></div>`;
       card.addEventListener('click', () => selectHotel(item)); $('hotelResults').append(card);
     });
-  } catch (error) { notice('searchNotice', error.message, true); }
+  } catch (error) { if(revision===hotelSearchRevision)notice('searchNotice', error.message, true); }
 });
 
 async function selectHotel(item) {
+  const revision=++hotelSelectionRevision;
+  tripContextRevision++;
   selectedBreakfastDates.clear();breakfastDateSignature='';
   state.hotel = item; state.evidence = null; state.hotelPolicy=null; state.nearby = [];state.savedPlaces=[];mealSelections.clear();explainRevision++;nearbyRevision++;
+  changeQuoteContext(item,{leaveDemo:!item.demo});state.demo=Boolean(item.demo);
   mapState.selectedId=null;mapState.draftId=null;resetMapView();expandNearbyMap(false);
   $('selectedName').textContent = item.name; $('selectedAddress').textContent = item.address || '飞猪未提供地址';
   $('bookingLink').href = safeUrl(item.booking_url);
@@ -488,16 +606,17 @@ async function selectHotel(item) {
     : item.address_conflict ? `注意：飞猪列表地址与酒店官网不一致；官网为「${item.official_address}」。请以实际预订页和酒店确认。` : '';
   $('selectedPanel').classList.remove('hidden');
   if (item.reviewed_id) {
-    try { state.evidence = await api(`/api/evidence/${encodeURIComponent(item.reviewed_id)}`); }
-    catch (error) { $('selectedWarnings').textContent += ` 餐饮证据读取失败：${error.message}`; }
+    try { const evidence=await api(`/api/evidence/${encodeURIComponent(item.reviewed_id)}`);if(revision!==hotelSelectionRevision)return false;state.evidence=evidence; }
+    catch (error) { if(revision!==hotelSelectionRevision)return false;$('selectedWarnings').textContent += ` 餐饮证据读取失败：${error.message}`; }
   }
-  try{state.hotelPolicy=(await api(`/api/hotel-policy?${new URLSearchParams({name:item.name})}`)).policy;}
-  catch{state.hotelPolicy=null;}
+  try{const policy=(await api(`/api/hotel-policy?${new URLSearchParams({name:item.name})}`)).policy;if(revision!==hotelSelectionRevision)return false;state.hotelPolicy=policy;}
+  catch{if(revision!==hotelSelectionRevision)return false;state.hotelPolicy=null;}
+  if(revision!==hotelSelectionRevision)return false;
   $('nearbySection').classList.remove('hidden');
   $('tripSummary').textContent=`${item.name} · ${nights()} 晚，按你们的习惯来安排。`;
   document.querySelectorAll('#nearbySection .chip').forEach(chip=>chip.classList.toggle('active',chip.dataset.keyword==='早餐'));
   document.querySelectorAll('[data-map-keyword]').forEach(button=>button.classList.toggle('active',button.dataset.mapKeyword==='早餐'));
-  showPane('preferences');loadNearby('早餐');
+  showPane('preferences');loadNearby('早餐');return true;
 }
 
 $('locateHotel').addEventListener('click', async () => {
@@ -698,28 +817,93 @@ async function loadNearby(keyword) {
   }catch(error){if(revision===nearbyRevision)notice('nearbyNotice','附近餐馆暂时没查到：'+error.message,true);}
 }
 
+function clearBookingCaptures(){for(const capture of bookingCaptures)if(capture.previewUrl)URL.revokeObjectURL(capture.previewUrl);bookingCaptures.splice(0);}
+function renderBookingCaptures() {
+  const panel=$('captureReview');panel.replaceChildren();panel.classList.toggle('hidden',!bookingCaptures.length);
+  if(!bookingCaptures.length)return;
+  const heading=document.createElement('div');heading.className='capture-heading';
+  heading.innerHTML='<h3>逐张核对，把价格放对位置</h3><p>每张截图独立保留。选择采用哪一档后，再确认房型、退改和其他权益是否相同。</p>';
+  const clear=document.createElement('button');clear.type='button';clear.className='text-button';clear.textContent='移除截图资料';
+  clear.addEventListener('click',()=>{
+    captureRevision++;clearBookingCaptures();state.extracted=null;$('screenshot').disabled=false;
+    for(const slot of ['A','B'])if(quoteBook.quotes[slot]?.source.kind==='screenshot')quoteBook=removeQuote(quoteBook,slot);
+    updateQuoteForm();renderQuoteStatus();renderBookingCaptures();$('extractStatus').textContent='截图资料已移除。';
+  });heading.append(clear);panel.append(heading);
+  for(const capture of bookingCaptures){
+    const card=document.createElement('article');card.className='capture-card';
+    const f=capture.fields, fieldLabels={hotel_name:'酒店',check_in:'入住',check_out:'退房',room_type:'房型',cancellation_rule:'退改',other_terms:'其他权益'};
+    card.innerHTML=`<div class="capture-title"><strong>${escapeHtml(capture.label)}</strong><span>${capture.error?'未读完':'已读取 · 等你核对'}</span></div><dl>${Object.entries(fieldLabels).map(([key,label])=>`<div><dt>${label}</dt><dd>${escapeHtml(f[key]||'图中未明确')}</dd></div>`).join('')}</dl><div class="capture-prices"><span>不含早 <b>${typeof f.room_only_total==='number'?money(f.room_only_total):'未读到全程价'}</b></span><span>含早 <b>${typeof f.breakfast_room_total==='number'?money(f.breakfast_room_total):'未读到全程价'}</b></span></div>`;
+    if(capture.previewUrl){const link=document.createElement('a');link.href=capture.previewUrl;link.target='_blank';link.rel='noopener noreferrer';link.className='capture-preview';const image=document.createElement('img');image.src=capture.previewUrl;image.alt=capture.label+'原图，仅保存在本次页面';link.append(image);card.append(link);}
+    if(capture.error){const error=document.createElement('p');error.className='notice warn';error.textContent=capture.error;card.append(error);panel.append(card);continue;}
+    const correction=document.createElement('details');correction.className='capture-correction';
+    correction.innerHTML='<summary>酒店或日期识别有误？点这里更正</summary><div class="form-grid"></div>';
+    for(const [key,label,type] of [['city','城市','text'],['hotel_name','酒店名称','text'],['check_in','入住','date'],['check_out','退房','date']]){
+      const labelEl=document.createElement('label');labelEl.className='field';const text=document.createElement('span');text.textContent=label;
+      const input=document.createElement('input');input.type=type;input.value=capture.reviewed[key]||'';input.setAttribute('aria-label',capture.label+' '+label);
+      input.addEventListener('input',()=>{capture.reviewed[key]=input.value;capture.confirmed=false;checkbox.checked=false;});labelEl.append(text,input);correction.querySelector('.form-grid').append(labelEl);
+    }card.append(correction);
+    const confirm=document.createElement('label');confirm.className='check-row';const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=Boolean(capture.confirmed);
+    const text=document.createElement('span');text.textContent=`我已核对：这张图属于${state.hotel?.name||'待选酒店'}、${$('checkIn').value}至${$('checkOut').value}，采用的金额为人民币全程总价。`;
+    checkbox.addEventListener('change',()=>{capture.confirmed=checkbox.checked;});confirm.append(checkbox,text);card.append(confirm);
+    const actions=document.createElement('div');actions.className='capture-actions';
+    const status=document.createElement('p');status.className='capture-status';status.setAttribute('aria-live','polite');
+    for(const [slot,key,label] of [['A','room_only_total','采用为不含早 A'],['B','breakfast_room_total','采用为含早 B']]){
+      if(typeof f[key]!=='number')continue;
+      const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=label;
+      button.addEventListener('click',()=>{
+        if(!state.hotel){status.textContent='请先选择并核对酒店位置。';return;}
+        if(!capture.confirmed){status.textContent='请先核对这张截图的酒店、日期和全程总价。';return;}
+        if(f.price_basis&& !['total','unknown'].includes(f.price_basis)){status.textContent='图片显示的不是全程总价，请在下方填写核对后的入住全程房费。';return;}
+        if(f.currency&&!['CNY','RMB','人民币','¥','￥'].includes(f.currency)){status.textContent='图片币种不是人民币，请先核对换算后的全程总价。';return;}
+        const source={id:capture.id,kind:'screenshot',label:capture.label};
+        const original=quoteInputFromExtraction(f,{slot,source});
+        const input=quoteInputFromExtraction({...f,...capture.reviewed},{slot,source});
+        const bound=bindQuoteInputToContext(input,currentQuoteContext());
+        if(!bound.ok){status.textContent=bound.reasons.map(reason=>reason.message).join('；')+'。请先更正识别信息或修改本次行程。';return;}
+        bound.input.contextEvidence.original=original.context;
+        bound.input.fields.priceBasis='total';bound.input.fields.currency='CNY';
+        quoteBook=confirmQuote(replaceQuote(quoteBook,slot,bound.input),slot);
+        state.demo=false;notice('demoNotice','');updateQuoteForm();renderQuoteStatus();
+        $('planSection').classList.add('hidden');status.textContent=`${capture.label}已用于套餐 ${slot}。请继续核对两档的房型、退改和其他权益。`;
+      });actions.append(button);
+    }
+    if(!actions.children.length)status.textContent='这张图未识别到可用的全程价格。资料保留在这里，价格可以在下方手动填写。';
+    card.append(actions,status);panel.append(card);
+  }
+}
 $('screenshot').addEventListener('change',async event=>{
   const files=[...event.target.files||[]];if(!files.length)return;
-  if(files.length>3||files.some(file=>file.size>5_000_000)){$('extractStatus').textContent='最多上传 3 张，每张不超过 5 MB。';return;}
-  let merged={};const conflicts=[];
+  if(files.length>3||files.some(file=>file.size>5_000_000)){$('extractStatus').textContent='最多上传 3 张，每张不超过 5 MB。';event.target.value='';return;}
+  const revision=++captureRevision;tripContextRevision++;clearBookingCaptures();state.extracted=null;
+  for(const slot of ['A','B'])quoteBook=removeQuote(quoteBook,slot);
+  state.demo=false;notice('demoNotice','');updateQuoteForm();$('planSection').classList.add('hidden');renderQuoteStatus('正在读取新截图，旧价格已移出比较。');
+  $('screenshot').disabled=true;
   try{
     for(const [index,file] of files.entries()){
+      if(revision!==captureRevision)return;
       $('extractStatus').textContent=`正在读第 ${index+1}/${files.length} 张截图…`;
-      const image=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file);});
-      const result=await api('/api/extract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image})});
-      for(const [key,value] of Object.entries(result.fields)){if(value===null)continue;if(merged[key]!==undefined&&merged[key]!==value)conflicts.push(key);merged[key]=value;}
+      const capture={id:`capture-${++captureSequence}`,label:`截图 ${index+1}`,fields:{},reviewed:{},confirmed:false,previewUrl:URL.createObjectURL(file)};bookingCaptures.push(capture);
+      try{
+        const image=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file);});
+        const result=await api('/api/extract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image})});
+        if(revision!==captureRevision)return;
+        capture.fields=result.fields;capture.reviewed=Object.fromEntries(['city','hotel_name','check_in','check_out'].map(key=>[key,result.fields[key]||'']));
+      }catch(error){capture.error='这张截图没有读完：'+error.message+'。其余截图仍会独立保留。';}
+      if(revision!==captureRevision)return;
+      renderBookingCaptures();
     }
-    state.extracted=merged;state.demo=false;notice('demoNotice','');
-    if(merged.city){const city=String(merged.city).replace(/市$/,'');if([...$('city').options].some(option=>option.value===city))$('city').value=city;}
-    if(merged.hotel_name)$('query').value=merged.hotel_name;
-    if(/^\d{4}-\d{2}-\d{2}$/.test(merged.check_in||''))$('checkIn').value=merged.check_in;
-    if(/^\d{4}-\d{2}-\d{2}$/.test(merged.check_out||''))$('checkOut').value=merged.check_out;
-    for(const [key,id] of [['room_only_total','roomOnly'],['breakfast_room_total','roomWith'],['breakfast_count_per_night','breakfastCount'],['buffet_rights','mealRights']]){const value=merged[key];if(typeof value==='number'&&Number.isFinite(value))$(id).value=value;}
-    if(['lunch','dinner','either'].includes(merged.buffet_meal_type))$('mealRightType').value=merged.buffet_meal_type;
-    $('comparable').checked=false;
-    $('extractStatus').textContent=`已读出可见信息${merged.platform?' · '+(/携程|ctrip|trip\.com/i.test(merged.platform)?'订房平台截图':merged.platform):''}${merged.room_type?' · '+merged.room_type:''}。请点“找酒店”确认位置，再核对价格与份数。${conflicts.length?'多张图片存在不同值，已填最后一张可见值，请检查。':''}`;
-  }catch(error){$('extractStatus').textContent='截图暂时没读完：'+error.message+'。也可以直接填写价格。';}
-  event.target.value='';
+    state.extracted=bookingCaptures.map(capture=>capture.fields);
+    const first=bookingCaptures.find(capture=>!capture.error)?.fields;
+    if(first&&!state.hotel){
+      if(first.city){const city=String(first.city).replace(/市$|特别行政区$/,'');if([...$('city').options].some(option=>option.value===city)&&$('city').value!==city){$('city').value=city;$('city').dispatchEvent(new Event('change'));}}
+      if(first.hotel_name)$('query').value=first.hotel_name;
+      if(/^\d{4}-\d{2}-\d{2}$/.test(first.check_in||''))$('checkIn').value=first.check_in;
+      if(/^\d{4}-\d{2}-\d{2}$/.test(first.check_out||''))$('checkOut').value=first.check_out;
+      changeQuoteContext(null);
+    }
+    $('extractStatus').textContent=`已保留 ${bookingCaptures.length} 张独立截图资料。${state.hotel?'请在下一步逐张核对并采用 A/B 套餐价格。':'先找酒店并核对位置，再逐张核对和采用价格。'}`;
+    if(state.hotel)showPane('preferences');
+  }finally{if(revision===captureRevision)$('screenshot').disabled=false;event.target.value='';}
 });
 
 function number(id) { const value = $(id).value; return value === '' ? null : Number(value); }
@@ -732,7 +916,7 @@ function stays() {
 
 function breakfastUseDays(){const n=nights(),value=number('breakfastDays');return value===null?n:Math.min(n,Math.max(0,Math.floor(value)));}
 function breakfastDecision() {
-  return compareBreakfast({plain:number('roomOnly'),included:number('roomWith'),adults:number('adults'),children:number('children'),count:number('breakfastCount'),days:breakfastUseDays(),nights:nights(),budget:number('outsideBudget'),comparable:$('comparable').checked});
+  return compareBreakfast({plain:number('roomOnly'),included:number('roomWith'),adults:number('adults'),children:number('children'),count:number('breakfastCount'),days:breakfastUseDays(),nights:nights(),budget:number('outsideBudget'),comparable:quoteAssessment(quoteBook).comparable});
 }
 function syncBreakfastDates() {
   const dates=breakfastDates($('checkIn').value,$('checkOut').value),days=breakfastUseDays();
@@ -791,8 +975,8 @@ function breakfastAssessment() {
   const timeNote=state.hotelPolicy?'':departure?opening&&departure<=opening.start_time?`<p>你计划 ${escapeHtml(departure)} 出门，资料里的早餐 ${escapeHtml(opening.start_time)} 才开始；这天可能赶不上。先向酒店确认打包早餐或调整可用天数。</p>`:opening?`<p>资料中的早餐时段 ${escapeHtml(opening.start_time)}–${escapeHtml(opening.end_time)}，你 ${escapeHtml(departure)} 出门。请给用餐留出时间，并确认入住日的实际时段。</p>`:'<p>已考虑你填写的出门时间，但酒店早餐时段还不明确，订前先问是否来得及。</p>':'';
   if(plain===null||withBreakfast===null)return {headline:'补上两档价格，就能算清差价',html:'<p>填同日期、同房型的不含早与含早全程总价。只有一档价格时，我们先帮你找吃饭选择。</p>'+timeNote};
   const delta=withBreakfast-plain;if(delta<0)return {headline:'含早反而更便宜，先核对条款',html:'<p>价格可能混有其他促销、房型或取消规则，确认后再比较。</p>'};
+  if(!quoteAssessment(quoteBook).comparable)return {headline:'先核对这两档价格能否比较',html:`<p>两套餐全程价差 ${money(delta)}，当前不能单独归为早餐费用。</p><p>`+escapeHtml(quoteAssessment(quoteBook).reasons[0]?.message||'请确认房型及其他条件相同')+'。两档条件不同时，差额不能全部算作早餐钱。</p>'+timeNote};
   const detail=`<p>含早全程多 ${money(delta)}，平均每晚 ${money((delta/n).toFixed(2))}。</p>`;
-  if(!$('comparable').checked)return {headline:'价差算出来了，先确认房型可比',html:detail+'<p>两档的房型、取消规则或其他权益不同时，差额不能全部算作早餐钱。</p>'+timeNote};
   if(days===0)return {headline:'这趟用不上酒店早餐',html:detail+'<p>你填了 0 天能使用酒店早餐。按目前安排，增加含早权益没有帮你解决用餐；可以先选不含早，再安排外出早餐。</p>'+timeNote};
   if(count===null||count===0)return {headline:'先问每晚给几份早餐',html:detail+'<p>还不知道份数，无法判断同行人是否覆盖。</p>'+timeNote};
   if(count<adults)return {headline:'含早份数不够所有成人',html:detail+`<p>${adults} 名成人，每天只有 ${count} 份；还需要补问额外早餐价。</p>`+timeNote};
@@ -807,7 +991,7 @@ function breakfastAssessment() {
   return {headline,html:detail+actual+comparison+`<p>${preferenceNote}</p>`+timeNote};
 }
 function renderOverview(breakfast) {
-  const n=nights(),days=breakfastUseDays(),delta=number('roomOnly')!==null&&number('roomWith')!==null?number('roomWith')-number('roomOnly'):null;
+  const n=nights(),days=breakfastUseDays(),delta=quoteAssessment(quoteBook).premium;
   const decision=breakfastDecision();
   const per=decision.perUse!==undefined?money(decision.perUse.toFixed(2)):'暂不能比较';
   const closest=state.nearby.filter(place=>place.route).sort((a,b)=>a.route.minutes-b.route.minutes)[0];
@@ -986,7 +1170,7 @@ async function loadPlanExplanation(breakfast, buffet) {
     nights: nights(), breakfast_use_days: breakfastUseDays(), morning_departure: $('morningDeparture').value, adults: number('adults'), children: number('children'),
     breakfast_count_per_night: number('breakfastCount'),
     room_only_total: number('roomOnly'), breakfast_room_total: number('roomWith'),
-    outside_budget_per_person: number('outsideBudget'), same_room_terms: $('comparable').checked,
+    outside_budget_per_person: number('outsideBudget'), same_room_terms: quoteAssessment(quoteBook).comparable,
     hotel_breakfast_result: breakfast.headline, hotel_buffet_result: buffet.headline,
     hotel_buffet_official_evidence: Boolean(state.evidence?.offers.some(offer => offer.offer_type === 'official_price')),
     buffet_rights: number('mealRights'),

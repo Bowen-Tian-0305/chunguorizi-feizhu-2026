@@ -2,6 +2,7 @@ import http from 'node:http';
 import {createModelQuota} from './model-quota.mjs';
 import {createRemoteModelQuota} from './remote-model-quota.mjs';
 import {validateWavAudio} from './wav-audio.mjs';
+import {sanitizeBookingExtraction} from './booking-extraction.mjs';
 import { readFile, stat } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -300,7 +301,7 @@ async function extractScreenshot(dataUrl) {
       messages: [
         {role: 'system', content: '你只提取图片里明确可见的订房信息，返回 JSON。不要猜测酒店、日期、金额、权益或人数。看不清就给 null。不要输出姓名、电话、订单号、身份证号或其他个人信息。'},
         {role: 'user', content: [
-          {type: 'text', text: '请输出 JSON 字段：platform, city, room_type, cancellation_rule, hotel_name, check_in, check_out, nights, room_only_total, breakfast_room_total, breakfast_count_per_night, buffet_rights, buffet_meal_type, notes。金额为人民币数字；buffet_rights 只能是使用次数整数；buffet_meal_type 只能是 lunch、dinner、either 或 null。截图可以来自飞猪或其他预订平台。只从图片原文提取，未知填 null。单晚价不能当全程总价；单一含早房价不能当作含早与不含早的两档价。'},
+          {type: 'text', text: '请输出 JSON 字段：platform, city, hotel_address, room_type, cancellation_rule, payment_terms, other_terms, occupancy, room_count, currency, price_basis, hotel_name, check_in, check_out, nights, room_only_total, breakfast_room_total, breakfast_count_per_night, buffet_rights, buffet_meal_type。currency只写图中明确币种，人民币写CNY；price_basis为total（明确入住全程总价）、night（单晚）或unknown。other_terms只记录早餐以外的额外权益，不能把早餐差异写进此字段；未知填null。金额为数字；buffet_rights 只能是使用次数整数；buffet_meal_type 只能是 lunch、dinner、either 或 null。截图可以来自飞猪或其他预订平台。只从图片原文提取，未知填 null。单晚价不能当全程总价；单一含早房价不能当作含早与不含早的两档价。'},
           {type: 'image_url', image_url: {url: dataUrl}}
         ]}
       ]
@@ -311,20 +312,7 @@ async function extractScreenshot(dataUrl) {
   let content = payload.choices?.[0]?.message?.content || '{}';
   content = content.replace(/^```(?:json)?\s*|\s*```$/g, '');
   const extracted = JSON.parse(content);
-  const allowed = ['platform', 'city', 'room_type', 'cancellation_rule', 'hotel_name', 'check_in', 'check_out', 'nights', 'room_only_total',
-    'breakfast_room_total', 'breakfast_count_per_night', 'buffet_rights', 'buffet_meal_type'];
-  const fields = Object.fromEntries(allowed.map(k => [k, extracted[k] ?? null]));
-  for (const field of ['room_only_total', 'breakfast_room_total', 'breakfast_count_per_night', 'nights']) {
-    const value = fields[field];
-    fields[field] = typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null;
-  }
-  if (typeof fields.buffet_rights === 'string') {
-    const match = fields.buffet_rights.match(/(?:^|[^\d])(\d{1,2})\s*次/);
-    fields.buffet_rights = match ? Number(match[1]) : null;
-  }
-  if (!Number.isInteger(fields.buffet_rights) || fields.buffet_rights < 0 || fields.buffet_rights > 20)
-    fields.buffet_rights = null;
-  if (!['lunch', 'dinner', 'either'].includes(fields.buffet_meal_type)) fields.buffet_meal_type = null;
+  const fields = sanitizeBookingExtraction(extracted);
   return {fields,
     model: payload.model, usage: payload.usage || null,
     note: '请核对后再使用；原图未写明的权益不会自动补齐。'};

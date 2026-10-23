@@ -5,7 +5,7 @@
   "scripts": {
     "data": "python3 scripts/build_evidence.py",
     "start": "node server.mjs",
-    "test": "node --test scripts/breakfast-decision.test.mjs"
+    "test": "node --test scripts/*.test.mjs"
   },
-  "version": "1.1.2"
+  "version": "1.1.3"
 }
