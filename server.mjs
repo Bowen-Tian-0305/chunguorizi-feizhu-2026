@@ -1,8 +1,10 @@
 import http from 'node:http';
-import {createModelQuota} from './model-quota.mjs';
+import {createModelQuota,quotaResetTimes} from './model-quota.mjs';
 import {createRemoteModelQuota} from './remote-model-quota.mjs';
 import {validateWavAudio} from './wav-audio.mjs';
 import {sanitizeBookingExtraction} from './booking-extraction.mjs';
+import {runMealRefine} from './meal-refine.mjs';
+import {createPublicQueryCache} from './request-cache.mjs';
 import { readFile, stat } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -16,6 +18,7 @@ const PUBLIC = path.join(ROOT, 'public');
 const evidence = JSON.parse(await readFile(path.join(ROOT, 'data/evidence.json'), 'utf8'));
 const ranking = JSON.parse(await readFile(path.join(ROOT, 'data/ranking.json'), 'utf8'));
 const hotelPolicies = JSON.parse(await readFile(path.join(ROOT, 'data/hotel_policy.json'), 'utf8'));
+const mealPolicies = JSON.parse(await readFile(path.join(ROOT, 'data/hotel_meal_policies.json'), 'utf8'));
 const officialBreakfast = JSON.parse(await readFile(path.join(ROOT, 'data/hotel_breakfast_official.json'), 'utf8'));
 const breakfastSpots = JSON.parse(await readFile(path.join(ROOT, 'data/breakfast_spots.json'), 'utf8'));
 const demoHotelSnapshot = JSON.parse(await readFile(path.join(ROOT, 'data/demo_hotel.json'), 'utf8'));
@@ -24,7 +27,7 @@ const hotelsById = new Map(evidence.hotels.map(hotel => [hotel.hotel_id, hotel])
 const venuesById = new Map(evidence.venues.map(venue => [venue.venue_id, venue]));
 const sourcesById = new Map(evidence.sources.map(source => [source.source_id, source]));
 const cityVenues = evidence.venues.filter(venue => venue.venue_id.startsWith('CV'));
-const cache = new Map();
+const publicQueryCache = createPublicQueryCache({assertAccess: assertLiveQueryAccess});
 const reserveModelCall = process.env.MODEL_QUOTA_BACKEND === 'supabase' ? createRemoteModelQuota() : createModelQuota();
 const reserveLiveQuery = createModelQuota({
   ...process.env,
@@ -43,24 +46,42 @@ function json(res, status, body) {
   res.end(JSON.stringify(body));
 }
 
+function visitorAddress(req) {
+  const forwarded = process.env.TRUST_PROXY === '1' ? clean(req.headers['x-forwarded-for'], 200).split(',')[0].trim() : '';
+  return forwarded || req.socket.remoteAddress || 'unknown';
+}
+
 function clean(value, max = 100) {
   return String(value || '').trim().slice(0, max);
 }
 
 async function limitModelCalls(req) {
-  const forwarded = process.env.TRUST_PROXY === '1' ? clean(req.headers['x-forwarded-for'], 200).split(',')[0].trim() : '';
-  await reserveModelCall(forwarded || req.socket.remoteAddress || 'unknown');
+  await reserveModelCall(visitorAddress(req));
 }
 
 function limitLiveQueries(req) {
-  const forwarded = process.env.TRUST_PROXY === '1' ? clean(req.headers['x-forwarded-for'], 200).split(',')[0].trim() : '';
-  try { reserveLiveQuery(forwarded || req.socket.remoteAddress || 'unknown'); }
+  try { reserveLiveQuery(visitorAddress(req)); }
   catch (error) {
     const message = error.status === 429
       ? '今天的实时酒店与周边查询次数已用完，仍可使用示例方案和已收录餐饮资料。'
       : '实时酒店与周边查询暂时关闭，仍可使用示例方案和已收录餐饮资料。';
     throw Object.assign(new Error(message), {status:error.status || 503});
   }
+}
+
+function assertLiveQueryAccess() {
+  if (process.env.REALTIME_QUERY_ENABLED === '0' || (!process.env.MODEL_QUOTA_FILE && process.env.NODE_ENV === 'production'))
+    throw Object.assign(new Error('实时酒店与周边查询暂时关闭，仍可使用示例方案和已收录餐饮资料。'), {status:503});
+}
+
+function cachedPublicQuery(req, kind, params, load) {
+  return publicQueryCache.read(kind, params, () => {
+    // Check local prerequisites before reserving a billable upstream attempt.
+    if (kind !== 'hotels' && !process.env.AMAP_KEY)
+      throw Object.assign(new Error('未配置高德 Web 服务 Key'), {status:503});
+    limitLiveQueries(req);
+    return load();
+  });
 }
 
 function norm(value) {
@@ -126,9 +147,6 @@ function cityFood() {
 }
 
 async function searchFlyai(query, checkIn, checkOut, city = "杭州") {
-  const cacheKey = JSON.stringify([query, checkIn, checkOut, city]);
-  const cached = cache.get(cacheKey);
-  if (cached && Date.now() - cached.time < 5 * 60_000) return cached.value;
   const args = ['search-hotel', '--dest-name', city];
   if (query) args.push('--key-words', query);
   if (checkIn) args.push('--check-in-date', checkIn);
@@ -154,7 +172,6 @@ async function searchFlyai(query, checkIn, checkOut, city = "杭州") {
       };
     })
   };
-  cache.set(cacheKey, {time: Date.now(), value});
   return value;
 }
 
@@ -177,7 +194,9 @@ function hotelPolicyFor(name) {
   const items=hotelPolicies.hotels.filter(item=>candidateNames.includes(norm(item.name)));
   if(items.length!==1)return null;
   const official=officialBreakfast.hotels.find(item=>item.policy_id===items[0].id);
-  return {...items[0],official_breakfast:official?{...official,checked_at:officialBreakfast.checked_at}:null};
+  const mealPolicy=mealPolicies.hotels.find(item=>item.policyId===items[0].id);
+  return {...items[0],official_breakfast:official?{...official,checked_at:officialBreakfast.checked_at}:null,
+    meal_policy:mealPolicy?{...mealPolicy,sources:mealPolicies.sources}:null};
 }
 
 async function amapRequest(endpoint, params) {
@@ -186,6 +205,7 @@ async function amapRequest(endpoint, params) {
   const url = new URL(`https://restapi.amap.com${endpoint}`);
   Object.entries({...params, key}).forEach(([k, v]) => url.searchParams.set(k, String(v)));
   const response = await fetch(url, {signal: AbortSignal.timeout(12_000)});
+  if (!response.ok) throw Object.assign(new Error('高德查询暂时不可用，请稍后重试。'), {status:502});
   const payload = await response.json();
   if (payload.status !== '1') throw Object.assign(new Error(`高德返回：${payload.info || '未知错误'}`), {status: 502});
   return payload;
@@ -467,11 +487,16 @@ async function serveStatic(res, pathname) {
 http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://127.0.0.1:${port}`);
-    if (req.method === 'GET' && ['/api/hotels', '/api/nearby', '/api/geocode', '/api/route'].includes(url.pathname)) limitLiveQueries(req);
     if (req.method === 'GET' && url.pathname === '/api/health')
       return json(res, 200, {ok: true, reviewed_hotels: evidence.hotels.length,
         verified_venues: evidence.venues.length, amap_ready: Boolean(process.env.AMAP_KEY),
         bailian_ready: Boolean(await bailianKey())});
+    if (req.method === 'GET' && url.pathname === '/api/quota') {
+      const now=Date.now(),address=visitorAddress(req);
+      const resetsAt=quotaResetTimes(now);
+      const [modelCalls,liveQueries]=await Promise.all([reserveModelCall.status(address,now),reserveLiveQuery.status(address,now)]);
+      return json(res,200,{unit:'calls',countingBasis:'reserved_attempts',timeZone:'Asia/Shanghai',modelCalls,liveQueries,resetsAt,accounting:'按请求调用次数计，不按方案数计。语音转写、需求提取、截图提取、方案解读和单餐修改各占一次；额度预留后失败也计次。实时查询在缓存未命中且通过前置校验后预留一次，预留后失败也计次；缓存命中不计次。'});
+    }
     if (req.method === 'GET' && url.pathname === '/api/cities') return json(res, 200, await cities());
     if (req.method === 'GET' && url.pathname === '/api/demo') return json(res, 200, await demo());
     if (req.method === 'GET' && url.pathname === '/api/hotels') {
@@ -481,7 +506,8 @@ http.createServer(async (req, res) => {
       if ((checkIn && !/^\d{4}-\d{2}-\d{2}$/.test(checkIn)) ||
           (checkOut && !/^\d{4}-\d{2}-\d{2}$/.test(checkOut)))
         return json(res, 400, {error: '日期格式应为 YYYY-MM-DD'});
-      return json(res, 200, await searchFlyai(q, checkIn, checkOut, clean(url.searchParams.get("city"), 30) || "杭州"));
+      const city = clean(url.searchParams.get('city'), 30) || '杭州';
+      return json(res, 200, await cachedPublicQuery(req, 'hotels', {query:q, checkIn, checkOut, city}, () => searchFlyai(q, checkIn, checkOut, city)));
     }
     if (req.method === 'GET' && url.pathname.startsWith('/api/evidence/')) {
       const found = reviewedHotel(url.pathname.split('/').pop());
@@ -495,15 +521,28 @@ http.createServer(async (req, res) => {
       const lng = coord(url.searchParams.get('lng'));
       const lat = coord(url.searchParams.get('lat'));
       if (!lng || !lat) return json(res, 400, {error: '酒店坐标不可用'});
-      return json(res, 200, await nearby(lng, lat, clean(url.searchParams.get('keyword'), 25), clean(url.searchParams.get('city'), 30) || '杭州'));
+      const keyword = clean(url.searchParams.get('keyword'), 25), city = clean(url.searchParams.get('city'), 30) || '杭州';
+      return json(res, 200, await cachedPublicQuery(req, 'nearby', {lng, lat, keyword, city}, () => nearby(lng, lat, keyword, city)));
     }
-    if (req.method === 'GET' && url.pathname === '/api/geocode')
-      return json(res, 200, await geocodeHotel(clean(url.searchParams.get('address'), 150), clean(url.searchParams.get('city'), 30) || '杭州'));
+    if (req.method === 'GET' && url.pathname === '/api/geocode') {
+      const address = clean(url.searchParams.get('address'), 150), city = clean(url.searchParams.get('city'), 30) || '杭州';
+      if (address.length < 6) return json(res, 400, {error:'请填写包含城市、区县、道路和门牌的酒店地址'});
+      return json(res, 200, await cachedPublicQuery(req, 'geocode', {address, city}, () => geocodeHotel(address, city)));
+    }
     if (req.method === 'GET' && url.pathname === '/api/route') {
       const coords = [url.searchParams.get('origin'), url.searchParams.get('destination')];
       if (!coords.every(c => /^\d{1,3}\.\d{1,6},\d{1,2}\.\d{1,6}$/.test(c || '')))
         return json(res, 400, {error: '路线坐标无效'});
-      return json(res, 200, await route(...coords));
+      const [origin, destination] = coords;
+      return json(res, 200, await cachedPublicQuery(req, 'route', {origin, destination}, () => route(origin, destination)));
+    }
+    if (req.method === 'POST' && url.pathname === '/api/meal-refine') {
+      const body=await readBody(req,20_000);
+      const result=await runMealRefine(body,{
+        reserve:()=>limitModelCalls(req),
+        generate:messages=>modelJson('qwen3.8-flash',messages,{temperature:0,enable_thinking:false,max_completion_tokens:300,response_format:{type:'json_object'}})
+      });
+      return json(res,200,result);
     }
     if (req.method === 'POST' && url.pathname === '/api/transcribe') {
       await limitModelCalls(req); const body=await readBody(req);

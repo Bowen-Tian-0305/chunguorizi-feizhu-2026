@@ -4,7 +4,7 @@ const positive = (value, fallback) => Number.isSafeInteger(Number(value)) && Num
 
 // Store only pseudonymous counters in Supabase. Never fall back to memory.
 export function createRemoteModelQuota(env=process.env, request=fetch) {
-  return async function reserve(address, now=Date.now()) {
+  async function reserve(address, now=Date.now()) {
     if (env.REALTIME_AI_ENABLED==='0') throw unavailable();
     try {
       const endpoint = new URL(env.SUPABASE_URL || '');
@@ -28,5 +28,8 @@ export function createRemoteModelQuota(env=process.env, request=fetch) {
       if(error.status===429) throw error;
       throw unavailable();
     }
-  };
+  }
+  // The hosted backend currently exposes only a reservation RPC. A read must never reserve.
+  reserve.status=async()=>({status:'unavailable',unit:'calls',remaining:null});
+  return reserve;
 }

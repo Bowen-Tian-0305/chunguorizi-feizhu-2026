@@ -1,11 +1,12 @@
 FROM node:22-bookworm-slim
 RUN npm install --global --no-audit --no-fund @fly-ai/flyai-cli@1.0.16
 WORKDIR /app
-COPY --chown=node:node server.mjs model-quota.mjs remote-model-quota.mjs wav-audio.mjs booking-extraction.mjs ./
+COPY --chown=node:node server.mjs model-quota.mjs remote-model-quota.mjs wav-audio.mjs booking-extraction.mjs request-cache.mjs meal-refine.mjs ./
 COPY --chown=node:node public ./public
 COPY --chown=node:node data/evidence.json ./data/evidence.json
 COPY --chown=node:node data/ranking.json ./data/ranking.json
 COPY --chown=node:node data/hotel_policy.json ./data/hotel_policy.json
+COPY --chown=node:node data/hotel_meal_policies.json ./data/hotel_meal_policies.json
 COPY --chown=node:node data/hotel_breakfast_official.json ./data/hotel_breakfast_official.json
 COPY --chown=node:node data/breakfast_spots.json ./data/breakfast_spots.json
 COPY --chown=node:node data/demo_hotel.json ./data/demo_hotel.json

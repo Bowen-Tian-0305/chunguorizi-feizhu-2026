@@ -1,0 +1,1246 @@
+{
+  "schema_version": "live-official-supplement/0.1.0",
+  "checked_on": "2026-10-23",
+  "timezone": "Asia/Shanghai",
+  "collection_method": "live_browser_accessibility_read_and_official_web_reader_cross_check",
+  "validity_note": "记录读取当天官网声明，未来具体入住日/成交价/套餐权益仍须匹配；不视为酒店承诺。",
+  "sources": [
+    {
+      "source_id": "L01",
+      "url": "https://www.shangri-la.com/cn/hangzhou/midtownshangrila/dining/restaurants/central-market/",
+      "title": "城中香格里拉美食汇中文餐厅页",
+      "publisher": "Shangri-La",
+      "source_type": "official_public_page",
+      "checked_on": "2026-10-23",
+      "access_status": "readable",
+      "access_method": "live_browser_and_web_reader",
+      "short_quote": "自助早餐（周一至周日）：人民币194元每位",
+      "published_at": null,
+      "valid_from": null,
+      "valid_to": null,
+      "observation_note": "读取日不是酒店对用户入住日的营业或权益确认。"
+    },
+    {
+      "source_id": "L02",
+      "url": "https://www.shangri-la.com/hangzhou/midtownshangrila/dining/restaurants/central-market/",
+      "title": "Central Market English restaurant page",
+      "publisher": "Shangri-La",
+      "source_type": "official_public_page",
+      "checked_on": "2026-10-23",
+      "access_status": "readable",
+      "access_method": "web_reader",
+      "short_quote": "up to 2 children",
+      "published_at": null,
+      "valid_from": null,
+      "valid_to": null,
+      "observation_note": "读取日不是酒店对用户入住日的营业或权益确认。"
+    },
+    {
+      "source_id": "L03",
+      "url": "https://www.marriott.com.cn/hotels/hghcy-courtyard-hangzhou-wulin/dining/",
+      "title": "武林万怡餐饮页",
+      "publisher": "Marriott",
+      "source_type": "official_public_page",
+      "checked_on": "2026-10-23",
+      "access_status": "readable",
+      "access_method": "live_browser_and_web_reader",
+      "short_quote": "周日 关闭",
+      "published_at": null,
+      "valid_from": null,
+      "valid_to": null,
+      "observation_note": "读取日不是酒店对用户入住日的营业或权益确认。"
+    },
+    {
+      "source_id": "L04",
+      "url": "https://www.marriott.com.cn/hotels/hghjw-jw-marriott-hotel-hangzhou/dining/",
+      "title": "杭州JW万豪餐饮与早餐FAQ",
+      "publisher": "Marriott",
+      "source_type": "official_public_page",
+      "checked_on": "2026-10-23",
+      "access_status": "readable",
+      "access_method": "live_browser_and_web_reader",
+      "short_quote": "是的，Asia Bistro设有付费早餐。",
+      "published_at": null,
+      "valid_from": null,
+      "valid_to": null,
+      "observation_note": "读取日不是酒店对用户入住日的营业或权益确认。"
+    },
+    {
+      "source_id": "L05",
+      "url": "https://www.ihg.com/holidayinn/hotels/cn/zh/hangzhou/hghlk/hoteldetail/dining",
+      "title": "杭州西湖假日酒店餐饮页",
+      "publisher": "IHG",
+      "source_type": "official_public_page",
+      "checked_on": "2026-10-23",
+      "access_status": "readable",
+      "access_method": "live_browser_and_web_reader",
+      "short_quote": "周六到周日06：30-10：30",
+      "published_at": null,
+      "valid_from": null,
+      "valid_to": null,
+      "observation_note": "读取日不是酒店对用户入住日的营业或权益确认。"
+    },
+    {
+      "source_id": "L06",
+      "url": "https://www.hilton.com/en/hotels/hghpypy-canopy-hangzhou-jinsha-lake/dining/",
+      "title": "嘉悦里GELI餐饮页实际浏览器渲染",
+      "publisher": "Hilton",
+      "source_type": "official_public_page",
+      "checked_on": "2026-10-23",
+      "access_status": "readable",
+      "access_method": "live_browser",
+      "short_quote": "Breakfast: Monday to Friday 6:00 am - 10:00 am",
+      "published_at": null,
+      "valid_from": null,
+      "valid_to": null,
+      "observation_note": "读取日不是酒店对用户入住日的营业或权益确认。"
+    },
+    {
+      "source_id": "L07",
+      "url": "https://www.hilton.com/en/hotels/hghpypy-canopy-hangzhou-jinsha-lake/dining/",
+      "title": "嘉悦里餐饮页网页读取器中的Breakfast专栏",
+      "publisher": "Hilton",
+      "source_type": "official_public_page",
+      "checked_on": "2026-10-23",
+      "access_status": "readable",
+      "access_method": "web_reader_cached_render_variant",
+      "short_quote": "Available for a fee",
+      "published_at": null,
+      "valid_from": null,
+      "valid_to": null,
+      "observation_note": "读取日不是酒店对用户入住日的营业或权益确认。"
+    },
+    {
+      "source_id": "L08",
+      "url": "https://www.ihg.com/holidayinn/content/cn/zh/offers/kids-free/terms-and-conditions",
+      "title": "儿童用餐条款：中文大中华区专项段落",
+      "publisher": "IHG",
+      "source_type": "official_public_page",
+      "checked_on": "2026-10-23",
+      "access_status": "readable",
+      "access_method": "live_browser_and_web_reader",
+      "short_quote": "每个家庭限带两名儿童参与本活动。",
+      "published_at": null,
+      "valid_from": null,
+      "valid_to": null,
+      "observation_note": "读取日不是酒店对用户入住日的营业或权益确认。"
+    },
+    {
+      "source_id": "L09",
+      "url": "https://www.ihg.com/holidayinn/content/us/en/offers/kids-free/terms-and-conditions",
+      "title": "Kids free terms: Greater China section",
+      "publisher": "IHG",
+      "source_type": "official_public_page",
+      "checked_on": "2026-10-23",
+      "access_status": "readable",
+      "access_method": "web_reader",
+      "short_quote": "Advance Booking Offer (including breakfast)",
+      "published_at": null,
+      "valid_from": null,
+      "valid_to": null,
+      "observation_note": "读取日不是酒店对用户入住日的营业或权益确认。"
+    }
+  ],
+  "hotels": [
+    {
+      "hotel_id": "HD04",
+      "evidence_hotel_id": "H09",
+      "name": "杭州城中香格里拉大酒店",
+      "restaurant": "美食汇 Central Market",
+      "facts": [
+        {
+          "fact_id": "HD04:L:format",
+          "field": "breakfast.format",
+          "state": "observed_official_page",
+          "value": "buffet",
+          "source_ids": [
+            "L01",
+            "L02"
+          ],
+          "evidence_summary": "早餐菜单段落明确为自助形式。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": null,
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD04:L:weekday-hours",
+          "field": "breakfast.schedule",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:30",
+            "end": "10:00",
+            "timezone": "Asia/Shanghai"
+          },
+          "source_ids": [
+            "L01",
+            "L02"
+          ],
+          "evidence_summary": "中英文早餐专用时段一致。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD04:L:weekend-hours",
+          "field": "breakfast.schedule",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:30",
+            "end": "10:30",
+            "timezone": "Asia/Shanghai"
+          },
+          "source_ids": [
+            "L01",
+            "L02"
+          ],
+          "evidence_summary": "中英文早餐专用时段一致。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              6,
+              7
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD04:L:adult-retail",
+          "field": "breakfast.adult_retail_price",
+          "state": "observed_official_page",
+          "value": {
+            "amount": 194,
+            "currency": "CNY",
+            "basis": "per_person_per_meal",
+            "is_from_price": false,
+            "tax_inclusion": "unknown",
+            "service_charge_inclusion": "unknown"
+          },
+          "source_ids": [
+            "L01",
+            "L02"
+          ],
+          "evidence_summary": "官方早餐单买价；不是含早与不含早房价的差额。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD04:L:circle-program",
+          "field": "breakfast.conditional_child_program",
+          "state": "observed_official_page",
+          "value": {
+            "program_id": "SHANGRI_LA_CIRCLE_CENTRAL_MARKET"
+          },
+          "source_ids": [
+            "L01",
+            "L02"
+          ],
+          "evidence_summary": "只适用于有条件的香格里拉会儿童自助餐计划，见programs；不覆盖通用单买价。",
+          "checked_on": "2026-10-23",
+          "scope": "conditional_member_program",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": null,
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        }
+      ],
+      "blocking_conflicts": [],
+      "unknowns": [
+        "本次入住是否满足会员、住客、同行成人与餐厅条件",
+        "本次房价已含早餐的人数和次数",
+        "用户具体入住日是否有临时调整",
+        "单买价是否含服务费和税"
+      ],
+      "compatible_published_windows": [
+        {
+          "iso_weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "start": "06:30",
+          "end": "10:00",
+          "fact_ids": [
+            "HD04:L:weekday-hours"
+          ],
+          "derivation": "intersection_of_cited_published_windows_not_a_new_hotel_statement",
+          "current_stay_guarantee": false
+        },
+        {
+          "iso_weekdays": [
+            6,
+            7
+          ],
+          "start": "06:30",
+          "end": "10:30",
+          "fact_ids": [
+            "HD04:L:weekend-hours"
+          ],
+          "derivation": "intersection_of_cited_published_windows_not_a_new_hotel_statement",
+          "current_stay_guarantee": false
+        }
+      ]
+    },
+    {
+      "hotel_id": "HD09",
+      "evidence_hotel_id": "H06",
+      "name": "杭州武林万怡酒店",
+      "restaurant": "MoMo Café",
+      "facts": [
+        {
+          "fact_id": "HD09:L:format",
+          "field": "breakfast.format",
+          "state": "observed_official_page",
+          "value": [
+            "buffet",
+            "a_la_carte"
+          ],
+          "source_ids": [
+            "L03"
+          ],
+          "evidence_summary": "餐厅介绍明确提供自助或单点早餐。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": null,
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD09:L:mon-sat-hours",
+          "field": "breakfast.schedule",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:30",
+            "end": "10:30",
+            "timezone": "Asia/Shanghai"
+          },
+          "source_ids": [
+            "L03"
+          ],
+          "evidence_summary": "MoMo餐厅时段列出的早晨营业区间。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD09:L:sunday-closed",
+          "field": "restaurant.closed",
+          "state": "observed_official_page",
+          "value": true,
+          "source_ids": [
+            "L03"
+          ],
+          "evidence_summary": "餐厅星期表周日标关闭；只作官网声明，不证明整家酒店没有替代早餐。",
+          "checked_on": "2026-10-23",
+          "scope": "specific_restaurant",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              7
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD09:L:daily-description",
+          "field": "breakfast.daily_description",
+          "state": "observed_official_page",
+          "value": true,
+          "source_ids": [
+            "L03"
+          ],
+          "evidence_summary": "同页餐厅简介仍描述每日早餐，与周日关闭表冲突。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": null,
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        }
+      ],
+      "blocking_conflicts": [
+        {
+          "conflict_id": "HD09:L:sunday",
+          "type": "within_page_conflict",
+          "iso_weekdays": [
+            7
+          ],
+          "fact_ids": [
+            "HD09:L:sunday-closed",
+            "HD09:L:daily-description"
+          ],
+          "action": "require_hotel_confirmation",
+          "reason": "同一官方餐厅页的介绍称每日提供早餐，星期表却列周日关闭；周日是否另有早餐安排需要向酒店确认。"
+        }
+      ],
+      "unknowns": [
+        "周日是否另有早餐安排及实际餐厅",
+        "成人早餐单买价",
+        "儿童年龄/身高门槛与费用",
+        "当前套餐早餐权益"
+      ],
+      "compatible_published_windows": [
+        {
+          "iso_weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "start": "06:30",
+          "end": "10:30",
+          "fact_ids": [
+            "HD09:L:mon-sat-hours"
+          ],
+          "derivation": "intersection_of_cited_published_windows_not_a_new_hotel_statement",
+          "current_stay_guarantee": false
+        }
+      ]
+    },
+    {
+      "hotel_id": "HD05",
+      "evidence_hotel_id": "H02",
+      "name": "杭州JW万豪酒店",
+      "restaurant": "Asia Bistro",
+      "facts": [
+        {
+          "fact_id": "HD05:L:fee",
+          "field": "breakfast.available_for_fee",
+          "state": "observed_official_page",
+          "value": true,
+          "source_ids": [
+            "L04"
+          ],
+          "evidence_summary": "实际展开早餐FAQ，确认Asia Bistro有付费早餐。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": null,
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD05:L:mon-sat-morning",
+          "field": "breakfast.schedule",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:30",
+            "end": "10:30",
+            "timezone": "Asia/Shanghai"
+          },
+          "source_ids": [
+            "L04"
+          ],
+          "evidence_summary": "餐厅星期表周一至周六都有早晨区间；记录为早餐餐厅早晨时段，不从晚间区间推早餐。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD05:L:sunday-listed-periods",
+          "field": "restaurant.listed_periods",
+          "state": "observed_official_page",
+          "value": [
+            {
+              "start": "17:30",
+              "end": "21:30"
+            }
+          ],
+          "source_ids": [
+            "L04"
+          ],
+          "evidence_summary": "周日只列晚间营业，未列早晨；未明说早餐关闭。",
+          "checked_on": "2026-10-23",
+          "scope": "specific_restaurant",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              7
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        }
+      ],
+      "blocking_conflicts": [
+        {
+          "conflict_id": "HD05:L:sunday",
+          "type": "coverage_gap_vs_legacy_daily_policy",
+          "iso_weekdays": [
+            7
+          ],
+          "fact_ids": [
+            "HD05:L:sunday-listed-periods"
+          ],
+          "action": "require_hotel_confirmation",
+          "reason": "Asia Bistro周日只公开晚间营业时段，早餐供应情况未知；通用每日时段不能替代周日确认。"
+        }
+      ],
+      "unknowns": [
+        "周日早餐实际安排",
+        "成人单买金额",
+        "早餐具体自助/单点形式及地方餐品",
+        "儿童价和当前套餐人数"
+      ],
+      "compatible_published_windows": [
+        {
+          "iso_weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "start": "06:30",
+          "end": "10:30",
+          "fact_ids": [
+            "HD05:L:mon-sat-morning"
+          ],
+          "derivation": "intersection_of_cited_published_windows_not_a_new_hotel_statement",
+          "current_stay_guarantee": false
+        }
+      ]
+    },
+    {
+      "hotel_id": "HD08",
+      "evidence_hotel_id": "H13",
+      "name": "杭州西湖假日酒店",
+      "restaurant": "云栖餐厅（11楼）",
+      "facts": [
+        {
+          "fact_id": "HD08:L:format",
+          "field": "breakfast.format",
+          "state": "observed_official_page",
+          "value": "buffet",
+          "source_ids": [
+            "L05"
+          ],
+          "evidence_summary": "餐饮简介明确中西式自助早餐。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": null,
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD08:L:weekday-description",
+          "field": "breakfast.schedule",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:30",
+            "end": "10:00",
+            "timezone": "Asia/Shanghai"
+          },
+          "source_ids": [
+            "L05"
+          ],
+          "evidence_summary": "酒店餐饮简介的工作日早餐时段。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD08:L:weekend-description",
+          "field": "breakfast.schedule",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:30",
+            "end": "10:30",
+            "timezone": "Asia/Shanghai"
+          },
+          "source_ids": [
+            "L05"
+          ],
+          "evidence_summary": "酒店餐饮简介的周末早餐时段。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              6,
+              7
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD08:L:daily-table",
+          "field": "breakfast.schedule",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:30",
+            "end": "10:00",
+            "timezone": "Asia/Shanghai"
+          },
+          "source_ids": [
+            "L05"
+          ],
+          "evidence_summary": "云栖餐厅下方早餐开放时间表写周一至周日同一结束时间。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD08:L:program-participation",
+          "field": "breakfast.conditional_child_program",
+          "state": "observed_official_page",
+          "value": {
+            "program_id": "IHG_KIDS_EAT_FREE_GREATER_CHINA"
+          },
+          "source_ids": [
+            "L05",
+            "L08",
+            "L09"
+          ],
+          "evidence_summary": "具体酒店页声明儿童用餐项目；集团大中华条款补充限制，需匹配本次房价。",
+          "checked_on": "2026-10-23",
+          "scope": "conditional_brand_program",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": null,
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        }
+      ],
+      "blocking_conflicts": [
+        {
+          "conflict_id": "HD08:L:weekend-end",
+          "type": "within_page_conflict",
+          "iso_weekdays": [
+            6,
+            7
+          ],
+          "fact_ids": [
+            "HD08:L:weekend-description",
+            "HD08:L:daily-table"
+          ],
+          "action": "require_hotel_confirmation",
+          "reason": "官方餐饮简介列周末早餐至10:30，餐次表列每日到10:00；周末10:00至10:30的供应情况需确认。"
+        }
+      ],
+      "unknowns": [
+        "周末实际早餐结束时间",
+        "成人单买价",
+        "用户套餐是否属于该项目允许的房价类型",
+        "本次可免费儿童人数及酒店采用的条款版本"
+      ],
+      "compatible_published_windows": [
+        {
+          "iso_weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "start": "06:30",
+          "end": "10:00",
+          "fact_ids": [
+            "HD08:L:weekday-description",
+            "HD08:L:daily-table"
+          ],
+          "derivation": "intersection_of_cited_published_windows_not_a_new_hotel_statement",
+          "current_stay_guarantee": false
+        },
+        {
+          "iso_weekdays": [
+            6,
+            7
+          ],
+          "start": "06:30",
+          "end": "10:00",
+          "fact_ids": [
+            "HD08:L:weekend-description",
+            "HD08:L:daily-table"
+          ],
+          "derivation": "intersection_of_cited_published_windows_not_a_new_hotel_statement",
+          "current_stay_guarantee": false
+        }
+      ]
+    },
+    {
+      "hotel_id": "HD25",
+      "evidence_hotel_id": null,
+      "name": "杭州金沙湖和达希尔顿嘉悦里酒店",
+      "restaurant": "GELI Café & Bar",
+      "facts": [
+        {
+          "fact_id": "HD25:L:format",
+          "field": "breakfast.format",
+          "state": "observed_official_page",
+          "value": "buffet",
+          "source_ids": [
+            "L07"
+          ],
+          "evidence_summary": "网页读取器的Breakfast专栏列自助；实际浏览器当前版本未显示该专栏。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": null,
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD25:L:fee",
+          "field": "breakfast.available_for_fee",
+          "state": "observed_official_page",
+          "value": true,
+          "source_ids": [
+            "L07"
+          ],
+          "evidence_summary": "网页读取器专栏称收费，但没有金额。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": null,
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD25:L:browser-weekday",
+          "field": "breakfast.schedule",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:00",
+            "end": "10:00",
+            "timezone": "Asia/Shanghai"
+          },
+          "source_ids": [
+            "L06"
+          ],
+          "evidence_summary": "实际Chrome正文HOURS下明确标Breakfast；不能误说这只是全日餐厅开门时刻。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD25:L:browser-weekend",
+          "field": "breakfast.schedule",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:00",
+            "end": "10:30",
+            "timezone": "Asia/Shanghai"
+          },
+          "source_ids": [
+            "L06"
+          ],
+          "evidence_summary": "实际浏览器正文中的周末Breakfast时段。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              6,
+              7
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD25:L:reader-weekday",
+          "field": "breakfast.schedule",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:30",
+            "end": "10:00",
+            "timezone": "Asia/Shanghai"
+          },
+          "source_ids": [
+            "L07"
+          ],
+          "evidence_summary": "同URL网页读取器版本Breakfast专栏写另一开始时间；读取器标抓取于上周。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD25:L:reader-weekend",
+          "field": "breakfast.schedule",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:30",
+            "end": "10:30",
+            "timezone": "Asia/Shanghai"
+          },
+          "source_ids": [
+            "L07"
+          ],
+          "evidence_summary": "同URL另一渲染版本的周末Breakfast时段。",
+          "checked_on": "2026-10-23",
+          "scope": "breakfast_service",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              6,
+              7
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        },
+        {
+          "fact_id": "HD25:L:venue-hours",
+          "field": "restaurant.general_hours",
+          "state": "observed_official_page",
+          "value": {
+            "start": "06:00",
+            "end": "23:00"
+          },
+          "source_ids": [
+            "L06"
+          ],
+          "evidence_summary": "展开Show hours后是全日餐厅时段，不用于补早餐结束。",
+          "checked_on": "2026-10-23",
+          "scope": "specific_restaurant_not_meal",
+          "applicable_dates": {
+            "valid_from": null,
+            "valid_to": null,
+            "iso_weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "timezone": "Asia/Shanghai",
+            "assurance": "published_recurring_schedule_not_specific_stay_confirmation"
+          },
+          "automatic_quote_use": false
+        }
+      ],
+      "blocking_conflicts": [
+        {
+          "conflict_id": "HD25:L:start",
+          "type": "official_render_variant_conflict",
+          "iso_weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fact_ids": [
+            "HD25:L:browser-weekday",
+            "HD25:L:browser-weekend",
+            "HD25:L:reader-weekday",
+            "HD25:L:reader-weekend"
+          ],
+          "action": "require_hotel_confirmation",
+          "reason": "官方浏览器正文早餐从06:00开始，另一官方读取版本从06:30开始；06:00至06:30的早餐供应需确认。"
+        }
+      ],
+      "unknowns": [
+        "实际早餐开始时间",
+        "成人单买价",
+        "儿童年龄/身高门槛与单买价",
+        "本次房价早餐人数及次数"
+      ],
+      "compatible_published_windows": [
+        {
+          "iso_weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "start": "06:30",
+          "end": "10:00",
+          "fact_ids": [
+            "HD25:L:browser-weekday",
+            "HD25:L:reader-weekday"
+          ],
+          "derivation": "intersection_of_cited_published_windows_not_a_new_hotel_statement",
+          "current_stay_guarantee": false
+        },
+        {
+          "iso_weekdays": [
+            6,
+            7
+          ],
+          "start": "06:30",
+          "end": "10:30",
+          "fact_ids": [
+            "HD25:L:browser-weekend",
+            "HD25:L:reader-weekend"
+          ],
+          "derivation": "intersection_of_cited_published_windows_not_a_new_hotel_statement",
+          "current_stay_guarantee": false
+        }
+      ]
+    }
+  ],
+  "programs": [
+    {
+      "program_id": "SHANGRI_LA_CIRCLE_CENTRAL_MARKET",
+      "hotel_ids": [
+        "HD04"
+      ],
+      "source_ids": [
+        "L01",
+        "L02"
+      ],
+      "checked_on": "2026-10-23",
+      "state": "observed_conditional_program_not_user_entitlement",
+      "region_scope": "具体城中香格里拉美食汇页所列计划",
+      "meal_scope": "all_day_dining_buffet_including_breakfast",
+      "age_input_requirement": "integer_completed_years_at_meal_date",
+      "prerequisites": {
+        "circle_member": true,
+        "dining_with_adult": true,
+        "venue_is_all_day_buffet": true
+      },
+      "rules": [
+        {
+          "rule_id": "SG_FREE_UNDER6",
+          "guest_status": "registered_in_house",
+          "age_years": {
+            "max": 6,
+            "max_inclusive": true
+          },
+          "max_free_children_per_room": 2,
+          "benefit": {
+            "type": "free_buffet",
+            "amount": 0,
+            "currency": "CNY"
+          }
+        },
+        {
+          "rule_id": "SG_EXTRA_UNDER6_HALF",
+          "guest_status": "registered_in_house",
+          "age_years": {
+            "max": 6,
+            "max_inclusive": true
+          },
+          "extra_child_after_free_slots": true,
+          "benefit": {
+            "type": "adult_buffet_price_ratio",
+            "ratio": 0.5
+          }
+        },
+        {
+          "rule_id": "SG_OLDER_CHILD_HALF",
+          "guest_status": "registered_in_house",
+          "age_years": {
+            "min": 6,
+            "min_inclusive": false,
+            "max": 12,
+            "max_inclusive": false
+          },
+          "benefit": {
+            "type": "adult_buffet_price_ratio",
+            "ratio": 0.5
+          }
+        },
+        {
+          "rule_id": "SG_WALKIN_HALF",
+          "guest_status": "not_registered_in_house",
+          "age_years": {
+            "max": 12,
+            "max_inclusive": false
+          },
+          "benefit": {
+            "type": "adult_buffet_price_ratio",
+            "ratio": 0.5
+          }
+        }
+      ],
+      "valid_from": null,
+      "valid_to": null,
+      "current_booking_match": "unknown",
+      "automatic_quote_use": false,
+      "cautions": [
+        "适用年龄按用餐日整数周岁判断：6周岁及以下，或大于6周岁且未满12周岁，分别按对应项目规则。",
+        "本次身份、住店状态和同行成人未确认前，不能显示全家含早总价已确定。",
+        "不能覆盖第三方通用单买儿童价；不是同一适用范围。"
+      ]
+    },
+    {
+      "program_id": "IHG_KIDS_EAT_FREE_GREATER_CHINA",
+      "hotel_ids": [
+        "HD08"
+      ],
+      "source_ids": [
+        "L05",
+        "L08",
+        "L09"
+      ],
+      "checked_on": "2026-10-23",
+      "state": "observed_conditional_program_with_language_version_conflicts",
+      "region_scope": "大中华区参加活动的Holiday Inn/假日度假酒店等条款所列范围；不自动延伸到智选假日",
+      "meal_scope": "designated_all_day_dining_buffet_breakfast",
+      "age_input_requirement": "integer_completed_years_at_meal_date",
+      "common_prerequisites": {
+        "registered_hotel_guest": true,
+        "adult_accompaniment": true,
+        "within_restaurant_hours": true,
+        "at_designated_all_day_restaurant": true,
+        "child_age_with_valid_proof": {
+          "max_years": 12,
+          "max_inclusive": true
+        },
+        "when_no_accepted_age_proof": {
+          "max_height_m": 1.4,
+          "max_inclusive": true,
+          "hotel_measurement_or_acceptance_required": true
+        },
+        "adult_original_price_breakfast_or_breakfast_covered_in_room_rate": true
+      },
+      "language_variants": [
+        {
+          "source_id": "L08",
+          "region_subsection": "Greater China",
+          "rate_requirement": "standard_room_rate_only",
+          "excluded": [
+            "discount_rate",
+            "group_rate",
+            "employee_rate"
+          ],
+          "max_children_per_family_room": 2,
+          "family_definition": "same_room"
+        },
+        {
+          "source_id": "L09",
+          "region_subsection": "Greater China",
+          "allowed_rate_names": [
+            "Advance Booking Offer (including breakfast)",
+            "Best Flexible Rate (including breakfast)"
+          ],
+          "excluded": [
+            "discount_rate",
+            "corporate_rate",
+            "employee_rate",
+            "other_rates"
+          ],
+          "max_free_children_per_original_price_adult": 2
+        }
+      ],
+      "benefit": {
+        "type": "free_buffet_breakfast_if_all_conditions_confirmed",
+        "amount": 0,
+        "currency": "CNY"
+      },
+      "valid_from": null,
+      "valid_to": null,
+      "current_booking_match": "unknown",
+      "automatic_quote_use": false,
+      "unresolved": [
+        "酒店按哪个语言版本执行房价限制和人数上限",
+        "用户套餐是否符合允许房价，而不是看到12岁以下便默认免费"
+      ],
+      "privacy_note": "应用只需确认年龄和适用情况；不收集证件照片，证件核验由酒店现场处理。"
+    }
+  ],
+  "additional_conflicts": [
+    {
+      "conflict_id": "HD04:L:dinner-days",
+      "field": "dinner.iso_weekdays",
+      "source_ids": [
+        "L01",
+        "L02"
+      ],
+      "values": [
+        {
+          "section": "opening_hours",
+          "iso_weekdays": [
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        {
+          "section": "menu_price_description",
+          "iso_weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        }
+      ],
+      "action": "do_not_schedule_monday_to_wednesday_dinner_without_confirmation"
+    }
+  ]
+}

@@ -1,0 +1,5039 @@
+{
+  "schemaVersion": "1.0.0",
+  "preparedAt": "2026-10-23",
+  "timezone": "Asia/Shanghai",
+  "datePolicy": "Read dates are observations, not validity dates or stay confirmations.",
+  "timeScopeConvention": "start_inclusive_end_exclusive",
+  "inputs": [
+    {
+      "file": "data/hotel_policy.json",
+      "sha256": "3f621cde278fea2c5d882878ae9498eebd732190cd017a558cbe98c022af97eb"
+    },
+    {
+      "file": "data/hotel_breakfast_official.json",
+      "sha256": "393334405ce28eec1fa905c5873c8170e25f221989b3099cabb6d55d3af33249"
+    },
+    {
+      "file": "data/evidence.json",
+      "sha256": "188b5e36d89fba2ca5d5b55473e9bb49bf501d9a80bcf0531cf37319e5a7899e"
+    },
+    {
+      "file": "data/fixtures/hotel_meal_official_2026-10-23.json",
+      "sha256": "ef31a421688afeeab817e87345586e6d9e78a9e38ac5d82140ab6a652859d16e"
+    }
+  ],
+  "sources": [
+    {
+      "id": "E:S004",
+      "url": "https://www.marriott.com.cn/hotels/hghjw-jw-marriott-hotel-hangzhou/dining/",
+      "title": "杭州JW万豪酒店 餐饮",
+      "publisher": "万豪国际（官网）",
+      "kind": "hotel_official",
+      "readAt": "2026-10-10",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "E:S006",
+      "url": "https://www.marriott.com/en-us/hotels/hghqi-hangzhou-marriott-hotel-qianjiang/dining/",
+      "title": "Dining | Hangzhou Marriott Hotel Qianjiang",
+      "publisher": "万豪国际（官网）",
+      "kind": "hotel_official",
+      "readAt": "2026-10-10",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "E:S008",
+      "url": "https://www.marriott.com.cn/hotels/hghhs-sheraton-grand-hangzhou-wetland-park-resort/dining/",
+      "title": "杭州西溪喜来登度假大酒店 餐饮",
+      "publisher": "万豪国际（官网）",
+      "kind": "hotel_official",
+      "readAt": "2026-10-10",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "E:S031",
+      "url": "https://www.shangri-la.com/cn/hangzhou/midtownshangrila/dining/restaurants/central-market/",
+      "title": "美食汇餐厅页（价格/营业时间/儿童餐计划）",
+      "publisher": "香格里拉酒店集团官网 shangri-la.com",
+      "kind": "hotel_official",
+      "readAt": "2026-10-11",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "E:S037",
+      "url": "https://www.ihg.com/holidayinnexpress/hotels/cn/zh/hangzhou/hghhg/hoteldetail/dining",
+      "title": "杭州拱墅智选假日酒店IHG官方餐饮页（智空间早餐时段与餐厅电话）",
+      "publisher": "IHG官网 ihg.com",
+      "kind": "hotel_official",
+      "readAt": "2026-10-11",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "E:S038",
+      "url": "https://www.ihg.com/holidayinn/hotels/cn/zh/hangzhou/hghlk/hoteldetail/dining",
+      "title": "杭州西湖假日酒店IHG官方餐饮页（云栖餐厅/Kids Eat Free/大堂吧/客房送餐）",
+      "publisher": "IHG官网 ihg.com",
+      "kind": "hotel_official",
+      "readAt": "2026-10-11",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "L:L01",
+      "url": "https://www.shangri-la.com/cn/hangzhou/midtownshangrila/dining/restaurants/central-market/",
+      "title": "城中香格里拉美食汇中文餐厅页",
+      "publisher": "Shangri-La",
+      "kind": "official_public_page",
+      "readAt": "2026-10-23",
+      "assurance": "official_page_observed",
+      "readMethod": "live_browser_and_web_reader",
+      "tripConfirmed": false
+    },
+    {
+      "id": "L:L02",
+      "url": "https://www.shangri-la.com/hangzhou/midtownshangrila/dining/restaurants/central-market/",
+      "title": "Central Market English restaurant page",
+      "publisher": "Shangri-La",
+      "kind": "official_public_page",
+      "readAt": "2026-10-23",
+      "assurance": "official_page_observed",
+      "readMethod": "web_reader",
+      "tripConfirmed": false
+    },
+    {
+      "id": "L:L03",
+      "url": "https://www.marriott.com.cn/hotels/hghcy-courtyard-hangzhou-wulin/dining/",
+      "title": "武林万怡餐饮页",
+      "publisher": "Marriott",
+      "kind": "official_public_page",
+      "readAt": "2026-10-23",
+      "assurance": "official_page_observed",
+      "readMethod": "live_browser_and_web_reader",
+      "tripConfirmed": false
+    },
+    {
+      "id": "L:L04",
+      "url": "https://www.marriott.com.cn/hotels/hghjw-jw-marriott-hotel-hangzhou/dining/",
+      "title": "杭州JW万豪餐饮与早餐FAQ",
+      "publisher": "Marriott",
+      "kind": "official_public_page",
+      "readAt": "2026-10-23",
+      "assurance": "official_page_observed",
+      "readMethod": "live_browser_and_web_reader",
+      "tripConfirmed": false
+    },
+    {
+      "id": "L:L05",
+      "url": "https://www.ihg.com/holidayinn/hotels/cn/zh/hangzhou/hghlk/hoteldetail/dining",
+      "title": "杭州西湖假日酒店餐饮页",
+      "publisher": "IHG",
+      "kind": "official_public_page",
+      "readAt": "2026-10-23",
+      "assurance": "official_page_observed",
+      "readMethod": "live_browser_and_web_reader",
+      "tripConfirmed": false
+    },
+    {
+      "id": "L:L06",
+      "url": "https://www.hilton.com/en/hotels/hghpypy-canopy-hangzhou-jinsha-lake/dining/",
+      "title": "嘉悦里GELI餐饮页实际浏览器渲染",
+      "publisher": "Hilton",
+      "kind": "official_public_page",
+      "readAt": "2026-10-23",
+      "assurance": "official_page_observed",
+      "readMethod": "live_browser",
+      "tripConfirmed": false
+    },
+    {
+      "id": "L:L07",
+      "url": "https://www.hilton.com/en/hotels/hghpypy-canopy-hangzhou-jinsha-lake/dining/",
+      "title": "嘉悦里餐饮页网页读取器中的Breakfast专栏",
+      "publisher": "Hilton",
+      "kind": "official_public_page",
+      "readAt": "2026-10-23",
+      "assurance": "official_page_observed",
+      "readMethod": "web_reader_cached_render_variant",
+      "tripConfirmed": false
+    },
+    {
+      "id": "L:L08",
+      "url": "https://www.ihg.com/holidayinn/content/cn/zh/offers/kids-free/terms-and-conditions",
+      "title": "儿童用餐条款：中文大中华区专项段落",
+      "publisher": "IHG",
+      "kind": "official_public_page",
+      "readAt": "2026-10-23",
+      "assurance": "official_page_observed",
+      "readMethod": "live_browser_and_web_reader",
+      "tripConfirmed": false
+    },
+    {
+      "id": "L:L09",
+      "url": "https://www.ihg.com/holidayinn/content/us/en/offers/kids-free/terms-and-conditions",
+      "title": "Kids free terms: Greater China section",
+      "publisher": "IHG",
+      "kind": "official_public_page",
+      "readAt": "2026-10-23",
+      "assurance": "official_page_observed",
+      "readMethod": "web_reader",
+      "tripConfirmed": false
+    },
+    {
+      "id": "O:HD04",
+      "url": "https://www.shangri-la.com/cn/restaurants-bars/hangzhou/midtownshangrila/central-market/",
+      "title": "美食汇 Central Market 官方补充",
+      "publisher": null,
+      "kind": "hotel_official",
+      "readAt": "2026-10-12",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "O:HD07",
+      "url": "https://www.marriott.com.cn/hotels/hghhs-sheraton-grand-hangzhou-wetland-park-resort/dining/",
+      "title": "盛宴标帜 官方补充",
+      "publisher": null,
+      "kind": "hotel_official",
+      "readAt": "2026-10-12",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "O:HD09",
+      "url": "https://www.marriott.com.cn/hotels/hghcy-courtyard-hangzhou-wulin/dining/",
+      "title": "MoMo Café 官方补充",
+      "publisher": null,
+      "kind": "hotel_official",
+      "readAt": "2026-10-12",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "O:HD14",
+      "url": "https://www.marriott.com.cn/hotels/hghqi-hangzhou-marriott-hotel-qianjiang/dining/",
+      "title": "City Bistro 官方补充",
+      "publisher": null,
+      "kind": "hotel_official",
+      "readAt": "2026-10-12",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "O:HD16",
+      "url": "https://www.fourseasons.com/hangzhou/dining/restaurants/wlb/",
+      "title": "West Lake Bistro 官方补充",
+      "publisher": null,
+      "kind": "hotel_official",
+      "readAt": "2026-10-12",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "O:HD16:family",
+      "url": "https://www.fourseasons.com/hangzhou/offers/family-getaway/",
+      "title": "Four Seasons Family Getaway",
+      "publisher": "Four Seasons",
+      "kind": "specific_official_offer",
+      "readAt": "2026-10-12",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "O:HD25",
+      "url": "https://www.hilton.com/en/hotels/hghpypy-canopy-hangzhou-jinsha-lake/dining/",
+      "title": "GELI Café & Bar 官方补充",
+      "publisher": null,
+      "kind": "hotel_official",
+      "readAt": "2026-10-12",
+      "assurance": "official_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD04",
+      "url": "https://hotels.ctrip.com/hotels/4498707.html",
+      "title": "杭州城中香格里拉大酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD05",
+      "url": "https://hotels.ctrip.com/hotels/346300.html",
+      "title": "杭州JW万豪酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD07",
+      "url": "https://hotels.ctrip.com/hotels/346302.html",
+      "title": "杭州西溪喜来登度假大酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD08",
+      "url": "https://hotels.ctrip.com/hotels/434391.html",
+      "title": "杭州西湖假日酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD09",
+      "url": "https://hotels.ctrip.com/hotels/369719.html",
+      "title": "杭州武林万怡酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD13",
+      "url": "https://hotels.ctrip.com/hotels/369775.html",
+      "title": "杭州香格里拉饭店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD14",
+      "url": "https://hotels.ctrip.com/hotels/5673297.html",
+      "title": "杭州钱江新城万豪酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD16",
+      "url": "https://hotels.ctrip.com/hotels/425546.html",
+      "title": "杭州西子湖四季酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD19",
+      "url": "https://hotels.ctrip.com/hotels/13878566.html",
+      "title": "杭州拱墅智选假日酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD20",
+      "url": "https://hotels.ctrip.com/hotels/113039684.html",
+      "title": "杭州钱江世纪城智选假日酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD21",
+      "url": "https://hotels.ctrip.com/hotels/48316569.html",
+      "title": "杭州九州智选假日酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD22",
+      "url": "https://hotels.ctrip.com/hotels/11212429.html",
+      "title": "杭州东站智选假日酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD23",
+      "url": "https://hotels.ctrip.com/hotels/396971.html",
+      "title": "杭州西湖东智选假日酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD24",
+      "url": "https://hotels.ctrip.com/hotels/99622910.html",
+      "title": "杭州西湖区万豪万枫酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    },
+    {
+      "id": "P:HD25",
+      "url": "https://hotels.ctrip.com/hotels/50842896.html",
+      "title": "杭州金沙湖和达希尔顿嘉悦里酒店-政策页",
+      "publisher": "携程公开酒店政策页",
+      "kind": "public_hotel_policy_snapshot",
+      "readAt": "2026-10-11",
+      "assurance": "public_policy_snapshot_not_live_rechecked",
+      "readMethod": "existing_repository_snapshot",
+      "tripConfirmed": false
+    }
+  ],
+  "hotels": [
+    {
+      "policyId": "HD04",
+      "evidenceHotelId": "H09",
+      "name": "杭州城中香格里拉大酒店",
+      "address": "拱墅区长寿路6号杭州嘉里中心",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD04"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:policy:hours:0",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "P:HD04"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:policy:hours:1",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "E:S031"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:evidence:MS1201",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": "美食汇 Central Market"
+        },
+        {
+          "sourceIds": [
+            "E:S031"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:evidence:MS1202",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": "美食汇 Central Market"
+        },
+        {
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:L:weekday-hours",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": "美食汇 Central Market"
+        },
+        {
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:L:weekend-hours",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": "美食汇 Central Market"
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "derived_common_official_published_interval",
+          "scope": "published_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:compatible:0",
+          "start": "06:30",
+          "end": "10:00",
+          "factIds": [
+            "HD04:L:weekday-hours"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        },
+        {
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "derived_common_official_published_interval",
+          "scope": "published_reference_not_stay_guarantee",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:compatible:1",
+          "start": "06:30",
+          "end": "10:30",
+          "factIds": [
+            "HD04:L:weekend-hours"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD04"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:policy:adult:0",
+          "amount": 194,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD04"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:policy:adult:1",
+          "amount": 194,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:L:adult-retail",
+          "amount": 194,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD04"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 5,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "5岁及以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD04"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 6,
+            "max": 11,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 97,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "6-11岁儿童 ¥97/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD04"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 12,
+            "max": 17,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 194,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "12-17岁儿童 ¥194/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "conditional_program_not_current_booking_entitlement",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:program:SG_FREE_UNDER6",
+          "kind": "conditional_program",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 6,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "benefit": {
+            "type": "free_buffet",
+            "amount": 0,
+            "currency": "CNY"
+          },
+          "conditions": {
+            "circleMember": true,
+            "diningWithAdult": true,
+            "venueIsAllDayBuffet": true,
+            "guestStatus": "registered_in_house",
+            "currentBookingMatch": "unknown",
+            "ageInputRequirement": "integer_completed_years_at_meal_date",
+            "maxFreeChildrenPerRoom": 2
+          },
+          "ambiguities": [],
+          "programId": "SHANGRI_LA_CIRCLE_CENTRAL_MARKET",
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "conditional_program_not_current_booking_entitlement",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:program:SG_EXTRA_UNDER6_HALF",
+          "kind": "conditional_program",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 6,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "benefit": {
+            "type": "adult_buffet_price_ratio",
+            "ratio": 0.5
+          },
+          "conditions": {
+            "circleMember": true,
+            "diningWithAdult": true,
+            "venueIsAllDayBuffet": true,
+            "guestStatus": "registered_in_house",
+            "currentBookingMatch": "unknown",
+            "ageInputRequirement": "integer_completed_years_at_meal_date",
+            "extraChildAfterFreeSlots": true
+          },
+          "ambiguities": [],
+          "programId": "SHANGRI_LA_CIRCLE_CENTRAL_MARKET",
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "conditional_program_not_current_booking_entitlement",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:program:SG_OLDER_CHILD_HALF",
+          "kind": "conditional_program",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 6,
+            "max": 12,
+            "minInclusive": false,
+            "maxInclusive": false,
+            "uncertainEqualities": []
+          },
+          "benefit": {
+            "type": "adult_buffet_price_ratio",
+            "ratio": 0.5
+          },
+          "conditions": {
+            "circleMember": true,
+            "diningWithAdult": true,
+            "venueIsAllDayBuffet": true,
+            "guestStatus": "registered_in_house",
+            "currentBookingMatch": "unknown",
+            "ageInputRequirement": "integer_completed_years_at_meal_date"
+          },
+          "ambiguities": [],
+          "programId": "SHANGRI_LA_CIRCLE_CENTRAL_MARKET",
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "conditional_program_not_current_booking_entitlement",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:program:SG_WALKIN_HALF",
+          "kind": "conditional_program",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 12,
+            "minInclusive": true,
+            "maxInclusive": false,
+            "uncertainEqualities": []
+          },
+          "benefit": {
+            "type": "adult_buffet_price_ratio",
+            "ratio": 0.5
+          },
+          "conditions": {
+            "circleMember": true,
+            "diningWithAdult": true,
+            "venueIsAllDayBuffet": true,
+            "guestStatus": "not_registered_in_house",
+            "currentBookingMatch": "unknown",
+            "ageInputRequirement": "integer_completed_years_at_meal_date"
+          },
+          "ambiguities": [],
+          "programId": "SHANGRI_LA_CIRCLE_CENTRAL_MARKET",
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [
+        {
+          "id": "HD04:child:retail-versus-circle",
+          "field": "child_breakfast_pricing_scope",
+          "type": "scope_difference",
+          "weekdays": null,
+          "timeScope": null,
+          "dateScope": {
+            "kind": "different_eligibility_contexts",
+            "validFrom": null,
+            "validTo": null
+          },
+          "sourceIds": [
+            "P:HD04",
+            "L:L01",
+            "L:L02"
+          ],
+          "factIds": [
+            "HD04:policy:child:1",
+            "HD04:program:SG_FREE_UNDER6"
+          ],
+          "reason": "通用单买价和会员住店儿童餐计划属于不同条件；不能无条件采用最便宜档。",
+          "action": "match_all_program_conditions_before_applying",
+          "readAt": "2026-10-23",
+          "tripConfirmed": false
+        },
+        {
+          "id": "HD04:L:dinner-days",
+          "field": "dinner_service_weekdays",
+          "type": "within_page_conflict",
+          "weekdays": [
+            1,
+            2,
+            3
+          ],
+          "timeScope": {
+            "start": "17:00",
+            "end": "21:00"
+          },
+          "dateScope": {
+            "kind": "published_weekly_schedule",
+            "validFrom": null,
+            "validTo": null
+          },
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "factIds": [],
+          "reason": "菜单价格段写每日晚餐，营业时段仅周四至日；不是已确认可用的晚餐权益。",
+          "action": "confirm_service_before_scheduling",
+          "readAt": "2026-10-23",
+          "tripConfirmed": false
+        }
+      ],
+      "notes": [
+        {
+          "sourceIds": [
+            "O:HD04"
+          ],
+          "readAt": "2026-10-12",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "kind": "official_restaurant_description",
+          "text": "酒店一层的国际风味自助早餐；官网列出成人单买价 ¥194。",
+          "familyNote": "官网儿童餐计划有住店、香格里拉会会员、同行成人及每房人数条件；不能直接当作本次房价的免费早餐权益。",
+          "rawHours": "周一至周五 06:30–10:00；周六至周日 06:30–10:30"
+        },
+        {
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:L:format",
+          "kind": "breakfast.format",
+          "value": "buffet",
+          "summary": "早餐菜单段落明确为自助形式。"
+        },
+        {
+          "sourceIds": [
+            "L:L01",
+            "L:L02"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "conditional_member_program",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD04:L:circle-program",
+          "kind": "breakfast.conditional_child_program",
+          "value": {
+            "program_id": "SHANGRI_LA_CIRCLE_CENTRAL_MARKET"
+          },
+          "summary": "只适用于有条件的香格里拉会儿童自助餐计划，见programs；不覆盖通用单买价。"
+        }
+      ],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates",
+        "单买价是否含服务费和税",
+        "本次入住是否满足会员、住客、同行成人与餐厅条件",
+        "本次房价已含早餐的人数和次数",
+        "用户具体入住日是否有临时调整"
+      ]
+    },
+    {
+      "policyId": "HD05",
+      "evidenceHotelId": "H02",
+      "name": "杭州JW万豪酒店",
+      "address": "拱墅区湖墅南路28号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD05"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD05:policy:hours:0",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "E:S004"
+          ],
+          "readAt": "2026-10-10",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD05:evidence:MS201",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": "Asia Bistro（亚洲风尚餐厅）"
+        },
+        {
+          "sourceIds": [
+            "L:L04"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD05:L:mon-sat-morning",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": "Asia Bistro"
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "L:L04"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "derived_common_official_published_interval",
+          "scope": "published_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD05:compatible:0",
+          "start": "06:30",
+          "end": "10:30",
+          "factIds": [
+            "HD05:L:mon-sat-morning"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD05"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD05:policy:adult:0",
+          "amount": 198,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD05"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD05:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 5,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "5岁及以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD05"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD05:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 6,
+            "max": 12,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 108,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "6-12岁儿童 ¥108/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD05"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD05:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 13,
+            "max": 17,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 198,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "13-17岁儿童 ¥198/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [
+        {
+          "id": "HD05:L:sunday",
+          "field": "breakfast_service_availability",
+          "type": "coverage_gap_vs_legacy_daily_policy",
+          "weekdays": [
+            7
+          ],
+          "timeScope": null,
+          "dateScope": {
+            "kind": "published_weekly_schedule",
+            "validFrom": null,
+            "validTo": null
+          },
+          "sourceIds": [
+            "L:L04"
+          ],
+          "factIds": [
+            "HD05:L:sunday-listed-periods"
+          ],
+          "reason": "Asia Bistro周日只公开晚间营业时段，早餐供应情况未知；通用每日时段不能替代周日确认。",
+          "action": "require_confirmation_for_affected_time",
+          "readAt": "2026-10-23",
+          "tripConfirmed": false
+        }
+      ],
+      "notes": [
+        {
+          "sourceIds": [
+            "L:L04"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD05:L:fee",
+          "kind": "breakfast.available_for_fee",
+          "value": true,
+          "summary": "实际展开早餐FAQ，确认Asia Bistro有付费早餐。"
+        },
+        {
+          "sourceIds": [
+            "L:L04"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "specific_restaurant",
+          "weekdays": [
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD05:L:sunday-listed-periods",
+          "kind": "restaurant.listed_periods",
+          "value": [
+            {
+              "start": "17:30",
+              "end": "21:30"
+            }
+          ],
+          "summary": "周日只列晚间营业，未列早晨；未明说早餐关闭。"
+        }
+      ],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates",
+        "儿童价和当前套餐人数",
+        "周日早餐实际安排",
+        "成人单买金额",
+        "早餐具体自助/单点形式及地方餐品"
+      ]
+    },
+    {
+      "policyId": "HD07",
+      "evidenceHotelId": "H04",
+      "name": "杭州西溪喜来登度假大酒店",
+      "address": "西湖区紫金港路西溪天堂国际旅游综合体1号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD07"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD07:policy:hours:0",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "E:S008"
+          ],
+          "readAt": "2026-10-10",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD07:evidence:MS401",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": "盛宴标帜（Feast）"
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "E:S008",
+            "P:HD07"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD07:compatible:0",
+          "start": "06:30",
+          "end": "10:30",
+          "factIds": [
+            "HD07:policy:hours:0",
+            "HD07:evidence:MS401"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD07"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD07:policy:adult:0",
+          "amount": 196,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD07"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD07:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 5,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "5岁及以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD07"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD07:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 6,
+            "max": 11,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 98,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "6-11岁儿童 ¥98/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD07"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD07:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 12,
+            "max": 17,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 196,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "12-17岁儿童 ¥196/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [],
+      "notes": [
+        {
+          "sourceIds": [
+            "O:HD07"
+          ],
+          "readAt": "2026-10-12",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "kind": "official_restaurant_description",
+          "text": "酒店内付费早餐；官网称自助餐供应包含亚洲风味的国际美食。",
+          "familyNote": "官网餐厅页没有可直接套用到本次房价的儿童早餐权益。",
+          "rawHours": "每日 06:30–10:30"
+        }
+      ],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates"
+      ]
+    },
+    {
+      "policyId": "HD08",
+      "evidenceHotelId": "H13",
+      "name": "杭州西湖假日酒店",
+      "address": "拱墅区延安路348号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD08"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:policy:hours:0",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "P:HD08"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:policy:hours:1",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "E:S038"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:evidence:MS1215",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": "云栖餐厅"
+        },
+        {
+          "sourceIds": [
+            "L:L05"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:L:weekday-description",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": "云栖餐厅（11楼）"
+        },
+        {
+          "sourceIds": [
+            "L:L05"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:L:weekend-description",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": "云栖餐厅（11楼）"
+        },
+        {
+          "sourceIds": [
+            "L:L05"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:L:daily-table",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": "云栖餐厅（11楼）"
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "L:L05"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "derived_common_official_published_interval",
+          "scope": "published_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:compatible:0",
+          "start": "06:30",
+          "end": "10:00",
+          "factIds": [
+            "HD08:L:weekday-description",
+            "HD08:L:daily-table"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        },
+        {
+          "sourceIds": [
+            "L:L05"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "derived_common_official_published_interval",
+          "scope": "published_reference_not_stay_guarantee",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:compatible:1",
+          "start": "06:30",
+          "end": "10:00",
+          "factIds": [
+            "HD08:L:weekend-description",
+            "HD08:L:daily-table"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD08"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:policy:adult:0",
+          "amount": 98,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD08"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:policy:adult:1",
+          "amount": 98,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD08"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 12,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "12岁及以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD08"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 13,
+            "max": 17,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 98,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "13-17岁儿童 ¥98/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "L:L05",
+            "L:L08",
+            "L:L09"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "conditional_program_not_current_booking_entitlement",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:program:IHG_KIDS_EAT_FREE_GREATER_CHINA",
+          "kind": "conditional_program",
+          "predicate": null,
+          "benefit": {
+            "type": "free_buffet_breakfast_if_all_conditions_confirmed",
+            "amount": 0,
+            "currency": "CNY"
+          },
+          "conditions": {
+            "registeredHotelGuest": true,
+            "adultAccompaniment": true,
+            "withinRestaurantHours": true,
+            "atDesignatedAllDayRestaurant": true,
+            "childAgeWithValidProof": {
+              "maxYears": 12,
+              "maxInclusive": true
+            },
+            "whenNoAcceptedAgeProof": {
+              "maxHeightM": 1.4,
+              "maxInclusive": true,
+              "hotelMeasurementOrAcceptanceRequired": true
+            },
+            "adultOriginalPriceBreakfastOrBreakfastCoveredInRoomRate": true,
+            "languageVariants": [
+              {
+                "sourceId": "L:L08",
+                "regionSubsection": "Greater China",
+                "rateRequirement": "standard_room_rate_only",
+                "excluded": [
+                  "discount_rate",
+                  "group_rate",
+                  "employee_rate"
+                ],
+                "maxChildrenPerFamilyRoom": 2,
+                "familyDefinition": "same_room"
+              },
+              {
+                "sourceId": "L:L09",
+                "regionSubsection": "Greater China",
+                "allowedRateNames": [
+                  "Advance Booking Offer (including breakfast)",
+                  "Best Flexible Rate (including breakfast)"
+                ],
+                "excluded": [
+                  "discount_rate",
+                  "corporate_rate",
+                  "employee_rate",
+                  "other_rates"
+                ],
+                "maxFreeChildrenPerOriginalPriceAdult": 2
+              }
+            ],
+            "currentBookingMatch": "unknown",
+            "ageInputRequirement": "integer_completed_years_at_meal_date"
+          },
+          "ambiguities": [
+            "酒店按哪个语言版本执行房价限制和人数上限",
+            "用户套餐是否符合允许房价，而不是看到12岁以下便默认免费"
+          ],
+          "programId": "IHG_KIDS_EAT_FREE_GREATER_CHINA",
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [
+        {
+          "id": "HD08:L:weekend-end",
+          "field": "breakfast_service_availability",
+          "type": "within_page_conflict",
+          "weekdays": [
+            6,
+            7
+          ],
+          "timeScope": {
+            "start": "10:00",
+            "end": "10:30"
+          },
+          "dateScope": {
+            "kind": "published_weekly_schedule",
+            "validFrom": null,
+            "validTo": null
+          },
+          "sourceIds": [
+            "L:L05"
+          ],
+          "factIds": [
+            "HD08:L:weekend-description",
+            "HD08:L:daily-table"
+          ],
+          "reason": "官方餐饮简介列周末早餐至10:30，餐次表列每日到10:00；周末10:00至10:30的供应情况需确认。",
+          "action": "require_confirmation_for_affected_time",
+          "readAt": "2026-10-23",
+          "tripConfirmed": false
+        },
+        {
+          "id": "HD08:program:language-versions",
+          "field": "child_program_rate_and_count_eligibility",
+          "type": "official_language_version_difference",
+          "weekdays": null,
+          "timeScope": null,
+          "dateScope": {
+            "kind": "conditional_program",
+            "validFrom": null,
+            "validTo": null
+          },
+          "sourceIds": [
+            "L:L05",
+            "L:L08",
+            "L:L09"
+          ],
+          "factIds": [],
+          "reason": "集团中英文大中华区条款的房价与人数限制不一致，保留两版；本次房价及人数须确认。",
+          "action": "confirm_rate_plan_and_allowed_child_count",
+          "readAt": "2026-10-23",
+          "tripConfirmed": false
+        }
+      ],
+      "notes": [
+        {
+          "sourceIds": [
+            "L:L05"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:L:format",
+          "kind": "breakfast.format",
+          "value": "buffet",
+          "summary": "餐饮简介明确中西式自助早餐。"
+        },
+        {
+          "sourceIds": [
+            "L:L05",
+            "L:L08",
+            "L:L09"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "conditional_brand_program",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD08:L:program-participation",
+          "kind": "breakfast.conditional_child_program",
+          "value": {
+            "program_id": "IHG_KIDS_EAT_FREE_GREATER_CHINA"
+          },
+          "summary": "具体酒店页声明儿童用餐项目；集团大中华条款补充限制，需匹配本次房价。"
+        }
+      ],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates",
+        "周末实际早餐结束时间",
+        "成人单买价",
+        "本次可免费儿童人数及酒店采用的条款版本",
+        "用户套餐是否属于该项目允许的房价类型"
+      ]
+    },
+    {
+      "policyId": "HD09",
+      "evidenceHotelId": "H06",
+      "name": "杭州武林万怡酒店",
+      "address": "拱墅区湖墅南路28号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD09"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD09:policy:hours:0",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "L:L03"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD09:L:mon-sat-hours",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": "MoMo Café"
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "L:L03"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "derived_common_official_published_interval",
+          "scope": "published_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD09:compatible:0",
+          "start": "06:30",
+          "end": "10:30",
+          "factIds": [
+            "HD09:L:mon-sat-hours"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD09"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD09:policy:adult:0",
+          "amount": 128,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD09"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD09:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 5,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "5岁及以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD09"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD09:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 6,
+            "max": 11,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 68,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "6-11岁儿童 ¥68/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD09"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD09:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 12,
+            "max": 17,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 128,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "12-17岁儿童 ¥128/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [
+        {
+          "id": "HD09:L:sunday",
+          "field": "breakfast_service_availability",
+          "type": "within_page_conflict",
+          "weekdays": [
+            7
+          ],
+          "timeScope": null,
+          "dateScope": {
+            "kind": "published_weekly_schedule",
+            "validFrom": null,
+            "validTo": null
+          },
+          "sourceIds": [
+            "L:L03"
+          ],
+          "factIds": [
+            "HD09:L:sunday-closed",
+            "HD09:L:daily-description"
+          ],
+          "reason": "同一官方餐厅页的介绍称每日提供早餐，星期表却列周日关闭；周日是否另有早餐安排需要向酒店确认。",
+          "action": "require_confirmation_for_affected_time",
+          "readAt": "2026-10-23",
+          "tripConfirmed": false
+        }
+      ],
+      "notes": [
+        {
+          "sourceIds": [
+            "O:HD09"
+          ],
+          "readAt": "2026-10-12",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "kind": "official_restaurant_description",
+          "text": "官网称供应自助或单点早餐。",
+          "familyNote": "官网的周日信息与第三方政策快照可能不一致；周日入住请直接向酒店核对。",
+          "rawHours": "官网页面列周一至周六 06:30–10:30，周日标注关闭"
+        },
+        {
+          "sourceIds": [
+            "L:L03"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD09:L:format",
+          "kind": "breakfast.format",
+          "value": [
+            "buffet",
+            "a_la_carte"
+          ],
+          "summary": "餐厅介绍明确提供自助或单点早餐。"
+        },
+        {
+          "sourceIds": [
+            "L:L03"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "specific_restaurant",
+          "weekdays": [
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD09:L:sunday-closed",
+          "kind": "restaurant.closed",
+          "value": true,
+          "summary": "餐厅星期表周日标关闭；只作官网声明，不证明整家酒店没有替代早餐。"
+        },
+        {
+          "sourceIds": [
+            "L:L03"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD09:L:daily-description",
+          "kind": "breakfast.daily_description",
+          "value": true,
+          "summary": "同页餐厅简介仍描述每日早餐，与周日关闭表冲突。"
+        }
+      ],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates",
+        "儿童年龄/身高门槛与费用",
+        "周日是否另有早餐安排及实际餐厅",
+        "当前套餐早餐权益",
+        "成人早餐单买价"
+      ]
+    },
+    {
+      "policyId": "HD13",
+      "evidenceHotelId": "H07",
+      "name": "杭州香格里拉饭店",
+      "address": "西湖区北山路78号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD13"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD13:policy:hours:0",
+          "start": "06:00",
+          "end": "10:00",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "P:HD13"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD13:policy:hours:1",
+          "start": "06:00",
+          "end": "10:30",
+          "restaurant": null
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "P:HD13"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD13:compatible:0",
+          "start": "06:00",
+          "end": "10:00",
+          "factIds": [
+            "HD13:policy:hours:0"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        },
+        {
+          "sourceIds": [
+            "P:HD13"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD13:compatible:1",
+          "start": "06:00",
+          "end": "10:30",
+          "factIds": [
+            "HD13:policy:hours:1"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD13"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD13:policy:adult:0",
+          "amount": 184,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD13"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD13:policy:adult:1",
+          "amount": 184,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD13"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD13:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 6,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "6岁及以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD13"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD13:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 7,
+            "max": 11,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 92,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "7-11岁儿童 ¥92/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD13"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD13:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 12,
+            "max": 17,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 184,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "12-17岁儿童 ¥184/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [],
+      "notes": [],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates"
+      ]
+    },
+    {
+      "policyId": "HD14",
+      "evidenceHotelId": "H03",
+      "name": "杭州钱江新城万豪酒店",
+      "address": "上城区剧院路399号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD14"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD14:policy:hours:0",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "E:S006"
+          ],
+          "readAt": "2026-10-10",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD14:evidence:MS301",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": "City Bistro"
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "E:S006",
+            "P:HD14"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD14:compatible:0",
+          "start": "06:30",
+          "end": "10:30",
+          "factIds": [
+            "HD14:policy:hours:0",
+            "HD14:evidence:MS301"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD14"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD14:policy:adult:0",
+          "amount": 198,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD14"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD14:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 5,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "5岁及以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD14"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD14:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 6,
+            "max": 11,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 99,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "6-11岁儿童 ¥99/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD14"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD14:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 12,
+            "max": 17,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 198,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "12-17岁儿童 ¥198/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [],
+      "notes": [
+        {
+          "sourceIds": [
+            "O:HD14"
+          ],
+          "readAt": "2026-10-12",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "kind": "official_restaurant_description",
+          "text": "官网确认付费早餐；全日制餐厅设现场烹饪台与开放式厨房。",
+          "familyNote": "未在餐厅页核到儿童单买价；按本次商品与酒店说明确认。",
+          "rawHours": "每日 06:30–10:30"
+        }
+      ],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates"
+      ]
+    },
+    {
+      "policyId": "HD16",
+      "evidenceHotelId": "H05",
+      "name": "杭州西子湖四季酒店",
+      "address": "西湖区灵隐路5号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD16"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD16:policy:hours:0",
+          "start": "07:00",
+          "end": "11:00",
+          "restaurant": null
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "P:HD16"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD16:compatible:0",
+          "start": "07:00",
+          "end": "11:00",
+          "factIds": [
+            "HD16:policy:hours:0"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD16"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD16:policy:adult:0",
+          "amount": 336,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD16"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD16:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 4,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "4岁及以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD16"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD16:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 5,
+            "max": 11,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 168,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "5-11岁儿童 ¥168/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD16"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD16:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 12,
+            "max": 17,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 336,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "12-17岁儿童 ¥336/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "O:HD16:family"
+          ],
+          "readAt": "2026-10-12",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_official_family_offer_not_user_entitlement",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD16:official:family-description",
+          "kind": "conditional_program_description",
+          "predicate": null,
+          "amount": null,
+          "currency": "CNY",
+          "basis": "unknown",
+          "summary": "官网亲子套餐包含两位成人及一位 12 岁以下儿童早餐，但仅适用该套餐，其他房型不可套用。",
+          "conditions": {
+            "exactOfferMatch": "unknown",
+            "applicableDates": "unknown",
+            "useCount": "unknown",
+            "currentBookingMatch": "unknown"
+          },
+          "ambiguities": [
+            "specific_offer_only_do_not_apply_to_other_rates"
+          ],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [],
+      "notes": [
+        {
+          "sourceIds": [
+            "O:HD16"
+          ],
+          "readAt": "2026-10-12",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "kind": "official_restaurant_description",
+          "text": "西子湖四季官网列有早餐服务；套餐页另有特定亲子套餐的早餐权益。",
+          "familyNote": "官网亲子套餐包含两位成人及一位 12 岁以下儿童早餐，但仅适用该套餐，其他房型不可套用。",
+          "rawHours": "早餐 07:00–11:00"
+        }
+      ],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates"
+      ]
+    },
+    {
+      "policyId": "HD19",
+      "evidenceHotelId": "H12",
+      "name": "杭州拱墅智选假日酒店",
+      "address": "拱墅区杭行路220号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "E:S037"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD19:evidence:MS1213",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": "智空间"
+        },
+        {
+          "sourceIds": [
+            "E:S037"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD19:evidence:MS1214",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": "智空间"
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "E:S037"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD19:compatible:0",
+          "start": "06:30",
+          "end": "10:00",
+          "factIds": [
+            "HD19:evidence:MS1213"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        },
+        {
+          "sourceIds": [
+            "E:S037"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD19:compatible:1",
+          "start": "06:30",
+          "end": "10:30",
+          "factIds": [
+            "HD19:evidence:MS1214"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD19"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD19:policy:adult:0",
+          "amount": 58,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD19"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD19:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": null,
+            "max": 1.2,
+            "minInclusive": null,
+            "maxInclusive": null,
+            "uncertainEqualities": [
+              1.2
+            ]
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.2米以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [
+            "height_boundary_equality_not_explicit"
+          ],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD19"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD19:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": 1.2,
+            "max": 1.4,
+            "minInclusive": null,
+            "maxInclusive": null,
+            "uncertainEqualities": [
+              1.2,
+              1.4
+            ]
+          },
+          "amount": 28,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.2–1.4米以下儿童 ¥28/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [
+            "height_boundary_equality_not_explicit"
+          ],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD19"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD19:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": 1.4,
+            "max": null,
+            "minInclusive": true,
+            "maxInclusive": null,
+            "uncertainEqualities": []
+          },
+          "amount": 58,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.4米及以上儿童 ¥58/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [],
+      "notes": [],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates"
+      ]
+    },
+    {
+      "policyId": "HD20",
+      "evidenceHotelId": "H17",
+      "name": "杭州钱江世纪城智选假日酒店",
+      "address": "萧山区市心北路708号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD20"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD20:policy:hours:0",
+          "start": "07:00",
+          "end": "10:30",
+          "restaurant": null
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "P:HD20"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD20:compatible:0",
+          "start": "07:00",
+          "end": "10:30",
+          "factIds": [
+            "HD20:policy:hours:0"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD20"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD20:policy:adult:0",
+          "amount": 48,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD20"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD20:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": null,
+            "max": 1.2,
+            "minInclusive": null,
+            "maxInclusive": null,
+            "uncertainEqualities": [
+              1.2
+            ]
+          },
+          "amount": 30,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.2米以下儿童 ¥30/人（页面明示不免费）",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [
+            "height_boundary_equality_not_explicit"
+          ],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD20"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD20:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": 1.2,
+            "max": null,
+            "minInclusive": true,
+            "maxInclusive": null,
+            "uncertainEqualities": []
+          },
+          "amount": 48,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.2米及以上儿童 ¥48/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [],
+      "notes": [],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates"
+      ]
+    },
+    {
+      "policyId": "HD21",
+      "evidenceHotelId": "H18",
+      "name": "杭州九州智选假日酒店",
+      "address": "上城区九昌路8号润广大厦",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD21"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD21:policy:hours:0",
+          "start": "06:30",
+          "end": "09:30",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "P:HD21"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD21:policy:hours:1",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": null
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "P:HD21"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD21:compatible:0",
+          "start": "06:30",
+          "end": "09:30",
+          "factIds": [
+            "HD21:policy:hours:0"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        },
+        {
+          "sourceIds": [
+            "P:HD21"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD21:compatible:1",
+          "start": "06:30",
+          "end": "10:00",
+          "factIds": [
+            "HD21:policy:hours:1"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD21"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD21:policy:adult:0",
+          "amount": 48,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD21"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD21:policy:adult:1",
+          "amount": 48,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD21"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD21:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": null,
+            "max": 1.4,
+            "minInclusive": null,
+            "maxInclusive": null,
+            "uncertainEqualities": [
+              1.4
+            ]
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.4米以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [
+            "height_boundary_equality_not_explicit"
+          ],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD21"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD21:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": 1.4,
+            "max": null,
+            "minInclusive": true,
+            "maxInclusive": null,
+            "uncertainEqualities": []
+          },
+          "amount": 28,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.4米及以上儿童 ¥28/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [],
+      "notes": [],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates"
+      ]
+    },
+    {
+      "policyId": "HD22",
+      "evidenceHotelId": "H19",
+      "name": "杭州东站智选假日酒店",
+      "address": "上城区环站东路777号东站西子国际C栋",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD22"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD22:policy:hours:0",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": null
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "P:HD22"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD22:compatible:0",
+          "start": "06:30",
+          "end": "10:00",
+          "factIds": [
+            "HD22:policy:hours:0"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD22"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD22:policy:adult:0",
+          "amount": 58,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD22"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD22:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": null,
+            "max": 1.2,
+            "minInclusive": null,
+            "maxInclusive": null,
+            "uncertainEqualities": [
+              1.2
+            ]
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.2米以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [
+            "height_boundary_equality_not_explicit"
+          ],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD22"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD22:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": 1.2,
+            "max": 1.5,
+            "minInclusive": null,
+            "maxInclusive": null,
+            "uncertainEqualities": [
+              1.2,
+              1.5
+            ]
+          },
+          "amount": 29,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.2–1.5米以下儿童 ¥29/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [
+            "height_boundary_equality_not_explicit"
+          ],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD22"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD22:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": 1.5,
+            "max": null,
+            "minInclusive": true,
+            "maxInclusive": null,
+            "uncertainEqualities": []
+          },
+          "amount": 58,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.5米及以上儿童 ¥58/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [],
+      "notes": [],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates"
+      ]
+    },
+    {
+      "policyId": "HD23",
+      "evidenceHotelId": "H20",
+      "name": "杭州西湖东智选假日酒店",
+      "address": "上城区西湖大道2号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD23"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD23:policy:hours:0",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": null
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "P:HD23"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD23:compatible:0",
+          "start": "06:30",
+          "end": "10:00",
+          "factIds": [
+            "HD23:policy:hours:0"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD23"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD23:policy:adult:0",
+          "amount": 58,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD23"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD23:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": null,
+            "max": 1.2,
+            "minInclusive": null,
+            "maxInclusive": null,
+            "uncertainEqualities": [
+              1.2
+            ]
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.2米以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [
+            "height_boundary_equality_not_explicit"
+          ],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD23"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD23:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": 1.2,
+            "max": 1.4,
+            "minInclusive": null,
+            "maxInclusive": null,
+            "uncertainEqualities": [
+              1.2,
+              1.4
+            ]
+          },
+          "amount": 29,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.2–1.4米以下儿童 ¥29/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [
+            "height_boundary_equality_not_explicit"
+          ],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD23"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD23:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": 1.4,
+            "max": null,
+            "minInclusive": true,
+            "maxInclusive": null,
+            "uncertainEqualities": []
+          },
+          "amount": 58,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.4米及以上儿童 ¥58/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [],
+      "notes": [],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates"
+      ]
+    },
+    {
+      "policyId": "HD24",
+      "evidenceHotelId": "H01",
+      "name": "杭州西湖区万豪万枫酒店",
+      "address": "西湖区益乐路38号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD24"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD24:policy:hours:0",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": null
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "P:HD24"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "derived_common_historical_interval",
+          "scope": "historical_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD24:compatible:0",
+          "start": "06:30",
+          "end": "10:30",
+          "factIds": [
+            "HD24:policy:hours:0"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [
+        {
+          "sourceIds": [
+            "P:HD24"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD24:policy:adult:0",
+          "amount": 68,
+          "currency": "CNY",
+          "basis": "per_adult_per_breakfast",
+          "isFromPrice": false,
+          "taxInclusion": "unknown",
+          "serviceChargeInclusion": "unknown",
+          "automaticQuoteUse": false
+        }
+      ],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD24"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD24:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 0,
+            "max": 6,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "6岁及以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD24"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD24:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 7,
+            "max": 12,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 34,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "7-12岁儿童 ¥34/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD24"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD24:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "completed_age_years",
+            "min": 13,
+            "max": 17,
+            "minInclusive": true,
+            "maxInclusive": true,
+            "uncertainEqualities": []
+          },
+          "amount": 68,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "13-17岁儿童 ¥68/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [],
+      "notes": [],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates"
+      ]
+    },
+    {
+      "policyId": "HD25",
+      "evidenceHotelId": null,
+      "name": "杭州金沙湖和达希尔顿嘉悦里酒店",
+      "address": "钱塘区金沙大道835号",
+      "tripConfirmed": false,
+      "publishedBreakfastWindows": [
+        {
+          "sourceIds": [
+            "P:HD25"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:policy:hours:0",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "P:HD25"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "general_retail_breakfast_policy",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:policy:hours:1",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": null
+        },
+        {
+          "sourceIds": [
+            "L:L06"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:L:browser-weekday",
+          "start": "06:00",
+          "end": "10:00",
+          "restaurant": "GELI Café & Bar"
+        },
+        {
+          "sourceIds": [
+            "L:L06"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:L:browser-weekend",
+          "start": "06:00",
+          "end": "10:30",
+          "restaurant": "GELI Café & Bar"
+        },
+        {
+          "sourceIds": [
+            "L:L07"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:L:reader-weekday",
+          "start": "06:30",
+          "end": "10:00",
+          "restaurant": "GELI Café & Bar"
+        },
+        {
+          "sourceIds": [
+            "L:L07"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:L:reader-weekend",
+          "start": "06:30",
+          "end": "10:30",
+          "restaurant": "GELI Café & Bar"
+        }
+      ],
+      "compatiblePublishedWindows": [
+        {
+          "sourceIds": [
+            "L:L06",
+            "L:L07"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "derived_common_official_published_interval",
+          "scope": "published_reference_not_stay_guarantee",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:compatible:0",
+          "start": "06:30",
+          "end": "10:00",
+          "factIds": [
+            "HD25:L:browser-weekday",
+            "HD25:L:reader-weekday"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        },
+        {
+          "sourceIds": [
+            "L:L06",
+            "L:L07"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "derived_common_official_published_interval",
+          "scope": "published_reference_not_stay_guarantee",
+          "weekdays": [
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:compatible:1",
+          "start": "06:30",
+          "end": "10:30",
+          "factIds": [
+            "HD25:L:browser-weekend",
+            "HD25:L:reader-weekend"
+          ],
+          "derivation": "intersection_of_cited_published_windows",
+          "currentStayGuarantee": false
+        }
+      ],
+      "adultPrices": [],
+      "childRules": [
+        {
+          "sourceIds": [
+            "P:HD25"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:policy:child:0",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": null,
+            "max": 1.2,
+            "minInclusive": null,
+            "maxInclusive": null,
+            "uncertainEqualities": [
+              1.2
+            ]
+          },
+          "amount": 0,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.2米以下儿童 免费",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [
+            "height_boundary_equality_not_explicit"
+          ],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD25"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:policy:child:1",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": 1.2,
+            "max": 1.4,
+            "minInclusive": null,
+            "maxInclusive": null,
+            "uncertainEqualities": [
+              1.2,
+              1.4
+            ]
+          },
+          "amount": 56,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.2–1.4米以下儿童 ¥56/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [
+            "height_boundary_equality_not_explicit"
+          ],
+          "automaticQuoteUse": false
+        },
+        {
+          "sourceIds": [
+            "P:HD25"
+          ],
+          "readAt": "2026-10-11",
+          "assurance": "public_policy_snapshot_not_live_rechecked",
+          "scope": "retail_child_breakfast_not_room_package",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:policy:child:2",
+          "kind": "retail_child_price",
+          "predicate": {
+            "measure": "height_m",
+            "min": 1.4,
+            "max": null,
+            "minInclusive": true,
+            "maxInclusive": null,
+            "uncertainEqualities": []
+          },
+          "amount": 112,
+          "currency": "CNY",
+          "basis": "per_child_per_breakfast",
+          "rawRule": "1.4米及以上儿童 ¥112/人",
+          "conditions": {
+            "currentBookingMatch": "unknown",
+            "membershipRequirement": "unknown",
+            "adultAccompanimentRequirement": "unknown"
+          },
+          "ambiguities": [],
+          "automaticQuoteUse": false
+        }
+      ],
+      "conflicts": [
+        {
+          "id": "HD25:L:start",
+          "field": "breakfast_service_availability",
+          "type": "official_render_variant_conflict",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "timeScope": {
+            "start": "06:00",
+            "end": "06:30"
+          },
+          "dateScope": {
+            "kind": "published_weekly_schedule",
+            "validFrom": null,
+            "validTo": null
+          },
+          "sourceIds": [
+            "L:L06",
+            "L:L07"
+          ],
+          "factIds": [
+            "HD25:L:browser-weekday",
+            "HD25:L:browser-weekend",
+            "HD25:L:reader-weekday",
+            "HD25:L:reader-weekend"
+          ],
+          "reason": "官方浏览器正文早餐从06:00开始，另一官方读取版本从06:30开始；06:00至06:30的早餐供应需确认。",
+          "action": "require_confirmation_for_affected_time",
+          "readAt": "2026-10-23",
+          "tripConfirmed": false
+        }
+      ],
+      "notes": [
+        {
+          "sourceIds": [
+            "O:HD25"
+          ],
+          "readAt": "2026-10-12",
+          "assurance": "official_snapshot_not_live_rechecked",
+          "scope": "specific_hotel_restaurant",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "kind": "official_restaurant_description",
+          "text": "希尔顿官网确认餐厅供应早餐、午餐和晚餐，强调杭州本地食材；官网未给出早餐单买价或房型权益。",
+          "familyNote": "开始时间不能当作已核定；出门早的住客请向酒店确认。官网未核到儿童单买价或本次房型权益。",
+          "rawHours": "官网同页两个模块对开始时间写法不同：早餐介绍写 06:30，餐厅营业栏写 06:00；结束时间为工作日 10:00、周末 10:30。"
+        },
+        {
+          "sourceIds": [
+            "L:L07"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:L:format",
+          "kind": "breakfast.format",
+          "value": "buffet",
+          "summary": "网页读取器的Breakfast专栏列自助；实际浏览器当前版本未显示该专栏。"
+        },
+        {
+          "sourceIds": [
+            "L:L07"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "breakfast_service",
+          "weekdays": null,
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:L:fee",
+          "kind": "breakfast.available_for_fee",
+          "value": true,
+          "summary": "网页读取器专栏称收费，但没有金额。"
+        },
+        {
+          "sourceIds": [
+            "L:L06"
+          ],
+          "readAt": "2026-10-23",
+          "assurance": "official_page_observed",
+          "scope": "specific_restaurant_not_meal",
+          "weekdays": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "validFrom": null,
+          "validTo": null,
+          "snapshot": true,
+          "tripConfirmed": false,
+          "id": "HD25:L:venue-hours",
+          "kind": "restaurant.general_hours",
+          "value": {
+            "start": "06:00",
+            "end": "23:00"
+          },
+          "summary": "展开Show hours后是全日餐厅时段，不用于补早餐结束。"
+        }
+      ],
+      "unknowns": [
+        "allergen_and_cross_contact_safety",
+        "current_booking_breakfast_people_and_use_count",
+        "current_stay_exception_dates",
+        "儿童年龄/身高门槛与单买价",
+        "实际早餐开始时间",
+        "成人单买价",
+        "本次房价早餐人数及次数"
+      ]
+    }
+  ],
+  "stats": {
+    "hotels": 15,
+    "officiallyRecheckedHotels": 5,
+    "hotelsWithSnapshotAdultPrice": 14,
+    "publishedBreakfastWindows": 38,
+    "compatiblePublishedWindows": 21,
+    "childRuleRecords": 48,
+    "conflictRecords": 7,
+    "tripConfirmedHotels": 0,
+    "currentBookingEntitlements": 0,
+    "redeemableVouchers": 0
+  }
+}
