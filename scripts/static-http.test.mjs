@@ -17,7 +17,7 @@ test('static HTTP gzip and ETags preserve bytes, revalidate changed content and 
   let child;
   t.after(async()=>{if(child&&child.exitCode===null){const ended=once(child,'exit');child.kill();await ended;}await rm(temp,{recursive:true,force:true});});
   await mkdir(path.join(temp,'data'));await mkdir(path.join(temp,'public'));
-  for(const file of ['server.mjs','model-quota.mjs','remote-model-quota.mjs','wav-audio.mjs','booking-extraction.mjs','request-cache.mjs','meal-refine.mjs'])await cp(path.join(root,file),path.join(temp,file));
+  for(const file of ['server.mjs','model-quota.mjs','remote-model-quota.mjs','wav-audio.mjs','booking-extraction.mjs','request-cache.mjs','meal-refine.mjs','trip-date-guard.mjs'])await cp(path.join(root,file),path.join(temp,file));
   for(const file of ['evidence.json','ranking.json','hotel_policy.json','hotel_meal_policies.json','hotel_breakfast_official.json','breakfast_spots.json','demo_hotel.json','cities.json'])await cp(path.join(root,'data',file),path.join(temp,'data',file));
   const fixtures={'index.html':'<!doctype html><title>中文首页</title>','style.css':'body { color: #123456; }','app.js':"export const title = '用餐计划一';",'icon.svg':'<svg xmlns="http://www.w3.org/2000/svg"><title>早餐</title></svg>','image.png':Buffer.from([137,80,78,71,13,10,26,10]),'hero.webp':Buffer.from('RIFF0000WEBP')};
   for(const [file,body] of Object.entries(fixtures))await writeFile(path.join(temp,'public',file),body);

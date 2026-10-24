@@ -4,6 +4,7 @@ import {createRemoteModelQuota} from './remote-model-quota.mjs';
 import {validateWavAudio} from './wav-audio.mjs';
 import {sanitizeBookingExtraction} from './booking-extraction.mjs';
 import {runMealRefine} from './meal-refine.mjs';
+import {guardSameWeekdayDates} from './trip-date-guard.mjs';
 import {createPublicQueryCache} from './request-cache.mjs';
 import { readFile, stat } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
@@ -407,7 +408,7 @@ async function understandTrip(input) {
   for(const field of ['check_in','check_out']) if(fields[field]&&!/^\d{4}-\d{2}-\d{2}$/.test(fields[field]))delete fields[field];
   if(fields.dietary?.includes('过敏')&&!evidence.dietary?.includes('过敏'))fields.dietary=evidence.dietary;
   if(fields.morning_departure&&!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(fields.morning_departure))delete fields.morning_departure;
-  return {fields,evidence,summary:clean(answer.summary,140),questions:Array.isArray(answer.questions)?answer.questions.slice(0,2).map(q=>clean(q,100)):[],model:payload.model};
+  return guardSameWeekdayDates({fields,evidence,summary:clean(answer.summary,140),questions:Array.isArray(answer.questions)?answer.questions.slice(0,2).map(q=>clean(q,100)):[],model:payload.model},{text,today:localToday});
 }
 
 async function explainPlan(input) {

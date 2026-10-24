@@ -428,7 +428,13 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
     const facts = getFacts();
     const frozen = current.selected.slots.filter(item => candidateKey(item)).map(item => ({date: item.date, meal: item.meal, kind: item.kind, candidateId: item.candidateId, locked: item.locked === true}));
     const candidates = [...(slot.meal === 'breakfast' ? [{id: 'hotel-breakfast', name: current.evidence.hotelBreakfast?.name || '酒店早餐', address: facts.hotel.address, onSite: true}, ...(current.evidence.candidates || [])] : candidateList(current.evidence))];
-    candidates.sort((a, b) => Number(b.id === candidateKey(slot)) - Number(a.id === candidateKey(slot)));
+    const requestText = text.normalize('NFKC').toLowerCase();
+    const mentioned = candidate => {
+      const name = String(candidate.name || '').normalize('NFKC').toLowerCase();
+      const branchless = name.replace(/[（(].*?[)）]/g, '').trim();
+      return [name, branchless, ...(branchless.match(/[\u4e00-\u9fff]{3,}/g) || [])].some(part => part.length >= 3 && requestText.includes(part));
+    };
+    candidates.sort((a, b) => Number(mentioned(b)) - Number(mentioned(a)) || Number(b.id === candidateKey(slot)) - Number(a.id === candidateKey(slot)) || Number(b.onSite === true) - Number(a.onSite === true) || Number(typeof b.route?.minutes === 'number') - Number(typeof a.route?.minutes === 'number'));
     const evaluated = [];
     for (const candidate of candidates) {
       const address = candidate.address || (candidate.onSite ? facts.hotel.address : '');
