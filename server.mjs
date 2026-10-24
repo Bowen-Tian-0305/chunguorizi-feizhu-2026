@@ -7,12 +7,15 @@ import {runMealRefine} from './meal-refine.mjs';
 import {createPublicQueryCache} from './request-cache.mjs';
 import { readFile, stat } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {gzip} from 'node:zlib';
 import { promisify } from 'node:util';
 import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const execFileAsync = promisify(execFile);
+const gzipAsync = promisify(gzip);
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC = path.join(ROOT, 'public');
 const evidence = JSON.parse(await readFile(path.join(ROOT, 'data/evidence.json'), 'utf8'));
@@ -473,15 +476,36 @@ async function explainPlan(input) {
     reason, checklist: selected.map(id => checks[id]), model: payload.model};
 }
 
-const contentTypes = {'.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png'};
-async function serveStatic(res, pathname) {
+const contentTypes = {'.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp':'image/webp', '.jpg':'image/jpeg', '.jpeg':'image/jpeg'};
+const compressedText = new Set(['.html','.css','.js','.svg']);
+function acceptsGzip(header='') {
+  const encodings=new Map(String(header).split(',').map(part=>{
+    const [name,...params]=part.trim().toLowerCase().split(';');
+    const quality=params.find(param=>param.trim().startsWith('q='));
+    const q=quality===undefined?1:Number(quality.trim().slice(2));
+    return [name,Number.isFinite(q)&&q>=0&&q<=1?q:0];
+  }));
+  return (encodings.get('gzip')??encodings.get('*')??0)>0;
+}
+async function serveStatic(req, res, pathname) {
   const relative = pathname === '/' ? '/index.html' : pathname;
   const file = path.resolve(PUBLIC, `.${relative}`);
   if (!file.startsWith(PUBLIC + path.sep)) return json(res, 403, {error: '拒绝访问'});
   const info = await stat(file);
   if (!info.isFile()) return json(res, 404, {error: '找不到文件'});
-  res.writeHead(200, {'Content-Type': `${contentTypes[path.extname(file)] || 'application/octet-stream'}; charset=utf-8`});
-  res.end(await readFile(file));
+  const extension=path.extname(file),text=compressedText.has(extension);
+  const source=await readFile(file);
+  const compressed=text&&acceptsGzip(req.headers['accept-encoding']);
+  const body=compressed?await gzipAsync(source):source;
+  const etag=`"${createHash('sha256').update(body).digest('hex')}"`;
+  const headers={'Content-Type':`${contentTypes[extension]||'application/octet-stream'}${text?'; charset=utf-8':''}`,'Cache-Control':'no-cache',ETag:etag,
+    ...(text?{Vary:'Accept-Encoding'}:{}),...(compressed?{'Content-Encoding':'gzip'}:{})};
+  // If-None-Match uses weak comparison; each encoded representation has its own content hash.
+  if(String(req.headers['if-none-match']||'').split(',').some(tag=>tag.trim()==='*'||tag.trim().replace(/^W\//,'')===etag)){
+    res.writeHead(304,headers);return res.end();
+  }
+  res.writeHead(200,{...headers,'Content-Length':body.length});
+  res.end(body);
 }
 
 http.createServer(async (req, res) => {
@@ -562,7 +586,7 @@ http.createServer(async (req, res) => {
       const body = await readBody(req, 20_000);
       return json(res, 200, await explainPlan(body));
     }
-    if (req.method === 'GET') return await serveStatic(res, url.pathname);
+    if (req.method === 'GET') return await serveStatic(req, res, url.pathname);
     return json(res, 405, {error: '不支持的方法'});
   } catch (error) {
     const status = error.status || (error.code === 'ENOENT' ? 404 : 500);
