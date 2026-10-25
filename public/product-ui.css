@@ -311,8 +311,6 @@ body[data-pane='result'] .nav-link[data-pane='result'] { color: var(--ui-ink); }
   .start-pitch h1 { margin: 7px 0 4px; color: #fff; font-size: 27px; line-height: 1.24; letter-spacing: -.035em; }
   .start-pitch p { margin: 0; color: #fffefa; font-size: 11px; line-height: 1.65; }
   .start-pitch p a { color: #fff; font-weight: 750; text-decoration: underline; text-underline-offset: 3px; margin-left: 5px; }
-  .start-photo-credit { align-self: flex-end; margin-top: 9px; color: #ffffffbf; font-size: 9px; }
-  body:not([data-city='杭州']) .start-photo-credit { display: none; }
   #hotelWorkspace { order: 1; margin-bottom: 10px; }
   #hotelPane .hero.hero-entry { order: 2; scroll-margin-top: 12px; }
   #hotelPane .intro-line, #hotelPane .demo-strip { display: none; }

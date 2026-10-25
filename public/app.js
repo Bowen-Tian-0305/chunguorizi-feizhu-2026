@@ -224,7 +224,6 @@ function applyCityVisual(){
   $('startCityLabel').textContent=`${name} · 从住处到餐桌`;
   $('heroCityLabel').textContent=`${name} · 从住处到餐桌`;
   $('heroCityCaption').textContent=name==='杭州'?'住得好，也吃得有滋味。':`到${name}，把一日三餐过得有滋味。`;
-  $('heroCityCredit').textContent=name==='杭州'?'杭州早餐氛围图 · AI 生成':'城市色彩海报';
   $('discoverNav').classList.toggle('hidden',name!=='杭州');
   const cuisine=cityCuisine[name]||`${name}特色菜`;
   const localChip=document.querySelector('#nearbySection .chip[data-local-cuisine]')||document.querySelector('#nearbySection .chip[data-keyword="杭帮菜"]');
