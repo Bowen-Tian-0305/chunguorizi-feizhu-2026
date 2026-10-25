@@ -14,15 +14,15 @@ Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/Users/bowentian/Documents/Codex/2026-1
     minor_version   : 512
     compatible_brands: isomiso2avc1mp41
     encoder         : Lavf62.12.100
-  Duration: 00:01:27.50, start: 0.000000, bitrate: 693 kb/s
-  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], 489 kb/s, 30 fps, 30 tbr, 15360 tbn (default)
+  Duration: 00:01:27.50, start: 0.000000, bitrate: 493 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080, 289 kb/s, 30 fps, 30 tbr, 15360 tbn (default)
     Metadata:
       handler_name    : VideoHandler
       encoder         : Lavc62.28.100 libx264
   Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 194 kb/s (default)
     Metadata:
       handler_name    : SoundHandler
-[Parsed_volumedetect_0 @ 0x7864c40600] n_samples: 0
+[Parsed_volumedetect_0 @ 0x756ac40600] n_samples: 0
 Stream mapping:
   Stream #0:1 -> #0:0 (aac (native) -> pcm_s16le (native))
 Press [q] to stop, [?] for help
@@ -36,11 +36,11 @@ Output #0, null, to 'pipe:':
     Metadata:
       encoder         : Lavc62.28.100 pcm_s16le
       handler_name    : SoundHandler
-[Parsed_volumedetect_0 @ 0x7864c40a80] n_samples: 8394752
-[Parsed_volumedetect_0 @ 0x7864c40a80] mean_volume: -19.1 dB
-[Parsed_volumedetect_0 @ 0x7864c40a80] max_volume: -3.6 dB
-[Parsed_volumedetect_0 @ 0x7864c40a80] histogram_3db: 247
-[Parsed_volumedetect_0 @ 0x7864c40a80] histogram_4db: 3681
-[Parsed_volumedetect_0 @ 0x7864c40a80] histogram_5db: 9181
-[out#0/null @ 0x7864c40300] video:0KiB audio:16396KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
-size=N/A time=00:01:27.47 bitrate=N/A speed=1.74e+03x elapsed=0:00:00.05
+[Parsed_volumedetect_0 @ 0x756ac40a80] n_samples: 8394752
+[Parsed_volumedetect_0 @ 0x756ac40a80] mean_volume: -19.1 dB
+[Parsed_volumedetect_0 @ 0x756ac40a80] max_volume: -3.6 dB
+[Parsed_volumedetect_0 @ 0x756ac40a80] histogram_3db: 247
+[Parsed_volumedetect_0 @ 0x756ac40a80] histogram_4db: 3681
+[Parsed_volumedetect_0 @ 0x756ac40a80] histogram_5db: 9181
+[out#0/null @ 0x756ac40300] video:0KiB audio:16396KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:01:27.47 bitrate=N/A speed=1.66e+03x elapsed=0:00:00.05

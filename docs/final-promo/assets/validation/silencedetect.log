@@ -14,8 +14,8 @@ Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/Users/bowentian/Documents/Codex/2026-1
     minor_version   : 512
     compatible_brands: isomiso2avc1mp41
     encoder         : Lavf62.12.100
-  Duration: 00:01:27.50, start: 0.000000, bitrate: 693 kb/s
-  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], 489 kb/s, 30 fps, 30 tbr, 15360 tbn (default)
+  Duration: 00:01:27.50, start: 0.000000, bitrate: 493 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080, 289 kb/s, 30 fps, 30 tbr, 15360 tbn (default)
     Metadata:
       handler_name    : VideoHandler
       encoder         : Lavc62.28.100 libx264
@@ -35,5 +35,5 @@ Output #0, null, to 'pipe:':
     Metadata:
       encoder         : Lavc62.28.100 pcm_s16le
       handler_name    : SoundHandler
-[out#0/null @ 0x79eac40300] video:0KiB audio:16396KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
-size=N/A time=00:01:27.47 bitrate=N/A speed=1.71e+03x elapsed=0:00:00.05
+[out#0/null @ 0x748703c300] video:0KiB audio:16396KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:01:27.47 bitrate=N/A speed=1.81e+03x elapsed=0:00:00.04

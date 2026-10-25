@@ -2,5 +2,7 @@ raw/
 render/
 audio/
 validation/*.png
+validation/raw-contact-*.jpg
+validation/refined-contact-*.jpg
 *.log
 !validation/*.log

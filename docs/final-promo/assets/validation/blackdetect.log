@@ -14,8 +14,8 @@ Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/Users/bowentian/Documents/Codex/2026-1
     minor_version   : 512
     compatible_brands: isomiso2avc1mp41
     encoder         : Lavf62.12.100
-  Duration: 00:01:27.50, start: 0.000000, bitrate: 693 kb/s
-  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], 489 kb/s, 30 fps, 30 tbr, 15360 tbn (default)
+  Duration: 00:01:27.50, start: 0.000000, bitrate: 493 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080, 289 kb/s, 30 fps, 30 tbr, 15360 tbn (default)
     Metadata:
       handler_name    : VideoHandler
       encoder         : Lavc62.28.100 libx264
@@ -31,10 +31,10 @@ Output #0, null, to 'pipe:':
     minor_version   : 512
     compatible_brands: isomiso2avc1mp41
     encoder         : Lavf62.12.100
-  Stream #0:0(und): Video: wrapped_avframe, yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 30 fps, 30 tbn (default)
+  Stream #0:0(und): Video: wrapped_avframe, yuv420p(progressive), 1920x1080, q=2-31, 200 kb/s, 30 fps, 30 tbn (default)
     Metadata:
       encoder         : Lavc62.28.100 wrapped_avframe
       handler_name    : VideoHandler
-frame= 1484 fps=0.0 q=-0.0 size=N/A time=00:00:49.46 bitrate=N/A speed=97.6x elapsed=0:00:00.50
-[out#0/null @ 0x764b03c300] video:1087KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
-frame= 2625 fps=0.0 q=-0.0 Lsize=N/A time=00:01:27.50 bitrate=N/A speed=98.1x elapsed=0:00:00.89
+frame= 1498 fps=0.0 q=-0.0 size=N/A time=00:00:49.93 bitrate=N/A speed=99.4x elapsed=0:00:00.50
+[out#0/null @ 0x78dec60300] video:1087KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame= 2625 fps=0.0 q=-0.0 Lsize=N/A time=00:01:27.50 bitrate=N/A speed= 102x elapsed=0:00:00.85

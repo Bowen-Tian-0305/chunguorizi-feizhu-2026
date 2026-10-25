@@ -14,21 +14,78 @@
   "black_intervals": [],
   "silence_events": [],
   "last_frame_mean_rgb": [
-    37.20804494598765,
-    62.32167004243827,
-    56.942601755401235
+    33.53684027777778,
+    59.86298466435185,
+    54.2141333912037
   ],
-  "scene_midpoint_frames": [
-    "scene-01.png",
-    "scene-02.png",
-    "scene-03.png",
-    "scene-04.png",
-    "scene-05.png",
-    "scene-06.png",
-    "scene-07.png",
-    "scene-08.png",
-    "scene-09.png",
-    "scene-10.png",
-    "scene-11.png"
+  "scene_timing": [
+    {
+      "id": "01",
+      "target": 4.252167,
+      "actual": 4.266667
+    },
+    {
+      "id": "02",
+      "target": 8.196188,
+      "actual": 8.2
+    },
+    {
+      "id": "03",
+      "target": 7.510083,
+      "actual": 7.5
+    },
+    {
+      "id": "04",
+      "target": 8.805896,
+      "actual": 8.833333
+    },
+    {
+      "id": "05",
+      "target": 11.002229,
+      "actual": 11.0
+    },
+    {
+      "id": "06",
+      "target": 8.780188,
+      "actual": 8.766667
+    },
+    {
+      "id": "07",
+      "target": 9.538458,
+      "actual": 9.533333
+    },
+    {
+      "id": "08",
+      "target": 9.360646000000001,
+      "actual": 9.366667
+    },
+    {
+      "id": "09",
+      "target": 6.586542000000001,
+      "actual": 6.6
+    },
+    {
+      "id": "10",
+      "target": 6.883854,
+      "actual": 6.9
+    },
+    {
+      "id": "11",
+      "target": 6.152667,
+      "actual": 6.166667
+    }
+  ],
+  "scene_contact_sheets": [
+    "contact-01.jpg",
+    "contact-02.jpg",
+    "contact-03.jpg",
+    "contact-04.jpg",
+    "contact-05.jpg",
+    "contact-06.jpg",
+    "contact-07.jpg",
+    "contact-08.jpg",
+    "contact-09.jpg",
+    "contact-10.jpg",
+    "contact-11.jpg"
   ]
 }

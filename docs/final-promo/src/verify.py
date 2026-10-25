@@ -29,19 +29,29 @@ for expected,block in enumerate(blocks,1):
     if cues: assert start>=cues[-1]['end']-.15
     cues.append({'start':start,'end':end,'text':text})
 assert abs(cues[-1]['end']-timeline['cues'][-1]['end'])<.03
+scene_timing=[]
+for scene in timeline['scenes']:
+    path=ROOT/'assets'/'render'/f"scene-{scene['id']}.mp4"
+    actual=float(command(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',path]).stdout)
+    scene_timing.append({'id':scene['id'],'target':scene['duration'],'actual':actual})
+    assert abs(actual-scene['duration'])<=0.05, f"scene {scene['id']} duration differs from timeline"
 
 black=command(['ffmpeg','-i',VIDEO,'-vf','blackdetect=d=0.12:pix_th=0.06','-an','-f','null','-'])
 silence=command(['ffmpeg','-i',VIDEO,'-af','silencedetect=noise=-45dB:d=1.8','-vn','-f','null','-'])
 volume=command(['ffmpeg','-i',VIDEO,'-vn','-af','volumedetect','-f','null','-'])
 loudness=command(['ffmpeg','-i',VIDEO,'-vn','-af','ebur128=peak=true','-f','null','-'])
-(OUT/'blackdetect.log').write_text(black.stderr)
-(OUT/'silencedetect.log').write_text(silence.stderr)
-(OUT/'volumedetect.log').write_text(volume.stderr)
-(OUT/'ebur128.log').write_text(loudness.stderr)
+for name,result in [('blackdetect',black),('silencedetect',silence),('volumedetect',volume),('ebur128',loudness)]:
+    (OUT/f'{name}.log').write_text(re.sub(r'[ \t]+(?=\n|$)','',result.stderr))
 
 for scene in timeline['scenes']:
-    at=scene['start']+scene['duration']*.60
-    command(['ffmpeg','-y','-ss',at,'-i',VIDEO,'-frames:v','1',OUT/f"scene-{scene['id']}.png"])
+    points={'first':scene['start']+.08,'middle':scene['start']+scene['duration']*.5,'last':scene['start']+scene['duration']-.08}
+    contact=Image.new('RGB',(1920,360),'white')
+    for index,(label,at) in enumerate(points.items()):
+        target=OUT/f"scene-{scene['id']}-{label}.png"
+        command(['ffmpeg','-y','-ss',at,'-i',VIDEO,'-frames:v','1',target])
+        frame=Image.open(target).convert('RGB').resize((640,360),Image.Resampling.LANCZOS)
+        contact.paste(frame,(index*640,0))
+    contact.save(OUT/f"contact-{scene['id']}.jpg",quality=92)
 command(['ffmpeg','-y','-sseof','-0.08','-i',VIDEO,'-frames:v','1',OUT/'last-frame.png'])
 last=np_stat=ImageStat.Stat(Image.open(OUT/'last-frame.png').convert('RGB'))
 assert sum(last.mean)>45, 'last frame is unexpectedly black'
@@ -53,8 +63,8 @@ summary={
     'video_codec':video['codec_name'],'pixel_format':video['pix_fmt'],
     'audio_codec':audio['codec_name'],'sample_rate':audio['sample_rate'],'channels':audio['channels'],'audio_duration':audio.get('duration'),
     'subtitle_cues':len(cues),'black_intervals':black_intervals,'silence_events':silence_intervals,
-    'last_frame_mean_rgb':last.mean,
-    'scene_midpoint_frames':[f"scene-{s['id']}.png" for s in timeline['scenes']]
+    'last_frame_mean_rgb':last.mean,'scene_timing':scene_timing,
+    'scene_contact_sheets':[f"contact-{s['id']}.jpg" for s in timeline['scenes']]
 }
 assert 70<=duration<=90
 assert (video['width'],video['height'])==(1920,1080)
