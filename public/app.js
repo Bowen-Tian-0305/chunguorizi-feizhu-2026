@@ -221,9 +221,10 @@ function applyCityVisual(){
   document.body.dataset.city=name;document.body.dataset.theme=theme;
   document.querySelector('meta[name="theme-color"]').content={jade:'#3d5347',ink:'#445261',vermilion:'#874536',chili:'#823d2e',ochre:'#76603e',coast:'#3a5a60',citrus:'#536344'}[theme];
   $('cityPosterWord').textContent=name.slice(0,4);
-  $('heroCityLabel').textContent=`${cityEnglish[name]||'CITY NOTES'} / ${name}旅居灵感`;
-  $('heroCityCaption').textContent=name==='杭州'?'把早晨，留给喜欢的那一口。':`到${name}，把一日三餐过得有滋味。`;
-  $('heroCityCredit').textContent=name==='杭州'?'杭州早餐氛围图 · 非真实门店与商品':'城市色彩海报 · 不代表真实门店或商品';
+  $('startCityLabel').textContent=`${name} · 从住处到餐桌`;
+  $('heroCityLabel').textContent=`${name} · 从住处到餐桌`;
+  $('heroCityCaption').textContent=name==='杭州'?'住得好，也吃得有滋味。':`到${name}，把一日三餐过得有滋味。`;
+  $('heroCityCredit').textContent=name==='杭州'?'杭州早餐氛围图 · AI 生成':'城市色彩海报';
   $('discoverNav').classList.toggle('hidden',name!=='杭州');
   const cuisine=cityCuisine[name]||`${name}特色菜`;
   const localChip=document.querySelector('#nearbySection .chip[data-local-cuisine]')||document.querySelector('#nearbySection .chip[data-keyword="杭帮菜"]');
