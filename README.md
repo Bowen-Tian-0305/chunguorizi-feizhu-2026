@@ -6,9 +6,9 @@
 
 > 多买的早餐用得上吗？孩子那份怎么算？走出去吃会不会太折腾？套餐晚餐能安排在哪一天？
 
-[公网体验](https://47.238.228.164/) · [观看演示视频（投稿页内播放）](https://github.com/modelstudioai/modelstudioai.github.io/issues/179) · [下载视频](docs/demo/纯过日子-参赛演示.mp4) · [演示脚本](docs/demo/script.md) · [数据说明](docs/data-scope.md) · [公开文件检查](docs/privacy-check.md)
+[公网体验](https://47.238.228.164/) · [最终宣传片](docs/final-promo/纯过日子-最终宣传片.mp4) · [早期完整演示](docs/demo/纯过日子-参赛演示.mp4) · [最终宣传脚本](docs/final-promo/script.md) · [数据说明](docs/data-scope.md) · [公开文件检查](docs/privacy-check.md)
 
-演示视频长约 2 分 10 秒，采用实际运行画面剪辑、中文讲解和字幕。房价、餐券与反馈为明确标注的示例输入；地图地点和步行路线来自实际查询。
+最终宣传片约 88 秒，使用当前界面真实交互剪辑、中文配音与字幕。早期完整功能演示长约 2 分 10 秒。房价、餐券与反馈均为明确标注的示例输入；早期演示中的地图地点和步行路线来自当时的实际查询。
 
 ![从输入、核对到逐餐安排与调整的四步流程](docs/showcase/journey.png)
 

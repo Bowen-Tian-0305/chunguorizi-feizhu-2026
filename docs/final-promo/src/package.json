@@ -1,0 +1,14 @@
+{
+  "name": "chunguorizi-final-promo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node capture.mjs",
+    "audio": "python3 make_audio.py",
+    "build": "python3 build.py",
+    "verify": "python3 verify.py"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1"
+  }
+}

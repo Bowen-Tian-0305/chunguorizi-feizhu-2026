@@ -1,0 +1,6 @@
+raw/
+render/
+audio/
+validation/*.png
+*.log
+!validation/*.log

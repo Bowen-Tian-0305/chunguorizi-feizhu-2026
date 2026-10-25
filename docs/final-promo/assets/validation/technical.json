@@ -1,0 +1,34 @@
+{
+  "duration_seconds": 87.5,
+  "video_duration": "87.500000",
+  "width": 1920,
+  "height": 1080,
+  "fps": "30/1",
+  "video_codec": "h264",
+  "pixel_format": "yuv420p",
+  "audio_codec": "aac",
+  "sample_rate": "48000",
+  "channels": 2,
+  "audio_duration": "87.469000",
+  "subtitle_cues": 24,
+  "black_intervals": [],
+  "silence_events": [],
+  "last_frame_mean_rgb": [
+    37.20804494598765,
+    62.32167004243827,
+    56.942601755401235
+  ],
+  "scene_midpoint_frames": [
+    "scene-01.png",
+    "scene-02.png",
+    "scene-03.png",
+    "scene-04.png",
+    "scene-05.png",
+    "scene-06.png",
+    "scene-07.png",
+    "scene-08.png",
+    "scene-09.png",
+    "scene-10.png",
+    "scene-11.png"
+  ]
+}
