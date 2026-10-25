@@ -214,8 +214,8 @@ body[data-pane='result'] .nav-link[data-pane='result'] { color: var(--ui-ink); }
 .breakfast-options article+article { padding-left: 17px!important; border-left: 1px solid #f2dacb; }
 .break-even { background: var(--ui-success-soft); border-radius: 12px; }
 .plan-tabs { border-bottom: 1px solid var(--ui-line); }
-.plan-tabs button { font-weight: 650; }
-.plan-tabs button.active { color: var(--ui-accent-dark); border-color: var(--ui-accent); }
+.plan-tabs :is(button,a) { font-weight: 650; text-decoration: none; }
+.plan-tabs :is(button,a).active { color: var(--ui-accent-dark); border-color: var(--ui-accent); }
 .plan-refine { background: #f8faf9; border: 1px solid var(--ui-line); border-radius: 12px; padding: 16px; margin-bottom: 20px; }
 .plan-refine>span { font: 750 18px/1.4 var(--serif); }
 .meal-row { border-bottom: 1px solid var(--ui-line); }
@@ -311,7 +311,7 @@ body[data-pane='result'] .nav-link[data-pane='result'] { color: var(--ui-ink); }
   .start-pitch h1 { margin: 7px 0 4px; color: #fff; font-size: 27px; line-height: 1.24; letter-spacing: -.035em; }
   .start-pitch p { margin: 0; color: #fffefa; font-size: 11px; line-height: 1.65; }
   .start-pitch p a { color: #fff; font-weight: 750; text-decoration: underline; text-underline-offset: 3px; margin-left: 5px; }
-  #hotelWorkspace { order: 1; margin-bottom: 10px; }
+  #hotelWorkspace { order: 1; margin-bottom: 10px; scroll-margin-top: 12px; }
   #hotelPane .hero.hero-entry { order: 2; scroll-margin-top: 12px; }
   #hotelPane .intro-line, #hotelPane .demo-strip { display: none; }
   .hero-entry .eyebrow, .hero-entry h1, .hero-entry .hero-intro { display: none; }

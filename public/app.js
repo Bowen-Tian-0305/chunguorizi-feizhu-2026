@@ -247,8 +247,8 @@ function showPane(pane) {
   document.body.dataset.pane=pane;
   for (const name of ['hotel','preferences','result','discover']) $(name+'Pane').classList.toggle('hidden',name!==pane);
   document.querySelectorAll('.journey-step').forEach(button => button.classList.toggle('active',button.dataset.pane===pane));
-  window.scrollTo({top:0,behavior:'smooth'});
-  if (needsHotel) window.requestAnimationFrame(() => $('hotelWorkspace').scrollIntoView({behavior:'smooth',block:'start'}));
+  if (needsHotel) $('hotelWorkspace').scrollIntoView({behavior:'instant',block:'start'});
+  else window.scrollTo({top:0,behavior:'instant'});
 }
 document.querySelectorAll('[data-pane]').forEach(button => button.addEventListener('click',()=>showPane(button.dataset.pane)));
 $('startTrip').addEventListener('click',()=>{
@@ -1247,12 +1247,10 @@ $('makePlan').addEventListener('click', () => {
   renderOverview(b); renderBreakfastComparison(); renderTimeline(); $('planSection').classList.remove('hidden');showPane('result');
   setResultTab('all');
   loadPlanExplanation(b, f);
-  window.scrollTo({top:0,behavior:'smooth'});
 });
 function setResultTab(tab){
   document.querySelectorAll('[data-result-tab]').forEach(button=>button.classList.toggle('active',button.dataset.resultTab===tab));
   document.querySelectorAll('#timeline .meal-row').forEach(row=>row.classList.toggle('hidden',tab==='breakfast'&&row.dataset.mealType!=='早餐'));
-  if(tab==='restaurants')$('nearbySection').scrollIntoView({behavior:'smooth',block:'start'});
 }
 document.querySelectorAll('[data-result-tab]').forEach(button=>button.addEventListener('click',()=>setResultTab(button.dataset.resultTab)));
 
