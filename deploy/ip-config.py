@@ -27,7 +27,9 @@ if a.tls:
     private_key = root / "letsencrypt/live/chunguorizi-ip/privkey.pem"
     if not certificate.is_file() or not private_key.is_file():
         parser.error("Issue the production certificate before enabling TLS")
-    route = "location / { default_type text/plain; return 503 \"Preparing demo.\\n\"; }"
+    route = """error_page 503 /holding.html;
+      location = /holding.html { internal; root /usr/share/nginx/html; }
+      location / { add_header Retry-After \"Sat, 28 Nov 2026 00:00:00 +0800\" always; return 503; }"""
     if a.publish:
         route = """location / {
           proxy_pass http://app:4173;

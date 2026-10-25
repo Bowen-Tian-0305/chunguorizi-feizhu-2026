@@ -1,8 +1,8 @@
-![纯过日子参赛封面](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/6e177ab115c2500baa6d2e245bc580bf8c3ce770/docs/showcase/cover.png)
+![纯过日子参赛封面](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.1/docs/showcase/cover.png)
 
 **百炼驱动的响应式网页。** 从一句话或订房截图出发，核对酒店与套餐，再按日期安排三餐。AI 用于理解条件和提出单餐候选；金额、日期、餐券资格由规则计算，重要选择由用户确认。
 
-[立即体验网页](https://47.238.228.164/) · [观看 v1.3.0 演示视频](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.3.0/demo-v1.3.0.mp4) · [查看源码](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.3.0)
+[观看最终宣传片（约 88 秒）](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.3.1/promo-v1.3.1.mp4) · [体验网页（11 月 28 日 00:00 北京时间开放）](https://47.238.228.164/) · [查看源码](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.3.1)
 
 ## 参赛项目名称
 
@@ -22,7 +22,7 @@
 
 纯过日子把这些决定落到具体日期和餐次。先核对房价条件，再按真正会吃到的次数计算；把已核菜单金额、用户预算和未知费用分别列出，让同行人看懂同一份安排。
 
-![从输入、核对到逐餐安排与单餐调整的四步流程](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/6e177ab115c2500baa6d2e245bc580bf8c3ce770/docs/showcase/journey.png)
+![从输入、核对到逐餐安排与单餐调整的四步流程](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.1/docs/showcase/journey.png)
 
 ## 我做了什么
 
@@ -45,25 +45,25 @@
 
 ## 效果展示
 
-**最终演示视频（2 分 10 秒）：** [下载 MP4](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.3.0/demo-v1.3.0.mp4) · [中文演示脚本和字幕](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.3.0/docs/demo)。画面是 v1.3.0 实际运行页面剪辑，配合中文讲解，并非连续操作录屏或性能基准。
+**最终宣传片（87.5 秒）：** [观看／下载 MP4](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.3.1/promo-v1.3.1.mp4) · [中文字幕](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.3.1/captions-v1.3.1.srt) · [中文脚本与分镜](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.3.1/docs/final-promo)。用当前页面的真实交互、示例房价和资料剪辑，配合中文讲解；没有伪造实时价格、AI 返回或真人评价。
 
-![首页与语音入口](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.0/docs/screenshots/01-home.jpg)
+![最终版首页与语音入口](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.1/docs/final-promo/assets/stills/01-home.png)
 
-![逐日早餐及实际使用次数计算](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.0/docs/screenshots/11-breakfast-one-day.jpg)
+![逐日早餐及实际使用次数计算](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.1/docs/final-promo/assets/stills/04-breakfast.png)
 
-![房费与成人三餐费用范围](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.0/docs/screenshots/14-package-comparison.jpg)
+![房费与成人三餐费用范围](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.1/docs/final-promo/assets/stills/05-package.png)
 
-![指定一顿的百炼建议与差异预览](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.0/docs/screenshots/15-ai-meal-preview.jpg)
+![指定一顿后的真实修改预览](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.1/docs/final-promo/assets/stills/07-manual-preview.png)
 
-[具体门店及步行路线](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.0/docs/screenshots/06-map.jpg) · [餐券条件示例](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.0/docs/screenshots/16-voucher.jpg) · [同行只读快照](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.0/docs/screenshots/18-readonly-share.jpg)
+[杭州餐饮资料页](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.1/docs/final-promo/assets/stills/10-discover.png) · [餐券条件示例](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.1/docs/screenshots/16-voucher.jpg) · [同行只读快照](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.1/docs/final-promo/assets/stills/09-share.png)
 
 演示采用示例房价、合成语音或公开商品截图，并在画面中注明范围。公开资料、地图地点与路径均不能替代入住当天的菜单、供餐、儿童或过敏条件确认。
 
 ## 项目链接与复现方式
 
-- [公网体验](https://47.238.228.164/)
+- [公网体验](https://47.238.228.164/)（2026 年 11 月 28 日 00:00，北京时间开放）
 - 比赛演示服务保留至 2026 年 12 月 25 日；服务器已设为 12 月 26 日 00:00（北京时间）自动释放。
-- [源码仓库及 v1.3.0 发布包](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/tag/v1.3.0)
+- [源码仓库及 v1.3.1 发布包](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/tag/v1.3.1)
 - Node.js 20+；将空白 `.env.example` 复制为本机 `.env`，配置自己的服务端凭据，运行 `node --env-file=.env server.mjs`。无密钥时可使用固定示例、手动计算与本地资料。
 - 全国城市可选择，杭州为深度示范。酒店和餐馆资料集合有重叠，不代表全杭州或全国完整覆盖；来源、采集时间与限制见仓库数据说明。
 - 不发布个人订单、真实用户录音、密钥或控制台资料。原始录音与截图不在服务端持久保存，私人笔记保留在当前浏览器。

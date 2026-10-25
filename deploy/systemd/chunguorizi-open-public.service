@@ -1,0 +1,13 @@
+[Unit]
+Description=Open Chunguorizi public demo on 2026-11-28
+Requires=docker.service
+After=network-online.target docker.service
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /opt/chunguorizi/deploy/open-public.sh
+TimeoutStartSec=120
+Restart=on-failure
+RestartSec=5min

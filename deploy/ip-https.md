@@ -21,6 +21,12 @@ docker compose -f deploy/compose-ip.yaml --profile tools run --rm certbot certon
 6. 测试续期 `certbot renew --dry-run`，设置root systemd timer每12小时执行 `deploy/renew-ip.sh`，读回timer和实际退出状态。续期成功后Nginx加载证书。
 7. 用户验收同意公开后才运行 `python3 deploy/ip-config.py PUBLIC_IP --tls --publish`，重建web并核验完整路径。
 
+## 2026 年 11 月 28 日开放
+
+本次比赛体验页先用 `python3 deploy/ip-config.py 47.238.228.164 --tls` 生成 503 等待页，重建 web 容器后，公网仅显示开放日期；证书挑战仍可经 80 端口访问，应用仅在服务器本机 127.0.0.1:4173 可用。
+
+将 `deploy/systemd/chunguorizi-open-public.{service,timer}` 安装到 `/etc/systemd/system/`，执行 `systemctl daemon-reload` 和 `systemctl enable --now chunguorizi-open-public.timer`。定时器于 **2026-11-28 00:00:00 北京时间** 运行 `deploy/open-public.sh`，切换到正式反向代理并核对 `/api/health`。安装后用 `systemctl list-timers --all` 读回下一次触发时间；到期后核对服务日志和公网功能。云平台原有的 **2026-12-26 00:00 北京时间自动释放** 独立保留。
+
 ## 结束比赛
 
 在云平台设置自动释放实例和系统盘；仅关闭程序或停止实例不保证停止全部计费。源码、证据库和视频保留在本地/GitHub。公开API调用次数限额不等于人民币封顶，部署时仍需核实模型免费额度和云流量。
