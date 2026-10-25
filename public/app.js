@@ -264,10 +264,10 @@ function showPane(pane) {
 }
 document.querySelectorAll('button[data-pane], a[data-pane]').forEach(button => button.addEventListener('click',()=>showPane(button.dataset.pane)));
 $('startTrip').addEventListener('click',()=>{
-  $('voiceWorkspace').scrollIntoView({behavior:'smooth'});
+  $('voiceWorkspace').scrollIntoView({behavior:'instant'});
   $('tripVoiceText').focus({preventScroll:true});
 });
-$('manualEntryJump').addEventListener('click',()=>$('hotelWorkspace').scrollIntoView({behavior:'smooth'}));
+$('manualEntryJump').addEventListener('click',()=>$('hotelWorkspace').scrollIntoView({behavior:'instant'}));
 $('continuePreferences').addEventListener('click',()=>showPane('preferences'));
 function setEntry(mode) {
   document.querySelectorAll('[data-entry]').forEach(button=>button.classList.toggle('active',button.dataset.entry===mode));
