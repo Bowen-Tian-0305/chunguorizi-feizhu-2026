@@ -44,7 +44,7 @@ export function sanitizePlanSnapshot(input) {
 
 export function encodePlanSnapshot(input) {
   const bytes = new TextEncoder().encode(JSON.stringify(sanitizePlanSnapshot(input)));
-  if (bytes.length > 18000) throw new RangeError('分享内容太长，请减少餐次后重试');
+  if (bytes.length > 18000) throw new RangeError('这份行程较长，请返回方案页下载文字版本，或缩短行程后再分享');
   return btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 }
 export function decodePlanSnapshot(token) {
@@ -83,7 +83,7 @@ export function renderSharedPlan(root, snapshot) {
     const article=node('article','');node('p',`${slot.date} · ${{breakfast:'早餐',lunch:'午餐',dinner:'晚餐'}[slot.meal]}`,article);
     node('h2',slot.name,article);if(slot.address)node('p',slot.address,article);
     node('p',states[slot.status]+(slot.locked?' · 分享者已锁定':''),article);
-    if(slot.time)node('p',`${slot.tentative?'参考时段':'记录时段'} ${slot.time.start}–${slot.time.end}`,article);
+    if(slot.time){const segments=[slot.time.leaveHotel?`${slot.time.leaveHotel} 从酒店出发`:'',`${slot.time.start}–${slot.time.end} 用餐`,slot.time.returnHotel?`${slot.time.returnHotel} 回到酒店`:''].filter(Boolean);node('p',`${slot.tentative?'参考安排':'记录安排'} ${segments.join(' · ')}`,article);}
     if(slot.mapUrl){const link=node('a','在地图查看具体分店 ↗',article);link.href=slot.mapUrl;link.target='_blank';link.rel='noopener noreferrer';}
   }
   const back=node('a','我也做一份吃住方案 →');back.href='/';back.className='share-back';

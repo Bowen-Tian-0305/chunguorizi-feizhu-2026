@@ -84,6 +84,10 @@ let captureSequence = 0, captureRevision = 0;
 const bookingCaptures = [];
 let pendingVoiceQuote = null;
 let hotelSelectionRevision = 0, hotelSearchRevision = 0, tripContextRevision = 0;
+let manualLocationRevision = 0, manualLocationBusy = false;
+$('manualAddress').setAttribute('aria-label','酒店完整地址');
+$('cityFoodSearch').setAttribute('aria-label','搜索杭州餐饮资料');
+for(const id of ['manualNotice','cityFoodNotice'])$(id).setAttribute('role','status');
 document.addEventListener('input',event=>{
   if(event.target.matches('input,select,textarea'))tripContextRevision++;
   if(event.target.matches('#preferencesPane input,#preferencesPane select,#searchForm input,#searchForm select'))$('planSection').classList.add('hidden');
@@ -210,7 +214,7 @@ function notice(id, message, warn = false) {
 
 api('/api/health').then(status => {
   $('serviceStatus').textContent = status.ok ? '可以开始安排了' : '服务连接中';
-}).catch(() => {$('serviceStatus').textContent = '暂时连不上，请刷新再试';});
+}).catch(() => {$('serviceStatus').textContent = '服务暂时连不上';$('serviceStatus').classList.add('is-error');});
 
 function cityName() {return $('city').value.replace(/市$|特别行政区$/, '');}
 const cityPalettes={杭州:'jade',北京:'vermilion',上海:'ink',成都:'chili',重庆:'chili',西安:'ochre',三亚:'coast',厦门:'coast',青岛:'coast',深圳:'coast',广州:'citrus',南京:'jade',苏州:'jade'};
@@ -242,15 +246,23 @@ function showPane(pane) {
   if (pane === 'result' && $('planSection').classList.contains('hidden')) {
     pane='preferences';
   }
-  if (pane !== state.pane) showMealTransition();
+  const changed=pane!==state.pane;
+  if (changed) showMealTransition();
   state.pane=pane;
   document.body.dataset.pane=pane;
   for (const name of ['hotel','preferences','result','discover']) $(name+'Pane').classList.toggle('hidden',name!==pane);
-  document.querySelectorAll('.journey-step').forEach(button => button.classList.toggle('active',button.dataset.pane===pane));
+  document.querySelectorAll('button[data-pane], a[data-pane]').forEach(button=>{
+    const current=button.dataset.pane===pane;
+    button.classList.toggle('active',current);
+    if(current)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
+  });
+  if(!changed&&!needsHotel)return;
   if (needsHotel) $('hotelWorkspace').scrollIntoView({behavior:'instant',block:'start'});
   else window.scrollTo({top:0,behavior:'instant'});
+  const heading=$(pane+'Pane').querySelector('h1, h2');
+  if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
 }
-document.querySelectorAll('[data-pane]').forEach(button => button.addEventListener('click',()=>showPane(button.dataset.pane)));
+document.querySelectorAll('button[data-pane], a[data-pane]').forEach(button => button.addEventListener('click',()=>showPane(button.dataset.pane)));
 $('startTrip').addEventListener('click',()=>{
   $('voiceWorkspace').scrollIntoView({behavior:'smooth'});
   $('tripVoiceText').focus({preventScroll:true});
@@ -280,7 +292,9 @@ api('/api/cities').then(data => {
   applyCityVisual();
 }).catch(()=>notice('searchNotice','城市列表暂时没有加载成功，当前可先体验杭州。请稍后刷新重试。',true));
 $('city').addEventListener('change',()=>{
-  hotelSelectionRevision++;hotelSearchRevision++;tripContextRevision++;
+  hotelSelectionRevision++;hotelSearchRevision++;tripContextRevision++;manualLocationRevision++;manualLocationBusy=false;
+  $('locateHotel').disabled=false;$('locateHotel').textContent='核对位置';
+  const searchButton=$('searchForm').querySelector('button[type="submit"]');searchButton.disabled=false;searchButton.innerHTML='找酒店 <span>↗</span>';
   state.hotel=null;state.evidence=null;state.hotelPolicy=null;state.savedPlaces=[];state.nearby=[];state.voiceCandidates=[];state.demo=false;explainRevision++;nearbyRevision++;
   mapState.selectedId=null;mapState.draftId=null;resetMapView();expandNearbyMap(false);
   for(const id of ['selectedPanel','planSection','nearbySection']) $(id).classList.add('hidden');
@@ -303,7 +317,7 @@ function applyPreset(name) {
     $('outsideBudget').value=35;$('breakfastDays').value=name==='package'?1:2;
   }
   document.querySelector('.package-fields').open=name==='package';
-  document.querySelectorAll('[data-preset]').forEach(button=>button.classList.toggle('active',button.dataset.preset===name));
+  document.querySelectorAll('[data-preset]').forEach(button=>{const active=button.dataset.preset===name;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
 }
 document.querySelectorAll('[data-preset]').forEach(button=>button.addEventListener('click',()=>applyPreset(button.dataset.preset)));
 async function tryDemo() {
@@ -615,7 +629,7 @@ function renderCityFood() {
 
 document.querySelectorAll('#cityFoodModes .chip').forEach(chip => chip.addEventListener('click', () => {
   cityFoodMode = chip.dataset.mode;
-  document.querySelectorAll('#cityFoodModes .chip').forEach(x => x.classList.toggle('active', x === chip));
+  document.querySelectorAll('#cityFoodModes .chip').forEach(x => {x.classList.toggle('active', x === chip);x.setAttribute('aria-pressed',String(x===chip));});
   renderCityFood();
 }));
 $('cityFoodSearch').addEventListener('input', () => {cityFoodLimit = 18; renderCityFood();});
@@ -634,7 +648,7 @@ Promise.all([api('/api/city-food'),fetch('/city-dining.json').then(response=>res
 
 $('searchForm').addEventListener('submit', async event => {
   event.preventDefault();
-  if(state.needsDateConfirmation&&(!$('checkIn').value||!$('checkOut').value||stays().length===0)){notice('searchNotice','请先核对具体入住和退房日期，住宿需为1–30晚。',true);$('checkIn').focus();return;}
+  if(!$('checkIn').value||!$('checkOut').value||stays().length===0){notice('searchNotice','请先核对具体入住和退房日期，住宿需为1–30晚。',true);$('checkIn').focus();return;}
   state.needsDateConfirmation=false;
   const revision=++hotelSearchRevision;hotelSelectionRevision++;tripContextRevision++;
   if(state.demo){quoteBook=setQuoteContext(quoteBook,quoteBook.context,{clearDemo:true});updateQuoteForm();renderQuoteStatus('已退出示例。请核对这次真实预订的价格与权益。');}
@@ -642,6 +656,8 @@ $('searchForm').addEventListener('submit', async event => {
   $('selectedPanel').classList.add('hidden'); $('planSection').classList.add('hidden'); $('nearbySection').classList.add('hidden');
   const q = $('query').value.trim();
   if (!q) return;
+  const submitButton=$('searchForm').querySelector('button[type="submit"]');
+  submitButton.disabled=true;submitButton.textContent='正在找酒店…';
   notice('searchNotice', '正在向飞猪查询酒店…'); $('hotelResults').innerHTML = '';
   try {
     const params = new URLSearchParams({q, city: cityName(), checkIn: $('checkIn').value, checkOut: $('checkOut').value});
@@ -657,13 +673,15 @@ $('searchForm').addEventListener('submit', async event => {
       card.addEventListener('click', () => selectHotel(item)); $('hotelResults').append(card);
     });
   } catch (error) { if(revision===hotelSearchRevision)notice('searchNotice', error.message, true); }
+  finally{if(revision===hotelSearchRevision){submitButton.disabled=false;submitButton.innerHTML='找酒店 <span>↗</span>';}}
 });
 
 async function selectHotel(item) {
   const revision=++hotelSelectionRevision;
   tripContextRevision++;
   selectedBreakfastDates.clear();breakfastDateSignature='';
-  state.hotel = item; state.evidence = null; state.hotelPolicy=null; state.nearby = [];state.savedPlaces=[];explainRevision++;nearbyRevision++;
+  state.hotel = item; state.evidence = null; state.hotelPolicy=null; state.nearby = [];state.savedPlaces=[];state.mealPlan=null;explainRevision++;nearbyRevision++;
+  $('planSection').classList.add('hidden');
   changeQuoteContext(item,{leaveDemo:!item.demo});state.demo=Boolean(item.demo);
   mapState.selectedId=null;mapState.draftId=null;resetMapView();expandNearbyMap(false);
   $('selectedName').textContent = item.name; $('selectedAddress').textContent = item.address || '飞猪未提供地址';
@@ -685,17 +703,22 @@ async function selectHotel(item) {
   if(revision!==hotelSelectionRevision)return false;
   $('nearbySection').classList.remove('hidden');
   $('tripSummary').textContent=`${item.name} · ${nights()} 晚，按你们的习惯来安排。`;
-  document.querySelectorAll('#nearbySection .chip').forEach(chip=>chip.classList.toggle('active',chip.dataset.keyword==='早餐'));
-  document.querySelectorAll('[data-map-keyword]').forEach(button=>button.classList.toggle('active',button.dataset.mapKeyword==='早餐'));
+  document.querySelectorAll('#nearbySection .chip').forEach(chip=>{const active=chip.dataset.keyword==='早餐';chip.classList.toggle('active',active);chip.setAttribute('aria-pressed',String(active));});
+  document.querySelectorAll('[data-map-keyword]').forEach(button=>{const active=button.dataset.mapKeyword==='早餐';button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
   showPane('preferences');loadNearby('早餐');return true;
 }
 
 $('locateHotel').addEventListener('click', async () => {
   const name = $('query').value.trim(), address = $('manualAddress').value.trim();
   if (!name || !address) {notice('manualNotice', '先填酒店名称和预订页上的完整地址。', true); return;}
+  if(manualLocationBusy)return;
+  manualLocationBusy=true;
+  const revision=++manualLocationRevision,button=$('locateHotel');
+  button.disabled=true;button.textContent='正在核对…';
   notice('manualNotice', '正在用高德核对地址…'); $('manualResults').innerHTML = '';
   try {
     const data = await api(`/api/geocode?${new URLSearchParams({address,city:cityName()})}`);
+    if(revision!==manualLocationRevision)return;
     if (!data.items.length) {notice('manualNotice', '高德没有找到明确的酒店地址，请核对区县、道路和门牌。', true); return;}
     notice('manualNotice', '以下是高德定位候选，选中前请核对地址；街道级结果可能不够准确。');
     data.items.forEach((location, index) => {
@@ -707,12 +730,13 @@ $('locateHotel').addEventListener('click', async () => {
       button.innerHTML = `<div class="hotel-body"><div class="hotel-tags"><span class="hotel-tag muted">高德地址定位</span></div><strong>${escapeHtml(name)}</strong><p>${escapeHtml(location.address)}</p><div class="hotel-card-footer"><span>精度：${escapeHtml(location.level)}</span><b>选择位置 ↗</b></div></div>`;
       button.addEventListener('click', () => selectHotel(item)); $('manualResults').append(button);
     });
-  } catch (error) {notice('manualNotice', `地址定位未完成：${error.message}`, true);}
+  } catch (error) {if(revision===manualLocationRevision)notice('manualNotice', `地址定位未完成：${error.message}`, true);}
+  finally{if(revision===manualLocationRevision){manualLocationBusy=false;button.disabled=false;button.textContent='核对位置';}}
 });
 
 function setNearbyKeyword(keyword){
-  document.querySelectorAll('#nearbySection .chip').forEach(button=>button.classList.toggle('active',button.dataset.keyword===keyword));
-  document.querySelectorAll('[data-map-keyword]').forEach(button=>button.classList.toggle('active',button.dataset.mapKeyword===keyword));
+  document.querySelectorAll('#nearbySection .chip').forEach(button=>{const active=button.dataset.keyword===keyword;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
+  document.querySelectorAll('[data-map-keyword]').forEach(button=>{const active=button.dataset.mapKeyword===keyword;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
   loadNearby(keyword);
 }
 document.querySelectorAll('#nearbySection .chip').forEach(chip=>chip.addEventListener('click',()=>setNearbyKeyword(chip.dataset.keyword||'')));
@@ -743,6 +767,7 @@ function zoomMap(factor){
 function chooseMapPlace(id){
   if(!state.nearby.some(place=>place.id===id))return;
   mapState.selectedId=id;mapState.draftId=null;mapState.status='';renderNearby();
+  $('mapPlaceChoices').querySelector('button.active')?.focus({preventScroll:true});
 }
 function reviewFor(place){const item=mapState.reviews[place.id];return item&&typeof item==='object'?item:{rating:0,note:''};}
 function openingSummary(value){
@@ -757,19 +782,19 @@ function renderMapDetail(place){
   const saved=state.savedPlaces.some(item=>item.id===place.id);
   const route=place.route?`步行 ${place.route.minutes} 分钟 · ${place.route.meters} 米`:'步行路线尚未查到';
   const meta=[place.rating?`高德评分 ${escapeHtml(place.rating)}`:'',place.cost?`参考人均 ${money(place.cost)}`:'',place.opening_today?`今日参考营业 ${escapeHtml(openingSummary(place.opening_today))}`:''].filter(Boolean).join(' · ');
-  target.innerHTML=`<div class="map-detail-head">${place.photo?`<img src="${safeUrl(place.photo)}" alt="${escapeHtml(place.name)}地点配图" loading="lazy">`:''}<div><strong>${escapeHtml(place.name)}</strong><small>${escapeHtml(place.address||'地址以地图为准')}</small></div></div><p class="map-detail-meta">${escapeHtml(route)}${meta?`<br>${meta}`:''}</p><div class="map-detail-actions"><button type="button" class="map-add">${saved?'已加备选 ✓':'收藏为备选 +'}</button><a href="${safeUrl(place.map_url)}" target="_blank" rel="noopener noreferrer">高德地图 ↗</a></div><div class="map-review"><label>我的评分与用餐笔记</label><div class="map-review-stars" role="group" aria-label="给这家店评分">${[1,2,3,4,5].map(score=>`<button type="button" class="${score<=mapState.draft.rating?'active':''}" data-score="${score}" aria-label="${score}星" aria-pressed="${score===mapState.draft.rating?'true':'false'}">★</button>`).join('')}</div><textarea maxlength="180" placeholder="吃过之后记一笔：味道、排队、带娃是否方便……">${escapeHtml(mapState.draft.note)}</textarea><div class="map-review-foot"><small>只保存在这台浏览器，不公开；和高德评分分开。</small><div class="map-review-buttons"><button type="button" class="map-review-clear">清除</button><button type="button" class="map-review-save">保存评价</button></div></div><div class="map-review-status" aria-live="polite">${escapeHtml(mapState.status)}</div></div>`;
+  target.innerHTML=`<div class="map-detail-head">${place.photo?`<img src="${safeUrl(place.photo)}" alt="${escapeHtml(place.name)}地点配图" loading="lazy">`:''}<div><strong>${escapeHtml(place.name)}</strong><small>${escapeHtml(place.address||'地址以地图为准')}</small></div></div><p class="map-detail-meta">${escapeHtml(route)}${meta?`<br>${meta}`:''}</p><div class="map-detail-actions"><button type="button" class="map-add">${saved?'已加备选 ✓':'收藏为备选 +'}</button><a href="${safeUrl(place.map_url)}" target="_blank" rel="noopener noreferrer">高德地图 ↗</a></div><div class="map-review"><label>我的评分与用餐笔记</label><div class="map-review-stars" role="group" aria-label="给这家店评分">${[1,2,3,4,5].map(score=>`<button type="button" class="${score<=mapState.draft.rating?'active':''}" data-score="${score}" aria-label="${score}星" aria-pressed="${score===mapState.draft.rating?'true':'false'}">★</button>`).join('')}</div><textarea aria-label="我的用餐笔记" maxlength="180" placeholder="吃过之后记一笔：味道、排队、带娃是否方便……">${escapeHtml(mapState.draft.note)}</textarea><div class="map-review-foot"><small>只保存在这台浏览器，不公开；和高德评分分开。</small><div class="map-review-buttons"><button type="button" class="map-review-clear">清除</button><button type="button" class="map-review-save">保存评价</button></div></div><div class="map-review-status" aria-live="polite">${escapeHtml(mapState.status)}</div></div>`;
   target.querySelector('.map-add').addEventListener('click',async event=>{
     const button=event.currentTarget;button.disabled=true;
     try{
       if(saved)state.savedPlaces=state.savedPlaces.filter(item=>item.id!==place.id);
-      else{if(!place.route)await placeRoute(place,nearbyRevision);state.savedPlaces.push(place);}
+      else{if(!place.route)await placeRoute(place,nearbyRevision);if(!place.route)throw new Error('route unavailable');state.savedPlaces.push(place);}
       renderNearby();if(!$('planSection').classList.contains('hidden'))renderTimeline();
     }catch(error){mapState.status='步行路线暂时没查到，稍后再试。';renderMapDetail(place);}
   });
   const scheduleButton=document.createElement('button');scheduleButton.type='button';scheduleButton.className='map-schedule';scheduleButton.textContent='安排到一顿饭 ↗';
   scheduleButton.addEventListener('click',()=>{if($('planSection').classList.contains('hidden'))$('makePlan').click();mealWorkspace?.choosePlace(place);});
   target.querySelector('.map-detail-actions').append(scheduleButton);
-  target.querySelectorAll('[data-score]').forEach(button=>button.addEventListener('click',()=>{const score=Number(button.dataset.score);mapState.draft.rating=mapState.draft.rating===score?0:score;mapState.status='';renderMapDetail(place);}));
+  target.querySelectorAll('[data-score]').forEach(button=>button.addEventListener('click',()=>{const score=Number(button.dataset.score);mapState.draft.rating=mapState.draft.rating===score?0:score;mapState.status='';renderMapDetail(place);target.querySelector(`[data-score="${score}"]`).focus();}));
   target.querySelector('textarea').addEventListener('input',event=>{mapState.draft.note=event.target.value.slice(0,180);});
   target.querySelector('.map-review-clear').addEventListener('click',()=>{
     mapState.draft={rating:0,note:''};delete mapState.reviews[place.id];
@@ -812,7 +837,7 @@ function renderMap(){
   }
   const hotelPin=svgEl('g',{class:'map-hotel',transform:'translate(500 320)'});hotelPin.append(svgEl('circle',{r:23}));const glyph=svgEl('text',{x:0,y:1});glyph.textContent='住';hotelPin.append(glyph);pins.append(hotelPin);
   for(const place of places.slice(0,8)){
-    const button=document.createElement('button');button.type='button';button.textContent=place.name;button.classList.toggle('active',place.id===mapState.selectedId);button.addEventListener('click',()=>chooseMapPlace(place.id));choices.append(button);
+    const button=document.createElement('button');button.type='button';button.textContent=place.name;button.classList.toggle('active',place.id===mapState.selectedId);button.setAttribute('aria-pressed',String(place.id===mapState.selectedId));button.addEventListener('click',()=>chooseMapPlace(place.id));choices.append(button);
   }
   renderMapDetail(places.find(place=>place.id===mapState.selectedId));mapView();
 }
@@ -827,17 +852,46 @@ $('nearbyMap').addEventListener('pointermove',event=>{
   mapState.view.y=mapDrag.view.y-(event.clientY-mapDrag.y)*mapDrag.view.h/rect.height;mapView();
 });
 for(const kind of ['pointerup','pointercancel'])$('nearbyMap').addEventListener(kind,()=>{mapDrag=null;$('nearbyMap').classList.remove('dragging');});
-$('nearbyMap').addEventListener('wheel',event=>{event.preventDefault();zoomMap(event.deltaY<0?.82:1.22);},{passive:false});
+$('nearbyMap').addEventListener('wheel',event=>{
+  if(!event.ctrlKey&&!$('mapExplorer').classList.contains('expanded'))return;
+  event.preventDefault();zoomMap(event.deltaY<0?.82:1.22);
+},{passive:false});
 $('mapZoomIn').addEventListener('click',()=>zoomMap(.78));$('mapZoomOut').addEventListener('click',()=>zoomMap(1.28));$('mapReset').addEventListener('click',resetMapView);
+let mapBackground=[];
+function isolateMapBackground(expanded){
+  for(const [element,wasInert] of mapBackground)element.inert=wasInert;
+  mapBackground=[];
+  if(!expanded)return;
+  let current=$('mapExplorer');
+  while(current?.parentElement){
+    for(const sibling of current.parentElement.children){
+      if(sibling===current||sibling.contains(current)||sibling.tagName==='SCRIPT')continue;
+      mapBackground.push([sibling,sibling.inert]);sibling.inert=true;
+    }
+    current=current.parentElement;
+  }
+}
 function expandNearbyMap(expanded){
+  const wasExpanded=$('mapExplorer').classList.contains('expanded');
+  if(expanded===wasExpanded)return;
+  isolateMapBackground(expanded);
   $('mapExplorer').classList.toggle('expanded',expanded);document.body.classList.toggle('map-open',expanded);
   $('expandMap').textContent=expanded?'收起地图 ×':'展开地图 ↗';$('expandMap').setAttribute('aria-expanded',String(expanded));
   if(expanded){$('mapExplorer').setAttribute('role','dialog');$('mapExplorer').setAttribute('aria-modal','true');$('mapExplorer').setAttribute('aria-labelledby','mapExplorerTitle');$('expandMap').focus();}
-  else{$('mapExplorer').removeAttribute('role');$('mapExplorer').removeAttribute('aria-modal');$('mapExplorer').removeAttribute('aria-labelledby');}
+  else{$('mapExplorer').removeAttribute('role');$('mapExplorer').removeAttribute('aria-modal');$('mapExplorer').removeAttribute('aria-labelledby');if(wasExpanded)$('expandMap').focus();}
   mapView();
 }
 $('expandMap').addEventListener('click',()=>expandNearbyMap(!$('mapExplorer').classList.contains('expanded')));
-document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('mapExplorer').classList.contains('expanded'))expandNearbyMap(false);});
+document.addEventListener('keydown',event=>{
+  if(!$('mapExplorer').classList.contains('expanded'))return;
+  if(event.key==='Escape'){event.preventDefault();expandNearbyMap(false);return;}
+  if(event.key!=='Tab')return;
+  const focusable=[...$('mapExplorer').querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex="0"]')].filter(element=>element.getClientRects().length);
+  const first=focusable[0],last=focusable.at(-1);
+  if(!first){event.preventDefault();return;}
+  if(event.shiftKey&&(document.activeElement===first||!$('mapExplorer').contains(document.activeElement))){event.preventDefault();last.focus();}
+  else if(!event.shiftKey&&(document.activeElement===last||!$('mapExplorer').contains(document.activeElement))){event.preventDefault();first.focus();}
+});
 function renderNearby() {
   const results=$('nearbyResults');results.innerHTML='';
   if(state.nearby.length&&!state.nearby.some(place=>place.id===mapState.selectedId))mapState.selectedId=state.nearby[0].id;
@@ -855,7 +909,7 @@ function renderNearby() {
     const routeText=place.route?`步行 ${place.route.minutes} 分钟 · ${place.route.meters} 米`:'步行时间还没查';
     const exceeds=place.route&&place.route.minutes>number('walkLimit');
     const details=[place.rating?`高德评分 ${escapeHtml(place.rating)}`:'',place.cost?`参考人均 ${money(place.cost)}`:'',place.opening_today?`今日参考营业 ${escapeHtml(openingSummary(place.opening_today))}`:''].filter(Boolean).join(' · ');
-    const localHint=breakfastSignal(place)>=2?'<span class="local-hint">杭州早点方向 · 供应待核</span>':'';
+    const localHint=breakfastSignal(place)>=2?`<span class="local-hint">${escapeHtml(cityName())}早点方向 · 供应待核</span>`:'';
     const myRating=Number(reviewFor(place).rating)||0;
     card.innerHTML=`${place.photo?`<img class="nearby-photo" src="${safeUrl(place.photo)}" alt="${escapeHtml(place.name)}地点配图" loading="lazy">`:''}<div class="nearby-card-copy">${localHint}<strong>${escapeHtml(place.name)}</strong><p>${escapeHtml(place.address||'地址请看地图')}</p>${details?`<div class="poi-details">${details}</div>`:''}${myRating?`<div class="personal-rating">我的评价 ${'★'.repeat(myRating)}${'☆'.repeat(5-myRating)}</div>`:''}<div class="route-status ${exceeds?'exceeds':''}">${routeText}${exceeds?' · 超出你的步行上限':''}</div><div class="meta">营业、菜单和忌口请向店家确认</div>${place.curated_match?`<div class="city-poi-match">找到同名同道路的餐饮资料${citySource(place.curated_match.sources)}</div>`:''}<div class="nearby-card-actions"><button class="route-button" type="button">${place.route?'刷新路线':'查步行时间'}</button><button class="add-place" type="button">${saved?'已加入候选 ✓':'加入吃饭候选 +'}</button><button class="map-focus" type="button">地图里看 / 评价</button><a href="${safeUrl(place.map_url)}" target="_blank" rel="noopener noreferrer">去地图 ↗</a></div></div>`;
     card.querySelector('.map-focus').addEventListener('click',()=>{chooseMapPlace(place.id);$('mapExplorer').scrollIntoView({behavior:'smooth',block:'start'});});
@@ -866,7 +920,7 @@ function renderNearby() {
     });
     card.querySelector('.add-place').addEventListener('click',async event=>{
       if(saved){state.savedPlaces=state.savedPlaces.filter(p=>p.id!==place.id);renderNearby();renderTimeline();return;}
-      if(!place.route){event.currentTarget.disabled=true;event.currentTarget.textContent='先查路线…';try{await placeRoute(place,nearbyRevision);}catch{notice('nearbyNotice','路线暂时不可用，请稍后再试。',true);return;}}
+      if(!place.route){const button=event.currentTarget;button.disabled=true;button.textContent='先查路线…';try{await placeRoute(place,nearbyRevision);}catch{button.disabled=false;button.textContent='加入吃饭候选 +';notice('nearbyNotice','路线暂时不可用，请稍后再试。',true);return;}if(!place.route){button.disabled=false;button.textContent='加入吃饭候选 +';return;}}
       state.savedPlaces.push(place);renderNearby();if(!$('planSection').classList.contains('hidden'))renderTimeline();
       notice('nearbyNotice',`已把「${place.name}」加入候选。上方每顿饭的下拉里可选择它；${place.route.minutes>number('walkLimit')?'它超出你的步行上限，':''}出发前请确认营业和忌口。`);
     });results.append(card);
@@ -1100,50 +1154,62 @@ $('savePlan').addEventListener('click',()=>{
   const blob=new Blob([content],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='纯过日子-吃饭方案.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 });
 
-$('sharePlan').addEventListener('click', async () => {
-  const decision=breakfastDecision(), dates=syncBreakfastDates();
-  const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1440;
-  const ctx=canvas.getContext('2d');
-  if(!ctx)return;
-  const theme=getComputedStyle(document.body), palette={paper:theme.getPropertyValue('--theme-page').trim(),ink:theme.getPropertyValue('--ink').trim(),main:theme.getPropertyValue('--theme-main').trim(),warm:theme.getPropertyValue('--theme-warm').trim(),soft:theme.getPropertyValue('--theme-soft').trim(),quiet:theme.getPropertyValue('--quiet').trim(),rule:theme.getPropertyValue('--rule').trim()};
-  ctx.fillStyle=palette.paper;ctx.fillRect(0,0,1080,1440);
-  const heading=(text,y,size=34,color=palette.ink)=>{ctx.font=`600 ${size}px "Songti SC", "STSong", "SimSun", serif`;ctx.fillStyle=color;ctx.fillText(text,64,y);};
-  const lines=(text,y,size=25,color=palette.quiet)=>{
-    ctx.font=`${size}px "PingFang SC", "Microsoft YaHei", sans-serif`;ctx.fillStyle=color;
-    let line='';
-    for(const char of text){if(ctx.measureText(line+char).width>950){ctx.fillText(line,64,y);line=char;y+=size*1.6;}else line+=char;}
-    if(line){ctx.fillText(line,64,y);y+=size*1.6;}return y;
-  };
-  heading('纯过日子',100,43);heading('订酒店，也把饭算明白',152,26,palette.warm);
-  ctx.strokeStyle=palette.rule;ctx.beginPath();ctx.moveTo(64,190);ctx.lineTo(1016,190);ctx.stroke();
-  let y=lines(state.hotel.name,258,38,palette.ink);
-  y=lines(`${$('checkIn').value} — ${$('checkOut').value} · ${number('adults')} 成人${number('children')?' + '+number('children')+' 儿童':''}`,y+18,25);
-  y=lines(breakfastAssessment().headline,y+42,31,palette.ink);
-  if(decision.outsideAll!==undefined&&decision.outsideAll!==null){
-    y=lines(`成人早餐增量预算：全部外出 ${money(decision.outsideAll)}；含早与剩余外出 ${money(decision.packageAll)}。`,y+16,29);
-  }
-  if(decision.perUse!==undefined)y=lines(`含早全程多 ${money(decision.premium)}，实际用 ${selectedBreakfastDates.size} 次：${money(decision.perUse.toFixed(2))}/成人/次。`,y+12,28,palette.warm);
-  if(number('children'))y=lines('儿童收费与套餐份数待核；上述金额不是全家总价。',y+8,25,palette.warm);
-  y+=30;heading('早晨留给谁',y,30);y+=42;
-  const shownDates=dates.slice(0,5);
-  for(const date of shownDates){
-    const place=state.mealPlan?.slots.find(slot=>slot.date===date&&(slot.meal||'breakfast')==='breakfast'&&slot.kind==='outside');
-    y=lines(`${date.slice(5)}  ${selectedBreakfastDates.has(date)?'酒店早餐（权益待核）':place?place.name+'（外出候选）':'外出早餐，门店待选'}`,y,25);
-  }
-  if(dates.length>shownDates.length)y=lines(`另有 ${dates.length-shownDates.length} 个早晨，完整安排见文字方案。`,y,23);
-  if(state.savedPlaces.length&&y<1110){y+=22;heading('想去的店',y,30);y+=42;for(const place of state.savedPlaces.slice(0,2))y=lines(`${place.name}${place.route?' · 从酒店步行 '+place.route.minutes+' 分钟':''}`,y,25);}
-  ctx.fillStyle=palette.soft;ctx.fillRect(0,1260,1080,180);
-  lines(state.demo?'示例价格与权益为测试值；酒店资料另有真实出处。':'按本次填写的价格与同条件确认计算，非平台最终报价。',1310,22);
-  lines('门店营业、菜单、儿童政策、忌口与套餐适用条件，出发前向商家确认。',1365,22);
-  canvas.toBlob(blob=>{
-    if(!blob)return;
-    const url=URL.createObjectURL(blob),dialog=document.createElement('dialog');dialog.className='share-dialog';
-    dialog.innerHTML='<div class="share-dialog-heading"><h3>一起决定，早上怎么吃</h3><button type="button" aria-label="关闭分享卡">×</button></div><p>这张卡只在你的浏览器生成。保存图片后，可以发给同行人。</p><img alt="本次酒店早餐预算与逐日安排分享卡"><a class="primary" download="纯过日子-同行分享卡.png">保存图片 ↓</a>';
-    dialog.querySelector('img').src=url;dialog.querySelector('a').href=url;
-    dialog.querySelector('button').addEventListener('click',()=>dialog.close());
-    dialog.addEventListener('close',()=>{dialog.remove();URL.revokeObjectURL(url);});
-    document.body.append(dialog);dialog.showModal();
-  },'image/png');
+const shareActionStatus=document.createElement('p');
+shareActionStatus.id='shareActionStatus';shareActionStatus.className='share-action-status';shareActionStatus.setAttribute('role','status');
+$('sharePlan').closest('.section-heading').after(shareActionStatus);
+$('sharePlan').addEventListener('click', () => {
+  const button=$('sharePlan');button.disabled=true;button.textContent='正在生成…';shareActionStatus.textContent='正在本机生成分享卡…';
+  const finish=()=>{button.disabled=false;button.textContent='生成分享卡 ↗';};
+  try{
+    const decision=breakfastDecision(), dates=syncBreakfastDates();
+    const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1440;
+    const ctx=canvas.getContext('2d');
+    if(!ctx){shareActionStatus.textContent='浏览器暂时无法生成图片，请改用文字下载。';finish();return;}
+    const theme=getComputedStyle(document.body), palette={paper:theme.getPropertyValue('--theme-page').trim(),ink:theme.getPropertyValue('--ink').trim(),main:theme.getPropertyValue('--theme-main').trim(),warm:theme.getPropertyValue('--theme-warm').trim(),soft:theme.getPropertyValue('--theme-soft').trim(),quiet:theme.getPropertyValue('--quiet').trim(),rule:theme.getPropertyValue('--rule').trim()};
+    ctx.fillStyle=palette.paper;ctx.fillRect(0,0,1080,1440);
+    const heading=(text,y,size=34,color=palette.ink)=>{ctx.font=`600 ${size}px "Songti SC", "STSong", "SimSun", serif`;ctx.fillStyle=color;ctx.fillText(text,64,y);};
+    const lines=(text,y,size=25,color=palette.quiet,maxLines=Infinity)=>{
+      ctx.font=`${size}px "PingFang SC", "Microsoft YaHei", sans-serif`;ctx.fillStyle=color;
+      const wrapped=[];let line='';
+      for(const char of String(text)){if(ctx.measureText(line+char).width>950&&line){wrapped.push(line);line=char;}else line+=char;}
+      if(line)wrapped.push(line);
+      const visible=wrapped.slice(0,maxLines);
+      if(wrapped.length>maxLines&&visible.length){let last=visible.at(-1);while(last&&ctx.measureText(last+'…').width>950)last=last.slice(0,-1);visible[visible.length-1]=last+'…';}
+      for(const row of visible){ctx.fillText(row,64,y);y+=size*1.6;}return y;
+    };
+    heading('纯过日子',100,43);heading('订酒店，也把饭算明白',152,26,palette.warm);
+    ctx.strokeStyle=palette.rule;ctx.beginPath();ctx.moveTo(64,190);ctx.lineTo(1016,190);ctx.stroke();
+    let y=lines(state.hotel.name,258,38,palette.ink,3);
+    y=lines(`${$('checkIn').value} — ${$('checkOut').value} · ${number('adults')} 成人${number('children')?' + '+number('children')+' 儿童':''}`,y+18,25,palette.quiet,2);
+    y=lines(breakfastAssessment().headline,y+42,31,palette.ink,3);
+    if(decision.outsideAll!==undefined&&decision.outsideAll!==null)y=lines(`成人早餐增量预算：全部外出 ${money(decision.outsideAll)}；含早与剩余外出 ${money(decision.packageAll)}。`,y+16,29,palette.quiet,3);
+    if(decision.perUse!==undefined)y=lines(`含早全程多 ${money(decision.premium)}，实际用 ${selectedBreakfastDates.size} 次：${money(decision.perUse.toFixed(2))}/成人/次。`,y+12,28,palette.warm,3);
+    if(number('children'))y=lines('儿童收费与套餐份数待核；上述金额不是全家总价。',y+8,25,palette.warm,2);
+    y+=30;heading('早晨留给谁',y,30);y+=42;
+    let shownDates=0;
+    for(const date of dates.slice(0,5)){
+      if(y+80>1220)break;
+      const place=state.mealPlan?.slots.find(slot=>slot.date===date&&(slot.meal||'breakfast')==='breakfast'&&slot.kind==='outside');
+      y=lines(`${date.slice(5)}  ${selectedBreakfastDates.has(date)?'酒店早餐（权益待核）':place?place.name+'（外出候选）':'外出早餐，门店待选'}`,y,25,palette.quiet,2);shownDates++;
+    }
+    if(dates.length>shownDates)y=lines(`另有 ${dates.length-shownDates} 个早晨，完整安排见文字方案。`,y,23,palette.quiet,2);
+    if(state.savedPlaces.length&&y<1080){y+=22;heading('想去的店',y,30);y+=42;for(const place of state.savedPlaces.slice(0,2)){if(y+80>1220)break;y=lines(`${place.name}${place.route?' · 从酒店步行 '+place.route.minutes+' 分钟':''}`,y,25,palette.quiet,2);}}
+    ctx.fillStyle=palette.soft;ctx.fillRect(0,1260,1080,180);
+    lines(state.demo?'示例价格与权益为测试值；酒店资料另有真实出处。':'按本次填写的价格与同条件确认计算，非平台最终报价。',1310,22,palette.quiet,2);
+    lines('门店营业、菜单、儿童政策、忌口与套餐适用条件，出发前向商家确认。',1365,22,palette.quiet,2);
+    canvas.toBlob(blob=>{
+      if(!blob){shareActionStatus.textContent='图片生成失败，请改用文字下载。';finish();return;}
+      const url=URL.createObjectURL(blob),dialog=document.createElement('dialog');dialog.className='share-dialog';dialog.setAttribute('aria-labelledby','shareCardTitle');
+      try{
+        dialog.innerHTML='<div class="share-dialog-heading"><h3 id="shareCardTitle">一起决定，早上怎么吃</h3><button type="button" aria-label="关闭分享卡">×</button></div><p>这张卡只在你的浏览器生成。保存图片后，可以发给同行人。</p><img alt="本次酒店早餐预算与逐日安排分享卡"><a class="primary" download="纯过日子-同行分享卡.png">保存图片 ↓</a>';
+        dialog.querySelector('img').src=url;dialog.querySelector('a').href=url;
+        dialog.querySelector('button').addEventListener('click',()=>dialog.close());
+        dialog.addEventListener('close',()=>{dialog.remove();URL.revokeObjectURL(url);});
+        document.body.append(dialog);dialog.showModal();shareActionStatus.textContent='分享卡已生成，可保存图片。';
+      }catch{dialog.remove();URL.revokeObjectURL(url);shareActionStatus.textContent='浏览器无法打开分享卡，请改用文字下载。';}
+      finish();
+    },'image/png');
+  }catch{shareActionStatus.textContent='图片生成失败，请改用文字下载。';finish();}
 });
 
 const readOnlyShareButton = document.createElement('button');
@@ -1157,23 +1223,26 @@ readOnlyShareButton.addEventListener('click', () => {
   const places = new Map([...state.savedPlaces, ...state.nearby].filter(place => place?.id).map(place => [String(place.id), place]));
   const shareSnapshot = {hotel: {name: state.hotel.name, address: state.hotel.address}, checkIn: $('checkIn').value, checkOut: $('checkOut').value, party: {adults: number('adults'), children: number('children') || 0}, demo: state.demo, slots: plan.slots.map(slot => {
     const place = places.get(String(slot.candidateId || slot.venueId || ''));
-    return {...slot, address: place?.address || '', mapUrl: place?.map_url || ''};
+    return {...slot, address: place?.address || slot.address || '', mapUrl: place?.map_url || slot.mapUrl || slot.map_url || ''};
   }), cost: {...(plan.cost || {}), scope: 'adult-meals-increment-excludes-room-price'}};
   const dialog = document.createElement('dialog');
   dialog.className = 'share-dialog';
-  dialog.innerHTML = '<div class="share-dialog-heading"><h3>给同行人看这份安排</h3><button type="button" aria-label="关闭">×</button></div><p class="share-preview-summary"></p><p>链接会包含以上行程、逐餐地点及费用范围。持有链接的人可以查看和转发；不包含订单截图、录音或私人笔记。</p><button type="button" class="primary">生成只读链接</button><label>分享链接<textarea readonly rows="3" aria-label="只读方案链接"></textarea></label><p role="status"></p>';
+  dialog.setAttribute('aria-labelledby','readOnlyShareTitle');
+  dialog.innerHTML = '<div class="share-dialog-heading"><h3 id="readOnlyShareTitle">给同行人看这份安排</h3><button type="button" aria-label="关闭">×</button></div><p class="share-preview-summary"></p><p>链接会包含以上行程、逐餐地点及费用范围。持有链接的人可以查看和转发；不包含订单截图、录音或私人笔记。</p><button type="button" class="primary">生成只读链接</button><label>分享链接<textarea readonly rows="3" aria-label="只读方案链接"></textarea></label><p role="status"></p>';
   dialog.querySelector('.share-preview-summary').textContent = `${shareSnapshot.hotel.name} · ${shareSnapshot.checkIn} 至 ${shareSnapshot.checkOut} · ${shareSnapshot.party.adults} 成人 / ${shareSnapshot.party.children} 儿童 · ${shareSnapshot.slots.length} 顿${shareSnapshot.demo ? ' · 示例输入' : ''}`;
   const close = dialog.querySelector('.share-dialog-heading button'), generate = dialog.querySelector('.primary');
   const field = dialog.querySelector('textarea'), status = dialog.querySelector('[role="status"]');
   close.addEventListener('click', () => dialog.close());
   dialog.addEventListener('close', () => dialog.remove());
   generate.addEventListener('click', async () => {
+    generate.disabled=true;generate.textContent='正在生成…';
     try {
       const url = createPlanShareUrl(shareSnapshot, location.origin);
       field.value = url;
       try { await navigator.clipboard.writeText(url); status.textContent = '链接已复制。也可在下方手动复制。'; }
       catch { status.textContent = '请从下方手动复制链接。'; field.focus(); field.select(); }
     } catch (error) { status.textContent = error.message || '链接暂时无法生成，请核对行程。'; }
+    finally{generate.disabled=false;generate.textContent='生成只读链接';}
   });
   document.body.append(dialog); dialog.showModal();
 });
@@ -1249,7 +1318,7 @@ $('makePlan').addEventListener('click', () => {
   loadPlanExplanation(b, f);
 });
 function setResultTab(tab){
-  document.querySelectorAll('[data-result-tab]').forEach(button=>button.classList.toggle('active',button.dataset.resultTab===tab));
+  document.querySelectorAll('[data-result-tab]').forEach(button=>{const active=button.dataset.resultTab===tab;button.classList.toggle('active',active);if(button.tagName==='BUTTON')button.setAttribute('aria-pressed',String(active));});
   document.querySelectorAll('#timeline .meal-row').forEach(row=>row.classList.toggle('hidden',tab==='breakfast'&&row.dataset.mealType!=='早餐'));
 }
 document.querySelectorAll('[data-result-tab]').forEach(button=>button.addEventListener('click',()=>setResultTab(button.dataset.resultTab)));
@@ -1281,3 +1350,5 @@ mealWorkspace=createMealWorkspace({
     if(changed){const dates=new Set(selectedBreakfastDates);for(const slot of plan.breakfastPlan.slots.filter(slot=>slot.locked))if(slot.kind==='hotel')dates.add(slot.date);else dates.delete(slot.date);syncPlannerBreakfast([...dates]);}
   }
 });
+document.querySelectorAll('[data-preset],[data-mode],[data-keyword],[data-map-keyword],[data-result-tab]').forEach(button=>button.setAttribute('aria-pressed',String(button.classList.contains('active'))));
+showPane(state.pane);

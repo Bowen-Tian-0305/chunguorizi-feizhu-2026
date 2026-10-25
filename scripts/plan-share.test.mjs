@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {sanitizePlanSnapshot,encodePlanSnapshot,decodePlanSnapshot,createPlanShareUrl,renderSharedPlan} from '../public/plan-share.js';
-const input=()=>({hotel:{name:'杭州酒店',address:'杭州一号路',apiKey:'secret'},checkIn:'2026-11-01',checkOut:'2026-11-03',party:{adults:2,children:1},demo:true,slots:[{date:'2026-11-02',meal:'breakfast',name:'面馆',status:'pending',tentativeTime:{start:'08:00',end:'08:45'},map_url:'https://uri.amap.com/marker?position=120.1,30.2&name=面馆&key=secret',notes:'private note'}],cost:{knownAmount:240,budgetAmount:140,unknownAmounts:[{scope:'children',message:'private'}],scope:'adult-meals-increment-excludes-room-price'},image:'private image',audio:'private audio',notes:'private note'});
+const input=()=>({hotel:{name:'杭州酒店',address:'杭州一号路',apiKey:'secret'},checkIn:'2026-11-01',checkOut:'2026-11-03',party:{adults:2,children:1},demo:true,slots:[{date:'2026-11-02',meal:'breakfast',name:'面馆',address:'店内地址',status:'pending',tentativeTime:{start:'08:00',end:'08:45',leaveHotel:'07:40',returnHotel:'09:00'},map_url:'https://uri.amap.com/marker?position=120.1,30.2&name=面馆&key=secret',notes:'private note'}],cost:{knownAmount:240,budgetAmount:140,unknownAmounts:[{scope:'children',message:'private'}],scope:'adult-meals-increment-excludes-room-price'},image:'private image',audio:'private audio',notes:'private note'});
 test('Unicode snapshot round trips only explicit fields and preserves provisional times and scope',()=>{
   const value=input(),before=JSON.stringify(value),decoded=decodePlanSnapshot(encodePlanSnapshot(value));
   assert.equal(decoded.hotel.name,'杭州酒店');assert.equal(decoded.demo,true);assert.equal(decoded.slots[0].tentative,true);
+  assert.equal(decoded.slots[0].address,'店内地址');assert.deepEqual(decoded.slots[0].time,{start:'08:00',end:'08:45',leaveHotel:'07:40',returnHotel:'09:00'});
   assert.equal(decoded.cost.scope,value.cost.scope);assert.equal(decoded.cost.unknownCount,1);assert.equal(JSON.stringify(value),before);
   const body=JSON.stringify(decoded);for(const secret of ['secret','private note','private image','private audio'])assert.equal(body.includes(secret),false);
 });
@@ -33,6 +34,7 @@ test('read only renderer uses text content for untrusted names and exposes no ed
   try{const root=make('main'),value=input();value.hotel.name='<img src=x onerror=alert(1)>';renderSharedPlan(root,sanitizePlanSnapshot(value));
     const all=[];const walk=n=>{all.push(n);n.children.forEach(walk)};walk(root);
     assert.ok(all.some(n=>n.textContent===value.hotel.name));assert.ok(!all.some(n=>['input','button','img','form'].includes(n.tag)));
-    assert.ok(all.some(n=>n.textContent.includes('参考时段')));
+    assert.ok(all.some(n=>n.textContent.includes('参考安排 07:40 从酒店出发 · 08:00–08:45 用餐 · 09:00 回到酒店')));
+    assert.ok(all.some(n=>n.textContent==='店内地址'));
   }finally{if(previous===undefined)delete globalThis.document;else globalThis.document=previous;}
 });

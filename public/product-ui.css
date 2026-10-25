@@ -397,6 +397,22 @@ body[data-pane='result'] .nav-link[data-pane='result'] { color: var(--ui-ink); }
   .breakfast-options article+article { padding-left: 13px!important; }
 }
 
+.topbar { position: relative; }
+.service-status.is-error {
+  display: block; position: absolute; top: calc(100% + 5px); right: 0; z-index: 60;
+  padding: 6px 10px; border: 1px solid #f0d2c3; border-radius: 8px;
+  background: #fff5ed; color: #8b4d2e; box-shadow: var(--ui-shadow);
+}
+.share-action-status { margin: -10px 0 18px; color: var(--ui-muted); font-size: 13px; line-height: 1.7; }
+.share-action-status:empty { display: none; }
+.nearby-map { touch-action: pan-y; }
+.map-explorer.expanded .map-topline {
+  position: sticky; top: -1px; z-index: 3; padding: 8px 0 12px;
+  background: var(--ui-bg);
+}
+.hotel-card strong, .city-food-card h3, .selected-top h3, .map-detail-head strong,
+.share-dialog, .capture-card { overflow-wrap: anywhere; }
+
 @media (prefers-reduced-motion: reduce) {
   .primary, .secondary, .entry-preview-actions .text-button { transition: none; }
   .intro-splash, .meal-transition { display: none!important; }
