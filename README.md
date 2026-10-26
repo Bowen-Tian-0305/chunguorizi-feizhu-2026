@@ -6,15 +6,17 @@
 
 > 多买的早餐用得上吗？孩子那份怎么算？走出去吃会不会太折腾？套餐晚餐能安排在哪一天？
 
-[公网体验](https://47.238.228.164/) · [最终宣传片](docs/final-promo/纯过日子-最终宣传片.mp4) · [宣传片脚本与字幕](docs/final-promo/script.md) · [数据说明](docs/data-scope.md) · [公开文件检查](docs/privacy-check.md)
+[公网体验](https://47.238.228.164/) · [93 秒 3D 宣传片](docs/promo-rework/纯过日子-3D宣传片.mp4) · [宣传片脚本与字幕](docs/promo-rework/script.md) · [数据说明](docs/data-scope.md) · [公开文件检查](docs/privacy-check.md)
 
-最终宣传片约 88 秒，使用当前界面真实交互剪辑、中文配音与字幕。房价、餐券与反馈均为明确标注的示例输入。
+新版宣传片 93 秒，以 3D 情境开场，接着展示当前网页的真实操作，配有中文讲解与字幕。片中 ¥1200 / ¥1440 为示例房价，不是实时成交价。
+
+![3D 开场里的酒店、早餐与日期卡](docs/promo-rework/assets/stills/3d-price.png)
 
 ![从输入、核对到逐餐安排与调整的四步流程](docs/showcase/journey.png)
 
 > 公网体验开放时间：2026 年 11 月 28 日 00:00（北京时间）。
 
-![最终版首页](docs/final-promo/assets/stills/01-home.png)
+![首页真实输入画面](docs/promo-rework/assets/stills/01-input.png)
 
 ## 怎么用
 
@@ -29,7 +31,7 @@
 
 [决策设计与验证](docs/decision-design.md)。完整验证使用 Node.js 20+ 与 Python 3，运行 `npm test`。全国城市列表使用公开行政区快照，即使实时查询超限仍可选择城市。
 
-![最终版逐日早餐决策](docs/final-promo/assets/stills/04-breakfast.png)
+![逐日早餐决策](docs/promo-rework/assets/stills/03-breakfast.png)
 
 ## 把酒店与附近三餐接起来
 
@@ -37,7 +39,7 @@
 
 整体套餐比较将每档全程房费计算一次，再加同一范围内列出的成人餐费。不同餐次覆盖、仍有待核成人金额或儿童金额未知时，页面保留明确的费用范围。房型、退改或其它权益不同，仍不能把全部房价差额归为早餐费。
 
-[查看整体套餐比较画面](docs/final-promo/assets/stills/05-package.png) · [查看单餐修改预览](docs/final-promo/assets/stills/07-manual-preview.png)
+[查看整体套餐比较画面](docs/promo-rework/assets/stills/04-package.png) · [查看单餐修改预览](docs/promo-rework/assets/stills/07-manual.png)
 
 餐券按分店、所选菜单、餐次、日期、人数、次数、最低消费、预约、叠加及额外费用核对。条件不完整或不匹配时不抵扣，券面值不会自动变成节省金额。
 
@@ -49,7 +51,7 @@
 
 吃过之后，可选填本次实付、等位、口味和同行接受度。后续午晚餐在供餐、时间、路线和忌口等条件判断后参考同一具体门店的本次反馈，并说明原因；锁定选择保留，实付只作回顾，不改菜单价、预算或券抵扣。反馈仅留在本次浏览器会话。
 
-[查看示例反馈输入](docs/screenshots/17-feedback.jpg) · [查看同行只读快照](docs/final-promo/assets/stills/09-share.png)
+[查看示例反馈输入](docs/screenshots/17-feedback.jpg) · [查看同行只读快照](docs/promo-rework/assets/stills/09-share.png)
 
 ## 报价与截图核对
 
