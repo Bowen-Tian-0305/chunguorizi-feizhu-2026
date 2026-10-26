@@ -1,0 +1,14 @@
+[
+  {"id":"01","start":0,"duration":5.5,"kind":"3d","source":"3d","title":"分散的信息","phrases":["早餐差价、餐券和附近三餐，","常常散在不同地方。"]},
+  {"id":"02","start":5.5,"duration":6,"kind":"3d","source":"3d","title":"只吃一次，怎么算","phrases":["示例两晚，含早多花二百四十元，却只吃一次。","不是实时报价。"]},
+  {"id":"03","start":11.5,"duration":6.5,"kind":"3d","source":"3d","title":"收拢成一份计划","phrases":["收拢成计划。","二百四十除以两位成人，再除以一次，","每人每次一百二十元。"]},
+  {"id":"04","start":18,"duration":7.5,"kind":"web","source":"01-input","title":"从一句想法开始","phrases":["从文字、语音或订房截图开始。","日期、房价和权益，先核对，再采用。"]},
+  {"id":"05","start":25.5,"duration":8.5,"kind":"web","source":"02-quotes","title":"先核对，再比较","phrases":["不含早一千二百，含早一千四百四十。","日期、房型和退改等条件可比，","差价才按早餐成本计算。"]},
+  {"id":"06","start":34,"duration":11,"kind":"web","source":"03-breakfast","title":"把早餐算到每个早晨","phrases":["两个早晨，只留一天在酒店吃。","页面即时重算：","二百四十除以两位成人，再除以一次，","每人每次一百二十元。"]},
+  {"id":"07","start":45,"duration":7,"kind":"web","source":"04-package","title":"房费餐费，边界清楚","phrases":["房费各算一次，加所列成人餐费。","预算和未知项分开。","没核清，不算零元。"]},
+  {"id":"08","start":52,"duration":9,"kind":"dual","source":"05-discover","source2":"06-nearby","title":"从住处走到餐桌","phrases":["在杭州看看当地早餐和特色菜，","再从酒店查具体门店与步行路线。","供餐、菜单和忌口，仍要逐项确认。"]},
+  {"id":"09","start":61,"duration":12,"kind":"web","source":"07-manual","title":"只换一顿，先看差异","phrases":["只想换一顿，就锁定其它餐次，","手动选一家新店。","先看费用和安排差异，再由你采用。"]},
+  {"id":"10","start":73,"duration":6.5,"kind":"mobile","source":"08-mobile","title":"手机上，继续核对","phrases":["手机上也能继续核对，","早餐成本和待确认项，都看得见。"]},
+  {"id":"11","start":79.5,"duration":6.5,"kind":"web","source":"09-share","title":"给同行人的只读方案","phrases":["生成只读方案给同行人。","截图、录音和私人笔记，","不进入分享快照。"]},
+  {"id":"12","start":86,"duration":7,"kind":"end","source":"end","title":"纯过日子","phrases":["纯过日子，订酒店，也把饭算明白。","把每一顿，留给真正想吃的那一口。"]}
+]

@@ -1,0 +1,16 @@
+{
+  "name": "chunguorizi-promo-rework",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node capture.mjs",
+    "render3d": "node render-3d.mjs",
+    "audio": "python3 make_audio.py",
+    "build": "python3 build.py",
+    "verify": "python3 verify.py"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1",
+    "three": "0.180.0"
+  }
+}

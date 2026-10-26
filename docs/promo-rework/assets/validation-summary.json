@@ -1,0 +1,119 @@
+{
+  "duration": 93.0,
+  "video": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "codec": "h264",
+    "pixel_format": "yuv420p"
+  },
+  "audio": {
+    "codec": "aac",
+    "sample_rate": 48000,
+    "channels": 2,
+    "integrated_lufs": -16.5,
+    "true_peak_dbtp": -1.8
+  },
+  "black_frames": "none detected",
+  "silence_over_1_8s": "none detected",
+  "captions": 32,
+  "full_decode": "passed",
+  "contacts": [
+    {
+      "scene": "01",
+      "times": [
+        0.12,
+        2.75,
+        5.38
+      ]
+    },
+    {
+      "scene": "02",
+      "times": [
+        5.62,
+        8.5,
+        11.38
+      ]
+    },
+    {
+      "scene": "03",
+      "times": [
+        11.62,
+        14.75,
+        17.88
+      ]
+    },
+    {
+      "scene": "04",
+      "times": [
+        18.12,
+        21.75,
+        25.38
+      ]
+    },
+    {
+      "scene": "05",
+      "times": [
+        25.62,
+        29.75,
+        33.88
+      ]
+    },
+    {
+      "scene": "06",
+      "times": [
+        34.12,
+        39.5,
+        44.88
+      ]
+    },
+    {
+      "scene": "07",
+      "times": [
+        45.12,
+        48.5,
+        51.88
+      ]
+    },
+    {
+      "scene": "08",
+      "times": [
+        52.12,
+        56.5,
+        60.88
+      ]
+    },
+    {
+      "scene": "09",
+      "times": [
+        61.12,
+        67.0,
+        72.88
+      ]
+    },
+    {
+      "scene": "10",
+      "times": [
+        73.12,
+        76.25,
+        79.38
+      ]
+    },
+    {
+      "scene": "11",
+      "times": [
+        79.62,
+        82.75,
+        85.88
+      ]
+    },
+    {
+      "scene": "12",
+      "times": [
+        86.12,
+        89.5,
+        92.88
+      ]
+    }
+  ]
+}

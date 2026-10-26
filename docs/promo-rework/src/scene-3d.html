@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#17352e;font-family:"Hiragino Sans GB","PingFang SC",sans-serif}canvas{display:block}.ui{position:fixed;inset:0;pointer-events:none;color:#fffaf0}.kicker{position:absolute;left:64px;top:48px;font-size:20px;letter-spacing:4px;color:#efcf92}.title{position:absolute;left:64px;top:88px;font-size:48px;font-weight:600;line-height:1.35;max-width:760px;text-shadow:0 2px 18px #10251f66}.note{position:absolute;right:58px;top:52px;padding:13px 20px;border:1px solid #efcf9277;border-radius:12px;background:#17352ebb;font-size:22px}.formula{position:absolute;left:50%;bottom:170px;transform:translateX(-50%);padding:22px 34px;border-radius:18px;background:#17352eee;border:1px solid #efcf9288;white-space:nowrap;font-size:42px;font-weight:600;opacity:0}.formula b{color:#efcf92}.chapter{position:absolute;left:66px;bottom:112px;font-size:20px;color:#d8e2dc;letter-spacing:2px}.shade{position:absolute;inset:0;background:linear-gradient(180deg,#10251f33,transparent 28%,transparent 78%,#10251f44)}
+</style></head><body><div class="ui"><div class="shade"></div><div class="kicker" id="kicker">纯过日子 · 一个订房时的小问题</div><div class="title" id="title">酒店、餐券和三餐，<br>别散在不同地方。</div><div class="note">示例输入 · 非实时报价</div><div class="chapter" id="chapter">01 / 把分散的信息放上同一张桌子</div><div class="formula" id="formula">¥240 ÷ 2 位成人 ÷ 1 次 = <b>¥120 / 人 / 次</b></div></div>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+const green=0x17352e, jade=0x355c4e, warm=0xf7f2e8, red=0xb65335, gold=0xefcf92, wood=0xb99872;
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x243f36); scene.fog=new THREE.FogExp2(0x243f36,.022);
+const camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true}); renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(1); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.15; document.body.prepend(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xfff3da,0x203d35,2.0)); const sun=new THREE.DirectionalLight(0xffdfad,4.0); sun.position.set(-7,13,8); sun.castShadow=true; sun.shadow.mapSize.set(2048,2048); sun.shadow.camera.left=-15;sun.shadow.camera.right=15;sun.shadow.camera.top=15;sun.shadow.camera.bottom=-15;scene.add(sun);
+const fill=new THREE.PointLight(0xd76b45,22,18);fill.position.set(7,4,2);scene.add(fill);
+const mat=(color,roughness=.65,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+const mesh=(geo,material,parent=scene)=>{const m=new THREE.Mesh(geo,material);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m};
+const table=mesh(new THREE.BoxGeometry(28,.55,20),mat(wood,.82));table.position.y=-.32;
+for(let i=-6;i<=6;i++){const seam=mesh(new THREE.BoxGeometry(.018,.012,19.8),mat(0x80684f,.9));seam.position.set(i*2.05,-.035,0);seam.castShadow=false}
+const rug=mesh(new THREE.BoxGeometry(14,.07,10),mat(0xe8ddc8,.95));rug.position.set(0,.02,0);
+function label(text,w=2,h=1,{bg='#f7f2e8',fg='#17352e',size=76}={}){const c=document.createElement('canvas');c.width=1024;c.height=512;const x=c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,1024,512);x.fillStyle=fg;x.textAlign='center';x.textBaseline='middle';x.font=`600 ${size}px "Hiragino Sans GB",sans-serif`;const lines=text.split('\n');lines.forEach((s,i)=>x.fillText(s,512,256+(i-(lines.length-1)/2)*size*1.25));const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:t,side:THREE.DoubleSide}));return m}
+function card(text,w=2.5,d=1.55,color=warm){const g=new THREE.Group();const base=mesh(new THREE.BoxGeometry(w,.16,d),mat(color,.76),g);base.position.y=.08;const l=label(text,w*.94,d*.9,{size:66});l.rotation.x=-Math.PI/2;l.position.y=.168;g.add(l);return g}
+const hotel=new THREE.Group();scene.add(hotel);hotel.position.set(-4.2,.08,-.6);
+const body=mesh(new THREE.BoxGeometry(3.3,4.0,2.65),mat(jade,.5),hotel);body.position.y=2;
+const roof=mesh(new THREE.ConeGeometry(2.55,.8,4),mat(green,.55),hotel);roof.position.y=4.4;roof.rotation.y=Math.PI/4;
+for(let floor=0;floor<4;floor++)for(let col=0;col<4;col++){const win=mesh(new THREE.BoxGeometry(.45,.5,.055),mat((floor+col)%3?gold:0xffefd0,.25),hotel);win.position.set(-1.15+col*.76,.65+floor*.82,1.35)}
+const door=mesh(new THREE.BoxGeometry(.7,1.15,.09),mat(0x132e27,.3),hotel);door.position.set(0,.58,1.38);
+const hotelSign=label('酒店\n两晚',2.1,1.05,{bg:'#17352e',fg:'#efcf92',size:92});hotelSign.position.set(0,3.45,1.39);hotel.add(hotelSign);
+const bed=card('住店日历\n11月1日 → 3日',3.0,1.7);bed.position.set(-5.7,.08,3.1);bed.rotation.y=-.2;scene.add(bed);
+function bowl(scale=1){const g=new THREE.Group();const points=[new THREE.Vector2(.48,0),new THREE.Vector2(.7,.08),new THREE.Vector2(1.02,.58),new THREE.Vector2(1.1,.82),new THREE.Vector2(1.03,.9),new THREE.Vector2(.96,.82)];mesh(new THREE.LatheGeometry(points,48),mat(0xf2e8d6,.22),g);const soup=mesh(new THREE.CylinderGeometry(.96,.96,.055,48),mat(0xb87535,.32),g);soup.position.y=.78;for(let i=0;i<5;i++){const n=mesh(new THREE.TorusGeometry(.3+i*.09,.025,8,40,Math.PI*1.45),mat(0xf2cf83,.65),g);n.rotation.x=Math.PI/2;n.rotation.z=i*.8;n.position.y=.825}for(const x of [-.12,.12]){const stick=mesh(new THREE.CylinderGeometry(.035,.035,2.7,10),mat(0x704128,.6),g);stick.rotation.z=Math.PI/2;stick.rotation.x=.22;stick.position.set(x,.99,.15)}g.scale.setScalar(scale);return g}
+const breakfast=bowl(1.0);breakfast.position.set(2.3,.08,1.4);scene.add(breakfast);
+const voucher=card('餐券\n晚餐 1 次',2.6,1.55,red);voucher.position.set(4.8,.08,-1.9);voucher.rotation.y=.35;scene.add(voucher);
+const priceA=card('A 不含早\n¥1200',2.65,1.55);priceA.position.set(-1.9,.08,3.8);scene.add(priceA);
+const priceB=card('B 含早\n¥1440',2.65,1.55);priceB.position.set(1.15,.08,4.1);scene.add(priceB);
+const delta=card('全程差价\n¥240',2.5,1.45,green);delta.position.set(4.7,.08,3.4);delta.rotation.y=-.25;scene.add(delta);
+const dates=[card('11月2日\n酒店早餐',2.55,1.5),card('11月3日\n留给当地味',2.55,1.5),card('两晚 · 两位成人\n只用 1 次',2.9,1.6,red)];
+dates[0].position.set(-.8,.08,-3.5);dates[1].position.set(2.5,.08,-4);dates[2].position.set(5.8,.08,.7);dates.forEach(x=>scene.add(x));
+const origins=[hotel,breakfast,voucher,priceA,priceB,delta,...dates].map(o=>({o,p:o.position.clone(),r:o.rotation.y}));
+const routeCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(-3,.11,1.3),new THREE.Vector3(-.8,.11,.4),new THREE.Vector3(1,.11,-.6),new THREE.Vector3(2.3,.11,1.3)]);const route=mesh(new THREE.TubeGeometry(routeCurve,80,.035,8,false),mat(red,.45));route.castShadow=false;
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));const bokeh=new BokehPass(scene,camera,{focus:12,aperture:.00012,maxblur:.006});composer.addPass(bokeh);composer.addPass(new OutputPass());
+let webCard;
+const textureLoader=new THREE.TextureLoader();
+function smooth(a,b,t){const x=THREE.MathUtils.clamp((t-a)/(b-a),0,1);return x*x*(3-2*x)}
+function setCamera(p,target){camera.position.set(...p);camera.lookAt(...target);bokeh.uniforms.focus.value=camera.position.distanceTo(new THREE.Vector3(...target))}
+window.renderAt=(time)=>{
+  const gather=smooth(11.4,15.0,time), web=smooth(15.0,17.5,time);
+  origins.forEach(({o,p,r},i)=>{o.position.copy(p);o.rotation.y=r});
+  if(gather){const targets=[[-5.6,.08,-.4],[-2.4,.08,.1],[.3,.08,.1],[-4.8,.08,3.4],[-1.8,.08,3.4],[1.1,.08,3.4],[-1.6,.22,-2.8],[1.6,.22,-2.8],[4.8,.08,2.7]];origins.forEach(({o},i)=>{o.position.lerp(new THREE.Vector3(...targets[i]),gather);o.rotation.y*=(1-gather)});}
+  if(time<5.5){const q=smooth(0,5.5,time);setCamera([10-3*q,8.2-1.2*q,14-2*q],[-.2,1.0,.1])}
+  else if(time<11.5){const q=smooth(5.5,11.5,time);setCamera([5.8-3*q,6.4-2*q,11.5-3*q],[.5,.45,2.2])}
+  else {const q=smooth(11.5,15.2,time);setCamera([6-6*q,8+1*q,12-1*q],[0,.5,.1]);if(web>0)setCamera([0,3.2,13-2.3*web],[0,3.0,5]);}
+  if(webCard){webCard.visible=web>0;webCard.rotation.y=.55*(1-web);webCard.scale.setScalar(.45+.55*web);webCard.position.set(0,3,5)}
+  const title=document.getElementById('title'),chapter=document.getElementById('chapter');
+  if(time<5.5){title.innerHTML='酒店、餐券和三餐，<br>别散在不同地方。';chapter.textContent='01 / 把分散的信息放上同一张桌子'}
+  else if(time<11.5){title.innerHTML='两晚多花 ¥240，<br>却只吃一次。';chapter.textContent='02 / 按真实使用次数，而不是住宿晚数'}
+  else {title.innerHTML='让酒店和每顿饭，<br>按日期成为一份计划。';chapter.textContent='03 / 收拢成计划，再进入真实页面'}
+  const alpha=1-web;document.getElementById('kicker').style.opacity=alpha;title.style.opacity=alpha;chapter.style.opacity=alpha;document.querySelector('.note').style.opacity=alpha;
+  document.getElementById('formula').style.opacity=smooth(12.0,12.8,time)*(1-smooth(15,15.7,time));
+  bokeh.uniforms.maxblur.value=.006*(1-web);composer.render();
+};
+Promise.all([document.fonts.ready,textureLoader.loadAsync('../assets/stills/home-texture.png')]).then(([,texture])=>{texture.colorSpace=THREE.SRGBColorSpace;webCard=new THREE.Mesh(new THREE.PlaneGeometry(12,6.75),new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide}));webCard.visible=false;scene.add(webCard);window.ready=true;window.renderAt(0)});
+</script></body></html>
