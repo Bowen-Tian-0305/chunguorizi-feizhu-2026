@@ -49,7 +49,7 @@ def concat_xfade(a,b,duration_a,target,transition='smoothleft'):
     run(['ffmpeg','-y','-i',a,'-i',b,'-filter_complex',f'[0:v][1:v]xfade=transition={transition}:duration=0.45:offset={duration_a-.45:.3f},fps=30,format=yuv420p[v]','-map','[v]','-c:v','libx264','-preset','fast','-crf','17','-an',target]);return target
 
 clips=[]
-for scene in scenes:
+for scene in ([] if os.environ.get('PROMO_MIX_ONLY') else scenes):
     sid=scene['id'];rawdur=scene['duration']+(0 if sid=='12' else .45);target=OUT/f'scene-{sid}.mp4'
     if scene['kind']=='3d':
         run(['ffmpeg','-y','-ss',scene['start'],'-i',OUT/'3d.mp4','-t',rawdur,'-vf','tpad=stop_mode=clone:stop_duration=0.5,fps=30,format=yuv420p','-c:v','libx264','-preset','fast','-crf','17','-an',target])
@@ -80,11 +80,11 @@ for scene in scenes:
         path=layout(scene);run(['ffmpeg','-y','-loop','1','-i',path,'-t',rawdur,'-vf',"zoompan=z='min(zoom+0.00008,1.018)':d=1:s=1920x1080:fps=30,format=yuv420p",'-c:v','libx264','-preset','fast','-crf','17','-an',target])
     clips.append(target);print('finished scene',sid)
 
-picture=OUT/'picture.mp4';current=clips[0]
+picture=OUT/'picture.mp4';current=clips[0] if clips else picture
 for index,next_clip in enumerate(clips[1:],1):
     output=OUT/f'join-{index:02}.mp4';offset=scenes[index]['start'];transition='smoothleft' if index in (7,8) else 'fade'
     run(['ffmpeg','-y','-i',current,'-i',next_clip,'-filter_complex',f'[0:v][1:v]xfade=transition={transition}:duration=0.45:offset={offset:.3f},fps=30,format=yuv420p[v]','-map','[v]','-t',TOTAL,'-c:v','libx264','-preset','fast','-crf','17','-an',output]);current=output
-run(['ffmpeg','-y','-i',current,'-c','copy',picture])
+if clips: run(['ffmpeg','-y','-i',current,'-c','copy',picture])
 
 overlays=[]
 for index,cue in enumerate(timeline['cues']):

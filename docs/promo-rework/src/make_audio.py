@@ -24,7 +24,7 @@ def srt_time(t):
 
 narration=np.zeros((round(TOTAL*SR),2),np.float32); cues=[]; report=[]
 for scene in scenes:
-    rate=190 if scene['id'] in ('02','03','05','08','11','12') else 182
+    rate=190 if scene['id'] in ('02','03','04','05','08','11','12') else 182
     files=[]
     for index,text in enumerate(scene['phrases']):
         stem=OUT/f"voice-{scene['id']}-{index}"

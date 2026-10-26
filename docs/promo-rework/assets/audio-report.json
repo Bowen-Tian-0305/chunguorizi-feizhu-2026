@@ -53,13 +53,13 @@
     {
       "scene": "04",
       "voice": "Eddy (中文（中国大陆）)",
-      "rate": 182,
+      "rate": 190,
       "fit_tempo": 1.0,
       "phrase_durations": [
-        2.595,
-        3.434
+        2.452,
+        3.192
       ],
-      "end": 24.509
+      "end": 24.123
     },
     {
       "scene": "05",

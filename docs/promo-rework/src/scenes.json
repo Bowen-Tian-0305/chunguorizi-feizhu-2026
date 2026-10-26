@@ -2,7 +2,7 @@
   {"id":"01","start":0,"duration":5.5,"kind":"3d","source":"3d","title":"分散的信息","phrases":["早餐差价、餐券和附近三餐，","常常散在不同地方。"]},
   {"id":"02","start":5.5,"duration":6,"kind":"3d","source":"3d","title":"只吃一次，怎么算","phrases":["示例两晚，含早多花二百四十元，却只吃一次。","不是实时报价。"]},
   {"id":"03","start":11.5,"duration":6.5,"kind":"3d","source":"3d","title":"收拢成一份计划","phrases":["收拢成计划。","二百四十除以两位成人，再除以一次，","每人每次一百二十元。"]},
-  {"id":"04","start":18,"duration":7.5,"kind":"web","source":"01-input","title":"从一句想法开始","phrases":["从文字、语音或订房截图开始。","日期、房价和权益，先核对，再采用。"]},
+  {"id":"04","start":18,"duration":7.5,"kind":"web","source":"01-input","title":"从一句想法开始","phrases":["AI读懂文字、语音与订房截图。","价格和权益由你核对，金额按规则重算。"]},
   {"id":"05","start":25.5,"duration":8.5,"kind":"web","source":"02-quotes","title":"先核对，再比较","phrases":["不含早一千二百，含早一千四百四十。","日期、房型和退改等条件可比，","差价才按早餐成本计算。"]},
   {"id":"06","start":34,"duration":11,"kind":"web","source":"03-breakfast","title":"把早餐算到每个早晨","phrases":["两个早晨，只留一天在酒店吃。","页面即时重算：","二百四十除以两位成人，再除以一次，","每人每次一百二十元。"]},
   {"id":"07","start":45,"duration":7,"kind":"web","source":"04-package","title":"房费餐费，边界清楚","phrases":["房费各算一次，加所列成人餐费。","预算和未知项分开。","没核清，不算零元。"]},

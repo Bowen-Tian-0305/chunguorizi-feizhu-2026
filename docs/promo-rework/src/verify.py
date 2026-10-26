@@ -35,6 +35,7 @@ for scene in timeline['scenes']:
     for i,(label,im,t) in enumerate(images):
         im.thumbnail((460,265));x=(i%3)*480+10;contact.paste(im,(x,45));d.text((x,12),f"{label} · {t:.2f}s",font=font,fill='white')
     contact.save(OUT/f"contact-{scene['id']}.jpg",quality=91);manifest.append({'scene':scene['id'],'times':[x[1] for x in points]})
+run(['ffmpeg','-y','-ss','19.0','-i',VIDEO,'-frames:v','1',OUT/'scene-04-ai-caption.png'])
 run(['ffmpeg','-y','-ss','69.5','-i',VIDEO,'-frames:v','1',OUT/'scene-09-preview.png'])
 run(['ffmpeg','-y','-ss','81.8','-i',VIDEO,'-frames:v','1',OUT/'scene-11-dialog.png'])
 summary={'duration':duration,'video':{'width':1920,'height':1080,'fps':30,'codec':video['codec_name'],'pixel_format':video['pix_fmt']},'audio':{'codec':audio['codec_name'],'sample_rate':48000,'channels':2,'integrated_lufs':integrated,'true_peak_dbtp':peak},'black_frames':'none detected','silence_over_1_8s':'none detected','captions':len(srt),'full_decode':'passed','contacts':manifest}
