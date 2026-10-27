@@ -1,0 +1,72 @@
+{
+  "sample_rate": 48000,
+  "channels": 2,
+  "duration_seconds": 72.0,
+  "tempo_bpm": 100,
+  "event_count": 7,
+  "events": [
+    {
+      "id": "page-turn",
+      "name": "翻页 whoosh",
+      "time": 0.6,
+      "duration": 0.72,
+      "kind": "whoosh",
+      "source": "original numpy/scipy synthesis",
+      "peak_gain": "under dialogue-free subtitles"
+    },
+    {
+      "id": "number-chime",
+      "name": "数字 chime",
+      "time": 4.8,
+      "duration": 1.0,
+      "kind": "chime",
+      "source": "original numpy/scipy synthesis",
+      "peak_gain": "under dialogue-free subtitles"
+    },
+    {
+      "id": "confirm-click",
+      "name": "确认 click",
+      "time": 10.8,
+      "duration": 0.19,
+      "kind": "click",
+      "source": "original numpy/scipy synthesis",
+      "peak_gain": "under dialogue-free subtitles"
+    },
+    {
+      "id": "date-tick",
+      "name": "日期 tick",
+      "time": 24.0,
+      "duration": 0.19,
+      "kind": "tick",
+      "source": "original numpy/scipy synthesis",
+      "peak_gain": "under dialogue-free subtitles"
+    },
+    {
+      "id": "route-whoosh",
+      "name": "路线 whoosh",
+      "time": 40.8,
+      "duration": 0.72,
+      "kind": "whoosh",
+      "source": "original numpy/scipy synthesis",
+      "peak_gain": "under dialogue-free subtitles"
+    },
+    {
+      "id": "adopt-confirm",
+      "name": "采用 confirm",
+      "time": 55.2,
+      "duration": 1.0,
+      "kind": "confirm",
+      "source": "original numpy/scipy synthesis",
+      "peak_gain": "under dialogue-free subtitles"
+    },
+    {
+      "id": "brand-resolve",
+      "name": "品牌 resolve",
+      "time": 67.2,
+      "duration": 1.8,
+      "kind": "resolve",
+      "source": "original numpy/scipy synthesis",
+      "peak_gain": "under dialogue-free subtitles"
+    }
+  ]
+}

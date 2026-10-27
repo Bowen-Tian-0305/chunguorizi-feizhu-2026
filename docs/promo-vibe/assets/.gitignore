@@ -1,0 +1,4 @@
+dynamic/
+frames/
+audio/*.wav
+validation/*.txt

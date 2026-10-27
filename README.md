@@ -6,11 +6,11 @@
 
 > 多买的早餐用得上吗？孩子那份怎么算？走出去吃会不会太折腾？套餐晚餐能安排在哪一天？
 
-[公网体验](https://47.238.228.164/) · [93 秒 3D 宣传片](docs/promo-rework/纯过日子-3D宣传片.mp4) · [宣传片脚本与字幕](docs/promo-rework/script.md) · [数据说明](docs/data-scope.md) · [公开文件检查](docs/privacy-check.md)
+[公网体验](https://47.238.228.164/) · [72 秒 3D 宣传片](docs/promo-vibe/纯过日子-72秒3D宣传片.mp4) · [分镜](docs/promo-vibe/script.md) · [中文字幕](docs/promo-vibe/captions.srt) · [数据说明](docs/data-scope.md) · [公开文件检查](docs/privacy-check.md)
 
-新版宣传片 93 秒，以 3D 情境开场，接着展示当前网页的真实操作，配有中文讲解与字幕。片中 ¥1200 / ¥1440 为示例房价，不是实时成交价。
+新版宣传片 72 秒，由 Kimi Code 完成 3D 片头、当前网页的真实操作镜头和原创配乐；屏幕文字与中文字幕说明想法和功能，无旁白。片中 ¥1200 / ¥1440 为示例房价，不是实时成交价。
 
-![3D 开场里的酒店、早餐与日期卡](docs/promo-rework/assets/stills/3d-price.png)
+![3D 开场里的酒店、早餐与日期卡](docs/promo-vibe/cover.png)
 
 ![从输入、核对到逐餐安排与调整的四步流程](docs/showcase/journey.png)
 

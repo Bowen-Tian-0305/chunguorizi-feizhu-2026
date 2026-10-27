@@ -1,0 +1,15 @@
+{
+  "name": "chunguorizi-promo-vibe",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prototype": "node render.mjs --end 8 --output ../opening-picture.mp4 && ffmpeg -y -hide_banner -loglevel error -i ../opening-picture.mp4 -i ../assets/audio/mix.wav -c:v copy -c:a aac -b:a 256k -ar 48000 -t 8 -movflags +faststart ../opening-3d-8s.mp4 && rm ../opening-picture.mp4",
+    "render": "node render.mjs",
+    "audio": "python3 make_audio.py",
+    "verify": "python3 verify.py"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1",
+    "three": "0.160.1"
+  }
+}

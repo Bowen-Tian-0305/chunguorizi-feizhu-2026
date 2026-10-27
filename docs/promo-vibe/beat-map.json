@@ -1,0 +1,20 @@
+{
+  "duration": 72,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "score": { "bpm": 100, "beat": 0.6, "bar": 2.4, "bars": 30, "meter": "4/4", "status": "final original score and seven original synthesized sound effects; no narration" },
+  "scenes": [
+    { "id": "01-hook", "start": 0, "end": 7.2, "bars": [1, 3], "events": [{ "t": 0, "visual": "true Three.js 3D price plaques: 1200 / 1440; central 240 and breakfast once", "sound": "paper whoosh" }, { "t": 3, "visual": "price plaques rotate and retreat in 3D; LatheGeometry ceramic bowl and TubeGeometry noodles grow" }, { "t": 4.8, "visual": "date plaques arrive; per-person formula resolves", "sound": "number chime" }, { "t": 6.2, "visual": "real homepage rises; PerspectiveCamera pushes in for scene 2 handoff" }] },
+    { "id": "02-input", "start": 7.2, "end": 14.4, "bars": [4, 6], "events": [{ "t": 7.2, "visual": "continue the real homepage raised by the 3D opening; original sentence overlay holds briefly" }, { "t": 8, "visual": "text, voice and booking-screenshot input channels arrive around the large real homepage" }, { "t": 10.8, "visual": "scan line checks conditions", "sound": "soft click" }] },
+    { "id": "03-quotes", "start": 14.4, "end": 21.6, "bars": [7, 9], "events": [{ "t": 14.4, "visual": "overlapped AB cards split into a layered comparison" }, { "t": 18, "visual": "conditions confirmation unfolds with parallax" }] },
+    { "id": "04-breakfast", "start": 21.6, "end": 28.8, "bars": [10, 12], "events": [{ "t": 21.6, "visual": "7.2-second real WebM begins on a near-full-width breakfast stage; amount cards connect by curved lines" }, { "t": 24, "visual": "real date click and wait", "sound": "date tick" }, { "t": 26.4, "visual": "rule recalculation completes; 120 holds for reading" }] },
+    { "id": "05-package", "start": 28.8, "end": 36, "bars": [13, 15], "events": [{ "t": 28.8, "visual": "ledger layers settle with depth and parallax" }, { "t": 32.4, "visual": "unknown remains open" }] },
+    { "id": "06-route", "start": 36, "end": 45.6, "bars": [16, 19], "events": [{ "t": 36, "visual": "near-full-screen noodle photography pushes in; noodle arcs become routes" }, { "t": 40.8, "visual": "horizontal mask strips reveal the real route page; scan line and route reach restaurant", "sound": "route whoosh" }, { "t": 43.2, "visual": "destination holds with subtle glow" }] },
+    { "id": "07-manual", "start": 45.6, "end": 55.2, "bars": [20, 23], "events": [{ "t": 45.6, "visual": "9.6-second real WebM begins; other meals lock" }, { "t": 48, "visual": "preview diff" }, { "t": 52.8, "visual": "adopted plan is visible" }, { "t": 55.2, "visual": "manual scene resolves into mobile", "sound": "confirm" }] },
+    { "id": "08-mobile", "start": 55.2, "end": 60, "bars": [24, 25], "events": [{ "t": 55.2, "visual": "light warm-paper background replaces dark green; line work grows" }, { "t": 56.4, "visual": "real 390 by 844 phone page rises into the outlined handset" }, { "t": 57.6, "visual": "120 readable" }] },
+    { "id": "09-share", "start": 60, "end": 67.2, "bars": [26, 28], "events": [{ "t": 60, "visual": "7.2-second real WebM begins on the central share page; lock-shaped link and read-only seal" }, { "t": 63.6, "visual": "bottom privacy strip excludes original screenshots, recordings and private notes" }] },
+    { "id": "10-outro", "start": 67.2, "end": 72, "bars": [29, 30], "events": [{ "t": 67.2, "visual": "brand resolves through noodle relay", "sound": "resolve" }, { "t": 69.6, "visual": "date holds and final cadence" }] }
+  ],
+  "finalization": ["original music and sound effects locked for this 72-second picture", "no commercial song, narration or temporary-audio placeholder", "final MP4 rerendered and fully validated"]
+}

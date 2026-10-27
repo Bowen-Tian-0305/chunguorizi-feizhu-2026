@@ -1,0 +1,36 @@
+{
+  "duration": 72.0,
+  "video": {
+    "width": 1920,
+    "height": 1080,
+    "fps": "30/1",
+    "frames": 2160,
+    "codec": "h264",
+    "pixel_format": "yuvj420p"
+  },
+  "audio": {
+    "codec": "aac",
+    "sample_rate": "48000",
+    "channels": 2
+  },
+  "black_segments": 0,
+  "long_silence_segments": 0,
+  "subtitle_cues": 10,
+  "opening": {
+    "duration": 8.0,
+    "contact_frames": 16,
+    "engine": "Three.js 0.160.1",
+    "geometry": [
+      "ExtrudeGeometry",
+      "LatheGeometry",
+      "TubeGeometry"
+    ],
+    "shadows": "PCFSoftShadowMap"
+  },
+  "operation_mean_pixel_differences": {
+    "breakfast_click": 16.340455614344503,
+    "manual_apply": 58.410615604266404,
+    "share_readonly": 24.58149701856051
+  },
+  "status": "technical checks passed; visual review recorded separately"
+}
