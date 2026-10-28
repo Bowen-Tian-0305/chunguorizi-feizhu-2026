@@ -322,7 +322,8 @@ function applyPreset(name) {
 document.querySelectorAll('[data-preset]').forEach(button=>button.addEventListener('click',()=>applyPreset(button.dataset.preset)));
 async function tryDemo() {
   const revision=captureRevision;
-  const button=$('tryDemo');button.disabled=true;button.textContent='准备杭州示例…';
+  const buttons=[$('tryDemo'),$('tryDemoMobile')],labels=buttons.map(button=>button.textContent);
+  buttons.forEach(button=>{button.disabled=true;button.textContent='准备杭州示例…';});
   try {
     if($('city').value!=='杭州'){$('city').value='杭州';$('city').dispatchEvent(new Event('change'));}
     const intent=tripContextRevision,data=await api('/api/demo');
@@ -334,9 +335,9 @@ async function tryDemo() {
     state.demo=true;state.needsDateConfirmation=false;applyPreset('couple');notice('demoNotice',data.offline?'正在体验离线示例：房价 ¥1200 / ¥1440 为测试值，酒店位置为公开快照。实时语音、截图与地图服务需配置自己的密钥。':'正在体验示例：房价 ¥1200 / ¥1440 和套餐权益为测试值。酒店餐饮信息有真实出处，周边路线按当前地图查询。');
     $('makePlan').click();
   } catch(error) {notice('searchNotice','示例暂时无法加载：'+error.message,true);showPane('hotel');}
-  finally {button.disabled=false;button.textContent='先试试杭州示例 ↗';}
+  finally {buttons.forEach((button,index)=>{button.disabled=false;button.textContent=labels[index];});}
 }
-$('tryDemo').addEventListener('click',tryDemo);$('demoStripButton').addEventListener('click',tryDemo);
+$('tryDemo').addEventListener('click',tryDemo);$('tryDemoMobile').addEventListener('click',tryDemo);$('demoStripButton').addEventListener('click',tryDemo);
 
 const voiceExamples = {
   family:'下周六去杭州住两晚，两大一小，想住杭州城中香格里拉大酒店。孩子六岁，不吃花生，想吃杭州特色早餐，最多走十分钟。',

@@ -309,8 +309,12 @@ body[data-pane='result'] .nav-link[data-pane='result'] { color: var(--ui-ink); }
   body:not([data-city='杭州']) .start-pitch { background: linear-gradient(135deg,#355d53,#1d3430); }
   .start-pitch>span { color: #fbe6d3; font-size: 11px; font-weight: 700; }
   .start-pitch h1 { margin: 7px 0 4px; color: #fff; font-size: 27px; line-height: 1.24; letter-spacing: -.035em; }
-  .start-pitch p { margin: 0; color: #fffefa; font-size: 11px; line-height: 1.65; }
-  .start-pitch p a { color: #fff; font-weight: 750; text-decoration: underline; text-underline-offset: 3px; margin-left: 5px; }
+  .start-pitch p { margin: 0; color: #fffefa; font-size: 13px; line-height: 1.55; }
+  .start-pitch-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; margin-top: 13px; }
+  .start-pitch-actions button, .start-pitch-actions a { display: inline-flex; align-items: center; min-height: 44px; padding: 9px 12px; border-radius: 9px; font-size: 13px; font-weight: 700; text-decoration: none; }
+  .start-pitch-actions button { border: 1px solid #fff; background: #fff; color: #8f381f; }
+  .start-pitch-actions a { border: 1px solid #ffffff99; background: #16251b85; color: #fff; }
+  .start-pitch-actions button:disabled { opacity: .7; }
   #hotelWorkspace { order: 1; margin-bottom: 10px; scroll-margin-top: 12px; }
   #hotelPane .hero.hero-entry { order: 2; scroll-margin-top: 12px; }
   #hotelPane .intro-line, #hotelPane .demo-strip { display: none; }

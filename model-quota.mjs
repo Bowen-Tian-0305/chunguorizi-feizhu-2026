@@ -21,7 +21,7 @@ export function quotaResetTimes(now = Date.now()) {
 export function createModelQuota(env = process.env) {
   const file = env.MODEL_QUOTA_FILE;
   let memory;
-  const limits = () => ({hour:positive(env.MODEL_CALLS_PER_IP_HOUR,5),day:positive(env.MODEL_CALLS_PER_IP_DAY,5),siteDay:positive(env.MAX_MODEL_CALLS_PER_DAY,30)});
+  const limits = () => ({hour:positive(env.MODEL_CALLS_PER_IP_HOUR,12),day:positive(env.MODEL_CALLS_PER_IP_DAY,12),siteDay:positive(env.MAX_MODEL_CALLS_PER_DAY,120)});
   function status(address, now = Date.now()) {
     const resetsAt=Number.isFinite(now)&&Math.abs(now)<8e15?quotaResetTimes(now):null, cap=limits();
     const unavailableStatus={status:'unavailable',unit:'calls',remaining:null,limits:cap,resetsAt};
@@ -61,9 +61,9 @@ export function createModelQuota(env = process.env) {
       const client = state.clients[id] || {day:0, hour, count:0};
       if (![client.day, client.hour, client.count].every(n => Number.isSafeInteger(n) && n >= 0)) throw unavailable();
       if (client.hour !== hour) {client.hour = hour; client.count = 0;}
-      if (state.total >= positive(env.MAX_MODEL_CALLS_PER_DAY, 30) ||
-          client.day >= positive(env.MODEL_CALLS_PER_IP_DAY, 5) ||
-          client.count >= positive(env.MODEL_CALLS_PER_IP_HOUR, 5)) throw exhausted();
+      if (state.total >= positive(env.MAX_MODEL_CALLS_PER_DAY, 120) ||
+          client.day >= positive(env.MODEL_CALLS_PER_IP_DAY, 12) ||
+          client.count >= positive(env.MODEL_CALLS_PER_IP_HOUR, 12)) throw exhausted();
       state.total++; client.day++; client.count++; state.clients[id] = client;
       if (file) {
         const temporary = `${file}.tmp`;

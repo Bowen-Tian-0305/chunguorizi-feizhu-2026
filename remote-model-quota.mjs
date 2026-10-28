@@ -16,8 +16,8 @@ export function createRemoteModelQuota(env=process.env, request=fetch) {
       const response=await request(new URL('/rest/v1/rpc/reserve_model_call',endpoint),{
         method:'POST', signal:AbortSignal.timeout(8000),
         headers:{'Content-Type':'application/json',apikey:secret,Authorization:`Bearer ${secret}`},
-        body:JSON.stringify({p_client:digest,p_daily_limit:positive(env.MAX_MODEL_CALLS_PER_DAY,30),
-          p_client_limit:positive(env.MODEL_CALLS_PER_IP_DAY,5),p_hourly_limit:positive(env.MODEL_CALLS_PER_IP_HOUR,5)})
+        body:JSON.stringify({p_client:digest,p_daily_limit:positive(env.MAX_MODEL_CALLS_PER_DAY,120),
+          p_client_limit:positive(env.MODEL_CALLS_PER_IP_DAY,12),p_hourly_limit:positive(env.MODEL_CALLS_PER_IP_HOUR,12)})
       });
       if (!response.ok) throw unavailable();
       const result=await response.json();

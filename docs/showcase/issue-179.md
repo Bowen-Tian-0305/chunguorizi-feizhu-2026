@@ -2,7 +2,7 @@
 
 **百炼驱动的响应式网页。** 从一句话或订房截图出发，核对酒店与套餐，再按日期安排三餐。AI 用于理解条件和提出单餐候选；金额、日期、餐券资格由规则计算，重要选择由用户确认。
 
-[观看 3D 宣传片（72 秒）](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.3.3/promo-v1.3.3.mp4) · [体验网页（11 月 28 日 00:00 北京时间开放）](https://47.238.228.164/) · [查看源码](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.3.3)
+[观看 3D 宣传片（72 秒）](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.3.3/promo-v1.3.3.mp4) · [体验网页（11 月 28 日 00:00 北京时间开放）](https://47.238.228.164/) · [查看源码](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.3.4)
 
 ## 参赛项目名称
 
@@ -65,7 +65,7 @@
 
 - [公网体验](https://47.238.228.164/)（2026 年 11 月 28 日 00:00，北京时间开放）
 - 比赛演示服务保留至 2026 年 12 月 25 日；服务器已设为 12 月 26 日 00:00（北京时间）自动释放。
-- [源码仓库及 v1.3.3 发布包](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/tag/v1.3.3)
+- [源码仓库及 v1.3.4 发布包](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/tag/v1.3.4)
 - Node.js 20+；将空白 `.env.example` 复制为本机 `.env`，配置自己的服务端凭据，运行 `node --env-file=.env server.mjs`。无密钥时可使用固定示例、手动计算与本地资料。
 - 全国城市可选择，杭州为深度示范。酒店和餐馆资料集合有重叠，不代表全杭州或全国完整覆盖；来源、采集时间与限制见仓库数据说明。
 - 不发布个人订单、真实用户录音、密钥或控制台资料。原始录音与截图不在服务端持久保存，私人笔记保留在当前浏览器。
