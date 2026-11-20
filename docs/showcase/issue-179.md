@@ -1,6 +1,6 @@
 ![纯过日子参赛封面](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.3/docs/showcase/cover.png)
 
-**百炼驱动的响应式网页。** 从一句话或订房截图出发，核对酒店与套餐，再按日期安排三餐。AI 用于理解条件和提出单餐候选；金额、日期、餐券资格由规则计算，重要选择由用户确认。
+**最终参赛版本：v1.3.4。** 纯过日子是百炼驱动的响应式网页。从一句话或订房截图出发，核对酒店与套餐，再按日期安排三餐。AI 用于理解条件和提出单餐候选；金额、日期、餐券资格由规则计算，重要选择由用户确认。
 
 [观看 3D 宣传片（72 秒）](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.3.3/promo-v1.3.3.mp4) · [体验网页（11 月 28 日 00:00 北京时间开放）](https://47.238.228.164/) · [查看源码](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.3.4)
 
@@ -13,8 +13,9 @@
 ## 团队 / 作者与奖品领取人
 
 - 团队名称：纯过日子
-- 主要提交人 GitHub ID：@Bowen-Tian-0305
+- 唯一主要提交人及赛事对接人 GitHub ID：@Bowen-Tian-0305
 - 其他成员：无
+- [最终参赛主帖 #179](https://github.com/modelstudioai/modelstudioai.github.io/issues/179)。[旧帖 #177](https://github.com/modelstudioai/modelstudioai.github.io/issues/177) 已关闭并标记作废。
 
 ## 旅行场景与目标用户
 
@@ -38,7 +39,7 @@
 ## 百炼使用说明
 
 - 模型：`qwen-audio-3.1-asr-flash` 用于语音转写；`qwen3.8-flash` 用于旅行条件提取、订房截图理解、待核事项筛选和单餐候选建议。
-- 调用方式：Node.js 服务端调用百炼 API，密钥仅在服务端配置。语音使用 DashScope 原生接口，文字与图像使用 OpenAI 兼容接口。
+- 使用环节：**应用运行时**。用户使用语音、提交旅行需求或截图，或发起待核事项、单餐建议等操作时，Node.js 服务端按需调用百炼 API。语音使用 DashScope 原生接口，文字与图像使用 OpenAI 兼容接口，凭据仅在服务端配置。
 - 输入输出：16 kHz WAV → 可修改文字；文字 → 条件 JSON 与原句证据；截图 → 可见日期、房型、价格和权益；结构化条件 → 优先核对事项；指定餐次与候选摘要 → 一个候选或澄清请求。
 - 核心金额、时间与餐券规则由代码计算，模型输出不会改写算式或确认未知事实。
 - 飞猪官方 `flyai` Skill 与 FlyAI CLI 用于酒店候选接入；其它技术包括原生响应式网页、地图地点与路径服务、带来源和日期的公开资料 JSON。
@@ -59,13 +60,17 @@
 
 [杭州餐饮资料页](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.3/docs/promo-rework/assets/stills/05-discover.png) · [餐券条件示例](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.3/docs/screenshots/16-voucher.jpg) · [同行只读快照](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.3/docs/promo-rework/assets/stills/09-share.png)
 
-演示采用示例房价和当前网页的真实操作，并在画面中注明范围。公开资料、地图地点与路径均不能替代入住当天的菜单、供餐、儿童或过敏条件确认。
+### 查询、历史资料和演示数据
+
+- **实时查询**：飞猪候选由 FlyAI CLI 查询，使用体验模式。候选价格供筛选参考，请打开飞猪预订页核对实际报价和权益。附近地点和步行路线来自地图服务，路线可使用短时缓存。
+- **历史资料**：公开订房截图、酒店政策和餐馆资料带有来源和采集日期。仓库中 2026 年 10 月 12 日采集的飞猪报价截图是历史快照。菜单、供餐、儿童收费及过敏条件以本次出行核对为准。
+- **固定示例**：页面和视频中的预设房价用于演示真实的界面操作和计算流程。固定示例的讲解使用预设内容，无需调用百炼。
 
 ## 项目链接与复现方式
 
-- [公网体验](https://47.238.228.164/)（2026 年 11 月 28 日 00:00，北京时间开放）
-- 比赛演示服务保留至 2026 年 12 月 25 日；服务器已设为 12 月 26 日 00:00（北京时间）自动释放。
-- [源码仓库及 v1.3.4 发布包](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/tag/v1.3.4)
-- Node.js 20+；将空白 `.env.example` 复制为本机 `.env`，配置自己的服务端凭据，运行 `node --env-file=.env server.mjs`。无密钥时可使用固定示例、手动计算与本地资料。
+- [公网体验](https://47.238.228.164/)（**v1.3.4**，2026 年 11 月 28 日 00:00 北京时间开放，开放前显示等待页）。比赛演示服务保留至 12 月 25 日，服务器设为 12 月 26 日 00:00（北京时间）自动释放。
+- **评委体验**：网页无需登录。首页点击「先看杭州示例」（桌面端为「查看示例方案」），查看含早差额和逐日三餐。可切换一个早餐日期、预览修改一顿饭，并生成同行只读链接。体验实时能力时，可输入一段虚构的杭州旅行需求，再查看飞猪酒店候选或地图步行路线。
+- **调用限额**：AI 每 IP 每小时、每天各 12 次，全站每天 120 次。实时酒店和地图查询另计，每 IP 每小时、每天各 20 次，全站每天 100 次。页面显示剩余次数和重置时间。达到限额后，固定示例、手动计算及已收录资料仍可使用。
+- [最终版源码与 v1.3.4 发布页](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/tag/v1.3.4) · [本地复现说明](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.3.4#本地复现)。使用 Node.js 20+，把 `.env.example` 复制为本机 `.env` 后运行 `node --env-file=.env server.mjs`，浏览器打开 `http://127.0.0.1:4173/`。无密钥可体验示例及手动计算。若要本地运行实时功能，请按说明配置自己的服务端凭据和 FlyAI CLI。
 - 全国城市可选择，杭州为深度示范。酒店和餐馆资料集合有重叠，不代表全杭州或全国完整覆盖；来源、采集时间与限制见仓库数据说明。
 - 不发布个人订单、真实用户录音、密钥或控制台资料。原始录音与截图不在服务端持久保存，私人笔记保留在当前浏览器。
