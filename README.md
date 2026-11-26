@@ -8,7 +8,7 @@
 
 [公网体验](https://47.238.228.164/) · [72 秒 3D 宣传片](docs/promo-vibe/纯过日子-72秒3D宣传片.mp4) · [分镜](docs/promo-vibe/script.md) · [中文字幕](docs/promo-vibe/captions.srt) · [数据说明](docs/data-scope.md) · [公开文件检查](docs/privacy-check.md)
 
-新版宣传片 72 秒，由 Kimi Code 完成 3D 片头、当前网页的真实操作镜头和原创配乐；屏幕文字与中文字幕说明想法和功能，无旁白。片中 ¥1200 / ¥1440 为示例房价，不是实时成交价。
+新版宣传片 72 秒，由 Kimi Code 完成 3D 片头、录制时网页的真实操作镜头和原创配乐；屏幕文字与中文字幕说明想法和功能，无旁白。片中 ¥1200 / ¥1440 为示例房价，不是实时成交价。
 
 ![3D 开场里的酒店、早餐与日期卡](docs/promo-vibe/cover.png)
 
@@ -16,7 +16,7 @@
 
 > 公网体验开放时间：2026 年 11 月 28 日 00:00（北京时间）。
 
-![首页真实输入画面](docs/promo-rework/assets/stills/01-input.png)
+<img src="docs/showcase/judge-home-v1.3.5.jpg" alt="手机版首页的三个杭州示例入口" width="320"/>
 
 ## 怎么用
 
@@ -31,7 +31,7 @@
 
 [决策设计与验证](docs/decision-design.md)。完整验证使用 Node.js 20+ 与 Python 3，运行 `npm test`。全国城市列表使用公开行政区快照，即使实时查询超限仍可选择城市。
 
-![逐日早餐决策](docs/promo-rework/assets/stills/03-breakfast.png)
+<img src="docs/showcase/judge-breakfast-v1.3.5.jpg" alt="手机切换早餐日期后的人均成本和两种早餐预算" width="320"/>
 
 ## 把酒店与附近三餐接起来
 
@@ -84,7 +84,7 @@ cp .env.example .env
 node --env-file=.env server.mjs
 ```
 
-打开 `http://127.0.0.1:4173/`，先点「查看示例方案」（手机首屏为「先看杭州示例」）。密钥字段都是空值；没有密钥时，实时语音、截图和地图接口不能使用，固定示例价格计算与本地资料仍可查看。
+打开 `http://127.0.0.1:4173/`，可任选首页「两人旅行」「带娃入住」或「套餐送晚餐」的杭州示例。密钥字段都是空值；没有密钥时，实时语音、截图和地图接口不能使用，固定示例价格计算与本地资料仍可查看。
 
 FlyAI CLI 支持默认体验模式（酒店候选可能受限）；增强查询使用自己的有效认证，通过官方配置流程配置，或设置服务端 `FLYAI_API_KEY`。普通本地启动沿用 FlyAI CLI 已有配置；容器入口会使用环境变量配置该 CLI。项目只在本地显式设置 `ALLOW_LOCAL_BAILIAN_CONFIG=1` 时才会读取本机百炼 CLI 配置，公开部署应使用服务端环境变量。
 
