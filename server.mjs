@@ -349,12 +349,12 @@ async function extractScreenshot(dataUrl) {
   const payload = await itineraryAI({
     schema:bookingResponse, maxTokens:1000, timeoutMs:35_000,
     messages: [
-        {role: 'system', content: '你只提取图片里明确可见的订房信息，返回 JSON。不要猜测酒店、日期、金额、权益或人数。看不清就给 null。不要输出姓名、电话、订单号、身份证号或其他个人信息。'},
-        {role: 'user', content: [
-          {type: 'text', text: '请输出 JSON 字段：platform, city, hotel_address, room_type, cancellation_rule, payment_terms, other_terms, occupancy, room_count, currency, price_basis, hotel_name, check_in, check_out, nights, room_only_total, breakfast_room_total, breakfast_count_per_night, buffet_rights, buffet_meal_type。currency只写图中明确币种，人民币写CNY；price_basis为total（明确入住全程总价）、night（单晚）或unknown。other_terms只记录早餐以外的额外权益，不能把早餐差异写进此字段；未知填null。金额为数字；buffet_rights 只能是使用次数整数；buffet_meal_type 只能是 lunch、dinner、either 或 null。截图可以来自飞猪或其他预订平台。只从图片原文提取，未知填 null。单晚价不能当全程总价；单一含早房价不能当作含早与不含早的两档价。'},
-          {type: 'image_url', image_url: {url: dataUrl}}
-        ]}
-      ]
+      {role: 'system', content: '你只提取图片里明确可见的订房信息，返回 JSON。不要猜测酒店、日期、金额、权益或人数。看不清就给 null。不要输出姓名、电话、订单号、身份证号或其他个人信息。'},
+      {role: 'user', content: [
+        {type: 'text', text: '请输出 JSON 字段：platform, city, hotel_address, room_type, cancellation_rule, payment_terms, other_terms, occupancy, room_count, currency, price_basis, hotel_name, check_in, check_out, nights, room_only_total, breakfast_room_total, breakfast_count_per_night, buffet_rights, buffet_meal_type。currency只写图中明确币种，人民币写CNY；price_basis为total（明确入住全程总价）、night（单晚）或unknown。other_terms只记录早餐以外的额外权益，不能把早餐差异写进此字段；未知填null。金额为数字；buffet_rights 只能是使用次数整数；buffet_meal_type 只能是 lunch、dinner、either 或 null。截图可以来自飞猪或其他预订平台。只从图片原文提取，未知填 null。单晚价不能当全程总价；单一含早房价不能当作含早与不含早的两档价。'},
+        {type: 'image_url', image_url: {url: dataUrl}}
+      ]}
+    ]
   });
   let content = payload.choices?.[0]?.message?.content;
   if (!content?.trim()) throw Object.assign(new Error('百炼未返回截图字段，请重试或手动填写。'), {status:502});
@@ -461,9 +461,9 @@ async function explainPlan(input) {
   const payload = await itineraryAI({
     schema:checklistResponse, maxTokens:550, timeoutMs:25_000,
     messages: [
-        {role: 'system', content: '你只负责从结构化事实中选出最需要核对的事项，不生成自由文本，不做预订建议。输出JSON，仅含checklist_ids数组，从 room_terms, breakfast_count, child_policy, restaurant_today, walk_route, dietary, buffet_terms, prices 中选最多3个。儿童为零时不选child_policy；没有饮食限制时不选dietary；房价条件可比时不选room_terms。'},
-        {role: 'user', content: JSON.stringify(facts)}
-      ]
+      {role: 'system', content: '你只负责从结构化事实中选出最需要核对的事项，不生成自由文本，不做预订建议。输出JSON，仅含checklist_ids数组，从 room_terms, breakfast_count, child_policy, restaurant_today, walk_route, dietary, buffet_terms, prices 中选最多3个。儿童为零时不选child_policy；没有饮食限制时不选dietary；房价条件可比时不选room_terms。'},
+      {role: 'user', content: JSON.stringify(facts)}
+    ]
   });
   const raw = String(payload.choices?.[0]?.message?.content || '{}').replace(/^```(?:json)?\s*|\s*```$/g, '');
   const answer = JSON.parse(raw);
