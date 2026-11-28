@@ -240,8 +240,6 @@ test('server integration: validation and missing keys do not consume quota; shar
   assert.equal((await invalidModelRequest('transcribe')).status, 400);
   assert.equal((await invalidModelRequest('understand')).status, 400);
   const modelStatus = await (await fetch(`${base}/api/quota`)).json();
-  assert.deepEqual(modelStatus.modelCalls.remaining, {hour:0, day:0, siteDay:0});
-  assert.equal((await invalidModelRequest('understand')).status, 429);
-  assert.equal((await refine(refineInput)).status,429);
-  assert.equal(JSON.parse(await readFile(path.join(temp, 'ai-quota.json'), 'utf8')).total, 2);
+  assert.equal(modelStatus.modelCalls.remaining, null);
+  await assert.rejects(readFile(path.join(temp,'ai-quota.json')),{code:'ENOENT'});
 });

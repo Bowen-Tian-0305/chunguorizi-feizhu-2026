@@ -94,6 +94,7 @@ document.addEventListener('input',event=>{
 });
 let explainRevision = 0;
 let nearbyRevision = 0;
+let nearbyKeyword = null;
 const routeCache = new Map();
 const mapState={view:{x:0,y:0,w:1000,h:640},selectedId:null,draft:{rating:0,note:''},reviews:{},status:''};
 try{const saved=JSON.parse(localStorage.getItem('chunguorizi-place-notes-v1')||'{}');if(saved&&typeof saved==='object'&&!Array.isArray(saved))mapState.reviews=saved;}catch{}
@@ -691,6 +692,7 @@ async function selectHotel(item, {showPreferences=true}={}) {
   tripContextRevision++;
   selectedBreakfastDates.clear();breakfastDateSignature='';
   state.hotel = item; state.evidence = null; state.hotelPolicy=null; state.nearby = [];state.savedPlaces=[];state.mealPlan=null;explainRevision++;nearbyRevision++;
+  nearbyKeyword = null;
   $('planSection').classList.add('hidden');
   changeQuoteContext(item,{leaveDemo:!item.demo});state.demo=Boolean(item.demo);
   mapState.selectedId=null;mapState.draftId=null;resetMapView();expandNearbyMap(false);
@@ -716,7 +718,14 @@ async function selectHotel(item, {showPreferences=true}={}) {
   document.querySelectorAll('#nearbySection .chip').forEach(chip=>{const active=chip.dataset.keyword==='早餐';chip.classList.toggle('active',active);chip.setAttribute('aria-pressed',String(active));});
   document.querySelectorAll('[data-map-keyword]').forEach(button=>{const active=button.dataset.mapKeyword==='早餐';button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
   if(showPreferences)showPane('preferences');
-  loadNearby('早餐');
+  if (item.demo) {
+    renderNearby();
+    notice('nearbyNotice','');
+    $('nearbyStart').classList.remove('hidden');
+    $('mapExplorer').classList.add('hidden');
+  } else {
+    loadNearby('早餐');
+  }
   return true;
 }
 
@@ -751,14 +760,27 @@ function setNearbyKeyword(keyword){
   document.querySelectorAll('[data-map-keyword]').forEach(button=>{const active=button.dataset.mapKeyword===keyword;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
   loadNearby(keyword);
 }
+function findNearby() {
+  if (nearbyKeyword === null) {
+    const keyword = document.querySelector('#nearbySection .chip.active')?.dataset.keyword ?? '早餐';
+    setNearbyKeyword(keyword);
+  }
+}
+document.querySelectorAll('[data-find-nearby]').forEach(control=>control.addEventListener('click',findNearby));
 document.querySelectorAll('#nearbySection .chip').forEach(chip=>chip.addEventListener('click',()=>setNearbyKeyword(chip.dataset.keyword||'')));
 document.querySelectorAll('[data-map-keyword]').forEach(button=>button.addEventListener('click',()=>setNearbyKeyword(button.dataset.mapKeyword||'')));
 
 async function placeRoute(place, revision) {
   const origin=`${Number(state.hotel.longitude).toFixed(6)},${Number(state.hotel.latitude).toFixed(6)}`;
   const key=origin+'>'+place.location;
-  let result=routeCache.get(key);
-  if(!result){result=await api(`/api/route?${new URLSearchParams({origin,destination:place.location})}`);routeCache.set(key,result);}
+  if (!routeCache.has(key)) {
+    const request = api(`/api/route?${new URLSearchParams({origin,destination:place.location})}`).catch(error=>{
+      routeCache.delete(key);
+      throw error;
+    });
+    routeCache.set(key,request);
+  }
+  const result = await routeCache.get(key);
   if(revision!==nearbyRevision)return null;
   place.route=result;return result;
 }
@@ -776,10 +798,21 @@ function zoomMap(factor){
   const old=mapState.view,w=Math.max(300,Math.min(1800,old.w*factor)),h=w*.64;
   mapState.view={x:old.x+(old.w-w)/2,y:old.y+(old.h-h)/2,w,h};mapView();
 }
-function chooseMapPlace(id){
-  if(!state.nearby.some(place=>place.id===id))return;
+async function chooseMapPlace(id){
+  const place = state.nearby.find(place=>place.id===id);
+  if (!place) return;
   mapState.selectedId=id;mapState.draftId=null;mapState.status='';renderNearby();
   $('mapPlaceChoices').querySelector('button.active')?.focus({preventScroll:true});
+  if (place.route) return;
+  const revision = nearbyRevision;
+  try {
+    if (await placeRoute(place,revision)) renderNearby();
+  } catch {
+    if (revision === nearbyRevision && mapState.selectedId === id) {
+      mapState.status = '步行路线暂时没查到，稍后再试。';
+      renderMapDetail(place);
+    }
+  }
 }
 function reviewFor(place){const item=mapState.reviews[place.id];return item&&typeof item==='object'?item:{rating:0,note:''};}
 function openingSummary(value){
@@ -944,21 +977,31 @@ function renderNearby() {
   renderMap();
 }
 async function loadNearby(keyword) {
-  const revision=++nearbyRevision;state.nearby=[];$('nearbyResults').innerHTML='';renderMap();
+  if (!state.hotel) return;
+  const revision=++nearbyRevision;state.nearby=[];renderNearby();
   if(!state.hotel?.longitude||!state.hotel?.latitude){notice('nearbyNotice','酒店位置还不明确，先补完整地址才能算路线。',true);return;}
-  notice('nearbyNotice','正在找附近餐馆，并计算前几个地点的步行时间…');
+  nearbyKeyword = keyword;
+  $('nearbyStart').classList.add('hidden');
+  $('mapExplorer').classList.remove('hidden');
+  notice('nearbyNotice','正在找附近餐馆，并查询前两家门店的步行时间…');
   try{
     const params=new URLSearchParams({lng:state.hotel.longitude,lat:state.hotel.latitude,keyword,city:cityName()});
     const data=await api(`/api/nearby?${params}`);if(revision!==nearbyRevision)return;
     state.nearby=keyword==='早餐'?[...data.items].sort((a,b)=>breakfastSignal(b)-breakfastSignal(a)||(a.straight_line_meters||99999)-(b.straight_line_meters||99999)):data.items;
     renderNearby();
-    for(let index=0;index<Math.min(6,state.nearby.length);index+=2){
-      await Promise.allSettled(state.nearby.slice(index,index+2).map(place=>placeRoute(place,revision)));
-      if(revision!==nearbyRevision)return;renderNearby();
-    }
+    await Promise.allSettled(state.nearby.slice(0,2).map(place=>placeRoute(place,revision)));
+    if(revision!==nearbyRevision)return;
+    renderNearby();
     const reachable=state.nearby.filter(p=>p.route&&p.route.minutes<=number('walkLimit')).length;
-    notice('nearbyNotice',data.items.length?`找到 ${data.items.length} 个地点，已查前几个地点的路线，其中 ${reachable} 家在你的 ${number('walkLimit')} 分钟步行范围内。想去的先加入候选。`:'附近没找到合适的地点，换个餐次再试试。');
-  }catch(error){if(revision===nearbyRevision)notice('nearbyNotice','附近餐馆暂时不可用。你可以先安排酒店和餐次，稍后再试。',true);}
+    const routed=state.nearby.filter(place=>place.route).length;
+    notice('nearbyNotice',data.items.length?`找到 ${data.items.length} 个地点，${routed} 家已取得步行路线，其中 ${reachable} 家在你的 ${number('walkLimit')} 分钟步行范围内。其余路线可点门店查询。`:'附近没找到合适的地点，换个餐次再试试。');
+  }catch(error){
+    if(revision===nearbyRevision){
+      nearbyKeyword = null;
+      if (state.hotel.demo) $('nearbyStart').classList.remove('hidden');
+      notice('nearbyNotice','附近餐馆暂时不可用。你可以先安排酒店和餐次，稍后再试。',true);
+    }
+  }
 }
 
 function clearBookingCaptures(){for(const capture of bookingCaptures)if(capture.previewUrl)URL.revokeObjectURL(capture.previewUrl);bookingCaptures.splice(0);}
