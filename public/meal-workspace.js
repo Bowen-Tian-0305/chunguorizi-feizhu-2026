@@ -93,7 +93,7 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
       const input = el(id); if (!input.checkValidity()) { input.reportValidity(); return; }
       remember(); state.prefs[key] = input.type === 'checkbox' ? input.checked : input.type === 'number' ? input.value === '' ? null : Number(input.value) : input.value;
       if (key === 'mealMinutes' && state.prefs.mealMinutes === null) { state.prefs.mealMinutes = 45; input.value = 45; }
-      render(); el('mealPreferencesNote').textContent = '已按当前偏好重新排列，保留你锁定的餐次。';
+      releasePreservedChoices(); render(); el('mealPreferencesNote').textContent = '已按当前偏好重新排列，保留你锁定的餐次。';
     }));
   }
   function writePreferences() {
@@ -311,8 +311,11 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
   function closeDialog() { previewRevision++; const dialog = el('mealWorkspaceDialog'); if (dialog?.open) { if (typeof dialog.close === 'function') dialog.close(); else dialog.removeAttribute('open'); } }
   function showPreview(proposal) {
     const facts = getFacts(); if (contextKey(facts) !== state.context) { render(); return; }
+    const reportConflict = proposal.guard ? setRefineStatus : setStatus;
+    const hasConflict = plan => (proposal.guard && !proposal.guard()) ||
+      (proposal.targetKey && otherMealFingerprint(plan, proposal.targetKey) !== proposal.otherFingerprint);
     const proposed = compute(facts, proposal.intent, proposal.assignments).selected;
-    if (proposal.guard && (!proposal.guard() || otherMealFingerprint(proposed, proposal.targetKey) !== proposal.otherFingerprint)) { setRefineStatus('其他餐次或当前条件发生变化，请重新请求这一顿的建议。'); return; }
+    if (hasConflict(proposed)) { closeDialog(); reportConflict('这次修改会影响其他餐次，已保留原方案。请换一个候选再试。'); return; }
     const before = new Map((current?.selected.slots || []).map(slot => [slotKey(slot), slot]));
     const changes = (proposed.slots || []).filter(slot => { const old = before.get(slotKey(slot)); return !old || old.kind !== slot.kind || old.candidateId !== slot.candidateId; });
     const originalContext = state.context, revision = ++previewRevision;
@@ -320,7 +323,7 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
       dialog.querySelector('#mealPreviewCancel').addEventListener('click', closeDialog);
       dialog.querySelector('#mealPreviewApply').addEventListener('click', () => {
         if (state.context !== originalContext || contextKey(getFacts()) !== originalContext || revision !== previewRevision) { closeDialog(); render(); return; }
-        if (proposal.guard && (!proposal.guard() || otherMealFingerprint(compute(getFacts(), proposal.intent, proposal.assignments).selected, proposal.targetKey) !== proposal.otherFingerprint)) { closeDialog(); setRefineStatus('当前条件已变化，这次建议已失效；请重新请求。'); return; }
+        if (proposal.targetKey && hasConflict(compute(getFacts(), proposal.intent, proposal.assignments).selected)) { closeDialog(); reportConflict('当前条件已变化，原方案已保留。请重新预览这一顿。'); return; }
         remember(); state.intent = clone(proposal.intent); state.assignments = clone(proposal.assignments); closeDialog(); render(); syncBreakfast(); setStatus('已采用这份安排。早餐日期已同步，可以撤回。');
       });
     });
@@ -334,9 +337,21 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
     const old = assignmentFor(slot);
     return {date: slot.date, meal: slot.meal, kind: id === 'hotel-breakfast' ? 'hotel' : slot.meal !== 'breakfast' && (current.evidence.hotelMeals || []).some(item => item.id === id) ? 'hotel' : 'outside', candidateId: id === 'hotel-breakfast' ? null : id, locked: old?.locked || false};
   }
+  function releasePreservedChoices() {
+    state.assignments = state.assignments.filter(item => !item.preserved || item.locked);
+  }
+  function currentAssignments() {
+    return current.selected.slots.filter(slot => candidateKey(slot)).map(slot => {
+      const previous = assignmentFor(slot);
+      return {date: slot.date, meal: slot.meal, kind: slot.kind,
+        candidateId: slot.candidateId, locked: slot.locked === true, preserved: previous?.preserved ?? !previous};
+    });
+  }
   function replaceAssignment(slot, id) {
-    const assignments = clone(state.assignments).filter(item => slotKey(item) !== slotKey(slot)); assignments.push(makeAssignment(slot, id));
-    showPreview({intent: clone(state.intent), assignments, title: `为 ${slot.date.slice(5)} ${MEALS[slot.meal]} 换一家店`});
+    const targetKey = slotKey(slot);
+    const assignments = currentAssignments().filter(item => slotKey(item) !== targetKey);
+    assignments.push(makeAssignment(slot, id));
+    showPreview({intent: clone(state.intent), assignments, title: `为 ${slot.date.slice(5)} ${MEALS[slot.meal]} 换一家店`, targetKey, otherFingerprint: otherMealFingerprint(current.selected, targetKey)});
   }
   function chooseForSlot(slot) {
     const candidates = slot.meal === 'breakfast' ? current.evidence.candidates || [] : candidateList(current.evidence);
@@ -390,7 +405,7 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
     openDialog(`记下 ${slot.date.slice(5)} ${MEALS[slot.meal]} 的感受`, `<form id="mealFeedbackForm"><p class="mw-dialog-intro"><strong>${esc(slot.name)}</strong><br>只记录这趟在这家具体门店吃过的一餐。反馈留在当前页面会话，用来调整后续选店。</p><div class="mw-fields"><label>口味感受<select name="taste"><option value="">暂不评价</option><option value="liked" ${existing?.taste === 'liked' ? 'selected' : ''}>喜欢</option><option value="neutral" ${existing?.taste === 'neutral' ? 'selected' : ''}>一般</option><option value="disliked" ${existing?.taste === 'disliked' ? 'selected' : ''}>不太合适</option></select></label><label>同行接受度<select name="partyAcceptance"><option value="">暂不评价</option><option value="all" ${existing?.partyAcceptance === 'all' ? 'selected' : ''}>大家都能接受</option><option value="some" ${existing?.partyAcceptance === 'some' ? 'selected' : ''}>部分人接受</option><option value="none" ${existing?.partyAcceptance === 'none' ? 'selected' : ''}>大家都不太接受</option></select></label><label>实际等位 · 分钟<input name="waitMinutes" type="number" min="0" max="600" step="1" placeholder="不知道可留空" value="${esc(existing?.waitMinutes ?? '')}"></label><label>实际全桌花费 · 元<input name="actualSpend" type="number" min="0" max="1000000" step="0.01" placeholder="不知道可留空" value="${esc(existing?.actualSpend?.amount ?? '')}"></label><label>这顿实际成人<input name="actualAdults" type="number" min="1" max="12" step="1" value="${esc(existing?.actualSpend?.adults ?? facts.party.adults)}"></label><label>这顿实际儿童<input name="actualChildren" type="number" min="0" max="8" step="1" value="${esc(existing?.actualSpend?.children ?? facts.party.children)}"></label></div><p class="mw-small">实付仅供这趟回顾，不替换本次菜单价、预算、报价或餐券核销金额；等位也不代表下次会等同样久。</p><p class="mw-form-error" id="mealFeedbackError" role="status"></p><div class="mw-dialog-actions">${existing ? '<button type="button" class="mw-button is-muted" id="mealFeedbackClear">清空这顿</button>' : ''}<button type="button" class="mw-button is-muted" id="mealFeedbackCancel">暂不记录</button><button type="submit" class="mw-button">保存感受</button></div></form>`, dialog => {
       const form = dialog.querySelector('form'), error = message => { dialog.querySelector('#mealFeedbackError').textContent = message; };
       dialog.querySelector('#mealFeedbackCancel').addEventListener('click', closeDialog);
-      dialog.querySelector('#mealFeedbackClear')?.addEventListener('click', () => { remember(); state.feedback.records = state.feedback.records.filter(item => item.id !== id); closeDialog(); render(); setStatus('已清空这顿反馈，后续选店已重新排列；可以撤回。'); });
+      dialog.querySelector('#mealFeedbackClear')?.addEventListener('click', () => { remember(); state.feedback.records = state.feedback.records.filter(item => item.id !== id); releasePreservedChoices(); closeDialog(); render(); setStatus('已清空这顿反馈，后续选店已重新排列；可以撤回。'); });
       form.addEventListener('submit', event => {
         event.preventDefault(); if (contextKey(getFacts()) !== state.context) { closeDialog(); render(); return; }
         if (!form.checkValidity()) return form.reportValidity();
@@ -400,7 +415,7 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
         try { current ||= createMealFeedback(context); } catch { return error('请先核对酒店分店地址和入住日期。'); }
         const saved = saveMealFeedback(current, {id, candidateId: candidateKey(slot), date: slot.date, meal: slot.meal, taste: value('taste') || null, partyAcceptance: value('partyAcceptance') || null, waitMinutes: value('waitMinutes') === '' ? null : Number(value('waitMinutes')), actualSpend: spend}, {context});
         if (!saved.ok) return error(saved.errors.join('；'));
-        remember(); state.feedback = saved.state; closeDialog(); render(); setStatus('已保存这顿感受；后续餐次按已核条件与反馈重新排列，可以撤回。');
+        remember(); state.feedback = saved.state; releasePreservedChoices(); closeDialog(); render(); setStatus('已保存这顿感受；后续餐次按已核条件与反馈重新排列，可以撤回。');
       });
     });
   }
@@ -426,7 +441,7 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
     text = String(text || '').trim();
     if (!text || text.length > 500) { setRefineStatus('请用 1–500 字写下这一顿的需求。'); return; }
     const facts = getFacts();
-    const frozen = current.selected.slots.filter(item => candidateKey(item)).map(item => ({date: item.date, meal: item.meal, kind: item.kind, candidateId: item.candidateId, locked: item.locked === true}));
+    const frozen = currentAssignments();
     const candidates = [...(slot.meal === 'breakfast' ? [{id: 'hotel-breakfast', name: current.evidence.hotelBreakfast?.name || '酒店早餐', address: facts.hotel.address, onSite: true}, ...(current.evidence.candidates || [])] : candidateList(current.evidence))];
     const requestText = text.normalize('NFKC').toLowerCase();
     const mentioned = candidate => {
