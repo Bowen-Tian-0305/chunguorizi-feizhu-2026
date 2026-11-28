@@ -12,7 +12,8 @@ const freeQuotaError = () => Object.assign(
 );
 
 export function itineraryRequest(model, messages, schema, maxTokens) {
-  const strict = strictModels.has(model);
+  const isSnapshotBooking = model === 'qwen3.8-max-0902' && schema.json_schema.name === 'booking_extraction';
+  const strict = strictModels.has(model) && !isSnapshotBooking;
   const responseFormat = strict ? schema : {type:'json_object'};
   const reasoning = model === 'qwen4-max' ? {reasoning_effort:'none'} : {enable_thinking:false};
   const routedMessages = strict ? messages : [
