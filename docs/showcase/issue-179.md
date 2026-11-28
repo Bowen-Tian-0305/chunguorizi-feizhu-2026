@@ -11,7 +11,7 @@
 - **切换前**：2 位成人吃 2 次，含早差价摊到每人每次是 **¥60**。
 - **切换后**：仍多付 ¥240，但只吃 1 次，持平点变为 **¥120／成人／次**。按示例里的外出预算 ¥35／成人，两天都外出预计花 ¥140，含早加一次外出预计花 ¥310。两个数字都只算早餐增量预算。
 
-这条路径使用固定测试价，无需登录。打开任一固定示例及切换早餐日期均不消耗 AI 或实时查询额度。首页还可以直接体验儿童早餐收费和晚餐券核对。也可看 [手机首页](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.5/docs/showcase/judge-home-v1.3.5.jpg) 和 [手机切换日期后的结果](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.5/docs/showcase/judge-breakfast-v1.3.5.jpg)。
+这条路径使用固定测试价，无需登录。打开任一固定示例及切换早餐日期均不消耗 AI 或实时查询额度。首页还可以直接体验儿童早餐收费和晚餐券核对。也可看 [手机首页](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/refs/tags/v1.3.5/docs/showcase/judge-home-v1.3.5.jpg) 和 [手机切换日期后的结果](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.5/docs/showcase/judge-breakfast-v1.3.5.jpg)。
 
 ## 参赛项目名称
 
