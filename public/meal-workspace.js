@@ -3,6 +3,7 @@ import {planDining} from './dining-planner.js';
 import {buildMealEvidence} from './meal-evidence.js';
 import {comparePackages} from './package-comparison.js';
 import {createMealFeedback, saveMealFeedback} from './meal-feedback.js';
+import {amountBar, updateAmountMarkup} from './amount-bars.js';
 
 const MEALS = {breakfast: '早餐', lunch: '午餐', dinner: '晚餐'};
 const DAY = 86400000;
@@ -44,6 +45,7 @@ function dietaryRequirements(text) {
 /** A local, session-only meal workspace. No request or navigation is made by this module. */
 export function createMealWorkspace({getFacts, getQuoteBook = () => null, requestMealRefine = async () => { throw new Error('单餐建议暂不可用，请稍后重试。'); }, onBreakfastSelectionChange = () => {}, onPlanChange = () => {}}) {
   let state = freshState(), current = null, mounted = false, previewRevision = 0, refineRevision = 0, refineBusy = false;
+  let selectedDay = null, refineOpen = false;
   const extraPlaces = new Map();
   const el = id => document.getElementById(id);
   function freshState() {
@@ -55,6 +57,8 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
     const key = contextKey(facts);
     if (state.context === key) return;
     const previous = state.context, prefs = state.prefs;
+    selectedDay = null; refineOpen = false;
+    if (el('refineText')) el('refineText').value = '';
     state = freshState(); state.context = key; state.prefs = prefs;
     state.intent = {type: 'manual', dates: [...(facts.selectedHotelBreakfastDates || [])].sort()};
     state.calendarDates = [...state.intent.dates];
@@ -74,9 +78,7 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
     const preferences = document.createElement('details'); preferences.id = 'mealDiningPreferences'; preferences.className = 'mw-preferences';
     preferences.innerHTML = `<summary><span>把午晚餐也接上</span><small>预算与到离店时间，可稍后补</small></summary><div class="mw-preferences-body"><p>用餐时长是你为每顿饭预留的时间。菜单、排队与真实路线仍需核对。</p><div class="mw-fields"><label>午餐预算 · 元/成人<input id="mealLunchBudget" type="number" min="0" max="100000" step="0.01" placeholder="可留空，金额未知"></label><label>晚餐预算 · 元/成人<input id="mealDinnerBudget" type="number" min="0" max="100000" step="0.01" placeholder="可留空，金额未知"></label><label>每顿预留用餐 · 分钟<input id="mealDuration" type="number" min="5" max="180" step="1" value="45"></label><label>早餐准备好时间<input id="mealReadyTime" type="time"></label><label>午餐希望几点吃<input id="mealLunchTime" type="time" value="12:00"></label><label>晚餐希望几点吃<input id="mealDinnerTime" type="time" value="18:00"></label><label>入住日到达酒店<input id="mealArrivalTime" type="time"><small>不知道可留空，入住日餐次保留待核</small></label><label>退房日离开酒店<input id="mealDepartureTime" type="time"><small>不知道可留空，退房日餐次保留待核</small></label></div><label class="mw-check"><input id="mealReturnHotel" type="checkbox" checked><span>外出吃完后回酒店（按酒店往返步行预留）</span></label><p class="mw-small">不回酒店时，只计去餐馆的路程；餐后去下一站的时间需要另外安排。</p><p class="mw-prefs-note" id="mealPreferencesNote" aria-live="polite"></p></div>`;
     const action = el('makePlan').closest('.form-actions') || el('makePlan'); action.before(preferences);
-    const strategies = document.createElement('section'); strategies.id = 'mealStrategyChoices'; strategies.className = 'mw-strategies'; strategies.setAttribute('aria-label', '早餐策略与三餐预算');
-    const heading = el('timeline').previousElementSibling;
-    (heading?.classList.contains('timeline-head') ? heading : el('timeline')).before(strategies);
+    el('mealScheduleUndo').addEventListener('click', undo);
     const dialog = document.createElement('dialog'); dialog.id = 'mealWorkspaceDialog'; dialog.className = 'mw-dialog'; dialog.setAttribute('aria-labelledby', 'mealDialogTitle'); document.body.append(dialog);
     const refineBox = el('refineText')?.closest('.plan-refine');
     if (refineBox) {
@@ -86,6 +88,13 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
       el('refineText').setAttribute('aria-label', '这顿的调整需求');
       el('refinePlan').textContent = '给这顿换个选择 ↗';
       for (const input of [el('mealRefineTarget'), el('refineText')]) input.addEventListener('input', () => { refineRevision++; });
+      el('mealRefineTarget').addEventListener('change', () => {
+        const key = el('mealRefineTarget').value;
+        setRefineStatus('');
+        if (!key) return;
+        selectDay(key.split('|')[0]);
+        el('refineText').focus({preventScroll:true});
+      });
     }
     dialog.addEventListener('click', event => { if (event.target === dialog) { const rect = dialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeDialog(); } });
     const bindings = {mealLunchBudget: 'lunchBudget', mealDinnerBudget: 'dinnerBudget', mealDuration: 'mealMinutes', mealReadyTime: 'readyTime', mealLunchTime: 'lunchTime', mealDinnerTime: 'dinnerTime', mealArrivalTime: 'arrivalTime', mealDepartureTime: 'departureTime', mealReturnHotel: 'returnToHotel'};
@@ -183,7 +192,12 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
       {id: 'A', quoteSlot: 'A', title: 'A · 不含早，早餐都外出', mealPlan: outside, mealPlanQuoteSlot: 'A'},
       {id: 'B', quoteSlot: 'B', title: 'B · 含早，按当前吃法', mealPlan: model.selected, mealPlanQuoteSlot: 'B'}
     ]});
-    const cards = (result.options || []).map(option => `<article class="mw-package-card"><h4>${esc(option.title)}</h4><strong>${option.adultEstimate === null ? '总额待核' : yuan(option.adultEstimate)}</strong><p>${esc(String(option.summary || "").startsWith(`${option.title}：`) ? option.summary.slice(option.title.length + 1) : option.summary)}</p><dl><div><dt>全程房费</dt><dd>${yuan(option.roomAmount)}</dd></div><div><dt>已核成人额外餐费</dt><dd>${yuan(option.food?.knownAmount)}</dd></div><div><dt>成人预算预留</dt><dd>${yuan(option.budgetAmount)}</dd></div></dl>${option.food?.unknownAmounts?.length ? `<small>另有 ${option.food.unknownAmounts.length} 项待核金额，暂不计作零元</small>` : ''}${option.errors?.length ? `<small>${esc(option.errors[0].message)}</small>` : ''}</article>`).join('');
+    const options = result.options || [];
+    const showEstimates = Boolean(result.comparison);
+    const amounts = options.map(option => showEstimates ? option.adultEstimate : option.knownAmount);
+    const showBars = amounts.length === 2 && amounts.every(finiteMoney) && options[0].demo === options[1].demo;
+    const maximum = showBars ? Math.max(...amounts) : null;
+    const cards = options.map((option, index) => `<article class="mw-package-card"><h4>${esc(option.title)}</h4><strong data-amount-highlight>${option.adultEstimate === null ? '总额待核' : yuan(option.adultEstimate)}</strong>${showBars ? `<div class="mw-package-bar"><span>${showEstimates ? '所列成人总额' : '已知金额 · 仅列已核项目'} <span class="amount-inline">${yuan(amounts[index])}</span></span>${amountBar(amounts[index], maximum)}</div>` : ''}<p>${esc(String(option.summary || "").startsWith(`${option.title}：`) ? option.summary.slice(option.title.length + 1) : option.summary)}</p><dl><div><dt>全程房费</dt><dd>${yuan(option.roomAmount)}</dd></div><div><dt>已核成人额外餐费</dt><dd>${yuan(option.food?.knownAmount)}</dd></div><div><dt>成人预算预留</dt><dd>${yuan(option.budgetAmount)}</dd></div></dl>${option.food?.unknownAmounts?.length ? `<small>另有 ${option.food.unknownAmounts.length} 项待核金额，暂不计作零元</small>` : ''}${option.errors?.length ? `<small>${esc(option.errors[0].message)}</small>` : ''}</article>`).join('');
     return `<section class="mw-package-comparison" aria-label="两档套餐整体现金支出"><div class="mw-section-title"><div><span class="mini-label">房费 + 所列餐次</span><h3>房费和餐费，放在一起看</h3></div></div><p class="mw-scope">A 按全程外出早餐排，B 按当前早餐日期排；午晚餐沿用本页选择。房费各算一次，已核餐费、预算和未知金额分开看。儿童收费未知时，不报全家总价。</p><div class="mw-package-grid">${cards}</div><p class="mw-package-result">${esc(result.comparison?.summary || '有报价或餐费仍待核，先看各档已知金额，暂不排名。')}</p><details class="mw-package-notes"><summary>报价与权益还要核对什么</summary><ul>${[...(result.notices || []), ...(result.options || []).flatMap(option => [...(option.notices || []), ...(option.errors || []), ...(option.food?.unknownAmounts || [])])].map(item => item.message).filter(Boolean).filter((message, index, array) => array.indexOf(message) === index).slice(0, 12).map(message => `<li>${esc(message)}</li>`).join('') || '<li>请以本次商品与门店确认结果为准。</li>'}</ul></details>${voucherMarkup(model)}</section>`;
   }
   function voucherMarkup(model) {
@@ -195,11 +209,14 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
   }
   function renderChoices(model) {
     const node = el('mealStrategyChoices');
-    node.innerHTML = `<div class="mw-section-title"><div><span class="mini-label">先选早餐，再接三餐</span><h3>这趟的几种吃法</h3></div><button type="button" id="mealWorkspaceUndo" class="mw-text" ${state.history.length ? '' : 'disabled'}>撤回上一步${state.history.length ? ` · ${state.history.length}` : ''}</button></div><p class="mw-scope">费用是基础房费之外的成人三餐增量。已核菜单价、你填的预算与未知金额分开列；不含未知儿童餐费。含早套餐增量只算一次。</p><div class="mw-strategy-grid">${model.choices.map((choice, index) => {
+    updateAmountMarkup(node, `<div class="mw-section-title"><div><span class="mini-label">先选早餐，再接三餐</span><h3>这趟的几种吃法</h3></div><button type="button" id="mealWorkspaceUndo" class="mw-text" ${state.history.length ? '' : 'disabled'}>撤回上一步${state.history.length ? ` · ${state.history.length}` : ''}</button></div><p class="mw-scope">费用是基础房费之外的成人三餐增量。已核菜单价、你填的预算与未知金额分开列；不含未知儿童餐费。含早套餐增量只算一次。</p><div class="mw-strategy-grid">${model.choices.map((choice, index) => {
       const hotelDays = choice.plan.breakfastPlan.slots.filter(slot => slot.kind === 'hotel').map(slot => slot.date.slice(5));
       const outsideDays = choice.plan.breakfastPlan.slots.filter(slot => slot.kind !== 'hotel').length;
       return `<article class="mw-strategy${choice.current ? ' is-current' : ''}"><div class="mw-strategy-top"><span>${choice.current ? '当前安排' : `另一种吃法 ${index}`}</span><span>${statusText(choice.plan.status)}</span></div><h4>${esc(choice.plan.title)}</h4><p>${hotelDays.length ? `酒店早餐 ${hotelDays.join('、')}` : '不安排酒店早餐'}${outsideDays ? `；其余 ${outsideDays} 顿外出或待选` : ''}</p>${costMarkup(choice.plan, true)}<button type="button" class="mw-button ${choice.current ? 'is-muted' : ''}" data-strategy="${index}" ${choice.current ? 'disabled' : ''}>${choice.current ? '正在使用' : '先看差异 →'}</button></article>`;
-    }).join('')}</div>${model.choices.length < 3 && model.choices.length ? '<p class="mw-small">按当前门店与锁定餐次，只列出吃法确有不同的选择。</p>' : ''}${packageMarkup(model)}<div id="mealWorkspaceStatus" class="mw-live" role="status" aria-live="polite"></div>`;
+    }).join('')}</div>${model.choices.length < 3 && model.choices.length ? '<p class="mw-small">按当前门店与锁定餐次，只列出吃法确有不同的选择。</p>' : ''}${packageMarkup(model)}`);
+    const undoButton = el('mealScheduleUndo');
+    undoButton.disabled = !state.history.length;
+    undoButton.textContent = state.history.length ? `撤回上一步 · ${state.history.length}` : '撤回上一步';
     node.querySelectorAll('[data-strategy]').forEach(button => button.addEventListener('click', () => { const choice = model.choices[Number(button.dataset.strategy)]; showPreview({intent: choice.intent, assignments: clone(state.assignments), title: choice.plan.title}); }));
     node.querySelector('#mealVoucherForm')?.addEventListener('submit', event => {
       event.preventDefault(); const form = event.currentTarget, value = name => form.elements.namedItem(name).value, checked = name => form.elements.namedItem(name).checked;
@@ -230,25 +247,101 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
     const segments = [time.leaveHotel ? `${time.leaveHotel} 从酒店出发` : '', time.start ? `${time.start}${time.end ? `–${time.end}` : ''} 用餐` : '', time.returnHotel ? `${time.returnHotel} 回到酒店` : ''].filter(Boolean);
     return `<p class="mw-time">${slot.time ? '' : '参考 · '}${esc(segments.join(' · ') || '时刻待核')}${slot.time ? '' : '；供餐与条件待核'}</p>`;
   }
-  function renderRows(model) {
-    const target = el('mealRefineTarget'), selectedTarget = target?.value;
-    if (target) {
-      target.innerHTML = '<option value="">请选择日期与餐次</option>' + model.selected.slots.filter(slot => slot.status !== 'skipped').map(slot => `<option value="${esc(slotKey(slot))}">${esc(slot.date)} · ${esc(MEALS[slot.meal])} · ${esc(slot.name || '地点待选')}${slot.locked ? '（已锁定，需先解锁）' : ''}</option>`).join('');
-      if ([...target.options].some(option => option.value === selectedTarget)) target.value = selectedTarget;
+  function placeRefineEditor() {
+    const editor = el('refineText').closest('.plan-refine');
+    const target = el('mealRefineTarget').value;
+    const timeline = el('timeline');
+    const row = [...timeline.querySelectorAll('.mw-meal-day:not([hidden]) .mw-meal-row')].find(item => item.dataset.mealKey === target);
+    timeline.querySelectorAll('[data-action="refine"][aria-expanded="true"]').forEach(button => button.setAttribute('aria-expanded','false'));
+    if (refineOpen && row) {
+      if (editor.parentElement !== row) row.append(editor);
+      row.querySelector('[data-action="refine"]').setAttribute('aria-expanded','true');
+    } else if (editor.parentElement !== el('refineDock')) {
+      el('refineDock').append(editor);
     }
-    const timeline = el('timeline'); timeline.innerHTML = ''; timeline.classList.add('mw-timeline');
-    for (const slot of model.selected.slots || []) {
-      if (slot.status === 'skipped') continue;
+  }
+  function selectDay(date) {
+    selectedDay = date;
+    el('timeline').querySelectorAll('[data-meal-day-button]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.mealDayButton === date));
+    });
+    el('timeline').querySelectorAll('[data-meal-day]').forEach(day => { day.hidden = day.dataset.mealDay !== date; });
+    placeRefineEditor();
+  }
+  function openRefine(slot, button) {
+    const target = el('mealRefineTarget');
+    const key = slotKey(slot);
+    if (target.value !== key) {
+      refineRevision++;
+      el('refineText').value = '';
+    }
+    if (refineOpen && target.value === key && button.getAttribute('aria-expanded') === 'true') {
+      refineOpen = false;
+      placeRefineEditor();
+      return;
+    }
+    target.value = key;
+    refineOpen = true;
+    setRefineStatus('');
+    placeRefineEditor();
+    if (checkRefineTarget()) {
+      el('refineText').focus({preventScroll:true});
+      el('refineText').closest('.plan-refine').scrollIntoView({block:'nearest'});
+    }
+  }
+  function renderRows(model) {
+    const timeline = el('timeline');
+    timeline.classList.add('mw-timeline');
+    const target = el('mealRefineTarget'), selectedTarget = target.value;
+    const slots = model.selected.slots.filter(slot => slot.status !== 'skipped');
+    const dates = [...new Set(slots.map(slot => slot.date))].sort();
+    target.innerHTML = '<option value="">请选择日期与餐次</option>' + slots.map(slot => `<option value="${esc(slotKey(slot))}">${esc(slot.date)} · ${esc(MEALS[slot.meal])} · ${esc(slot.name || '地点待选')}${slot.locked ? '（已锁定，需先解锁）' : ''}</option>`).join('');
+    if ([...target.options].some(option => option.value === selectedTarget)) target.value = selectedTarget;
+    el('refineDock').append(el('refineText').closest('.plan-refine'));
+    timeline.replaceChildren();
+    const days = new Map();
+    if (dates.length) {
+      const nav = document.createElement('div');
+      nav.className = 'mw-day-switch';
+      nav.setAttribute('role', 'group');
+      nav.setAttribute('aria-label', '按天查看日程');
+      timeline.append(nav);
+      for (const [index,date] of dates.entries()) {
+        const section = document.createElement('section');
+        section.className = 'mw-meal-day'; section.dataset.mealDay = date;
+        section.id = `mealDay${index+1}`; section.setAttribute('aria-label', `Day ${index+1} · ${date}`);
+        const button = document.createElement('button');
+        button.type = 'button'; button.dataset.mealDayButton = date;
+        button.setAttribute('aria-controls', section.id);
+        button.innerHTML = `<strong>Day ${index+1}</strong><time datetime="${esc(date)}">${esc(date.slice(5).replace('-','月'))}日</time>`;
+        button.addEventListener('click', () => selectDay(date));
+        nav.append(button); timeline.append(section); days.set(date, section);
+      }
+    }
+    for (const slot of slots) {
       const row = document.createElement('article'); row.className = 'meal-row mw-meal-row'; row.dataset.mealType = MEALS[slot.meal]; row.dataset.mealKey = slotKey(slot);
       const reasons = rowReasons(slot), route = slot.walkMinutes ?? slot.time?.walkMinutes ?? slot.tentativeTime?.walkMinutes;
-      const routeText = slot.kind === 'hotel' || slot.candidateId === 'hotel-breakfast' ? '酒店内用餐' : typeof route === 'number' ? `酒店至门店单程步行 ${route} 分钟${route > (model.facts.preferences?.walkLimitMinutes ?? 15) ? ' · 超出步行上限' : ''}` : '酒店至具体分店的步行路线待核';
-      const price = slot.adultPrice;
-      row.innerHTML = `<div class="mw-meal-date"><time datetime="${esc(slot.date)}">${esc(slot.date.slice(5))}</time><span class="meal-type">${esc(MEALS[slot.meal] || '用餐')}</span></div><div class="mw-meal-main"><div class="mw-meal-title"><strong>${esc(slot.name || '这顿饭的地点待选')}</strong><span class="meal-state">${slot.locked ? '已锁定 · ' : ''}${statusText(slot.status)}</span></div>${timeMarkup(slot)}<p>${esc(routeText)} · 每顿预留 ${state.prefs.mealMinutes} 分钟，不含排队。</p><p>${finiteMoney(price) ? `本次已核成人菜单价 ${yuan(price)}/人` : '本次成人菜单价待核'}${model.facts.party?.children > 0 ? '；儿童收费另核' : ''}</p>${slot.feedbackChange ? `<p class="mw-feedback-reason">参考这趟已记录的感受，这顿从「${esc(slot.feedbackChange.previousName)}」改选「${esc(slot.name)}」；仍以本次供餐、路线和忌口核对为准。</p>` : ''}${slot.feedback?.reasons?.length ? `<p class="mw-feedback-reason">这家店的本次用餐记录：${esc(slot.feedback.reasons.join('；'))}。${slot.feedback.priceNotice ? esc(slot.feedback.priceNotice) : ''}</p>` : ''}${reasons.length ? `<details class="mw-reasons"><summary>这顿饭还要留意什么</summary><ul>${reasons.slice(0, 10).map(message => `<li>${esc(message)}</li>`).join('')}</ul></details>` : ''}<div class="mw-row-actions"><button type="button" class="mw-text" data-action="replace">换一家店 ↗</button><button type="button" class="mw-text" data-action="lock">${slot.locked ? '解除锁定' : '锁定这顿'}</button><button type="button" class="mw-text" data-action="confirm" ${candidateKey(slot) ? '' : 'disabled'}>核对本次用餐信息</button>${candidateKey(slot) && slot.date <= todayBeijing() ? `<button type="button" class="mw-text" data-action="feedback">${state.feedback?.records?.some(item => item.id === `${slotKey(slot)}|${candidateKey(slot)}`) ? '编辑这顿反馈' : '记录吃过的感受'}</button>` : ''}</div></div>`;
+      const inHotel = slot.kind === 'hotel' || slot.candidateId === 'hotel-breakfast';
+      const routeText = inHotel ? '酒店内用餐' : typeof route === 'number' ? `酒店至门店单程步行 ${route} 分钟${route > (model.facts.preferences?.walkLimitMinutes ?? 15) ? ' · 超出步行上限' : ''}` : '酒店至具体分店的步行路线待核';
+      const price = slot.adultPrice, meal = MEALS[slot.meal] || '用餐';
+      const priceText = finiteMoney(price) ? `本次已核成人菜单价 ${yuan(price)}/人` : '本次成人菜单价待核';
+      row.innerHTML = `<div class="mw-meal-main">
+        <div class="mw-meal-title"><div><span class="meal-type">${esc(meal)}</span><strong>${esc(slot.name || '这顿饭的地点待选')}</strong></div><span class="meal-state">${statusText(slot.status)}</span></div>
+        <div class="mw-meal-facts">${finiteMoney(price) ? `<span class="meal-amount">成人 ${yuan(price)}/人</span>` : ''}${slot.locked ? '<span>已锁定</span>' : ''}${inHotel ? '<span>酒店内用餐</span>' : typeof route === 'number' ? `<span>步行 ${route} 分钟${route > (model.facts.preferences?.walkLimitMinutes ?? 15) ? ' · 超上限' : ''}</span>` : ''}</div>
+        <div class="mw-row-actions"><button type="button" class="mw-text meal-replace" data-action="replace">换一家店</button><button type="button" class="mw-text meal-ai" data-action="refine" aria-controls="inlineMealRefine" aria-expanded="false" ${slot.locked ? 'disabled' : ''}>AI 换这顿</button><button type="button" class="mw-text" data-action="lock">${slot.locked ? '解除锁定' : '锁定'}</button><button type="button" aria-label="核对本次用餐信息" class="mw-text" data-action="confirm" ${candidateKey(slot) ? '' : 'disabled'}>核对</button>${candidateKey(slot) && slot.date <= todayBeijing() ? `<button type="button" class="mw-text" data-action="feedback">${state.feedback?.records?.some(item => item.id === `${slotKey(slot)}|${candidateKey(slot)}`) ? '编辑这顿反馈' : '记录吃过的感受'}</button>` : ''}</div>
+        <details class="mw-reasons"><summary>这顿饭还要留意什么</summary>${timeMarkup(slot)}<p>${esc(routeText)} · 每顿预留 ${state.prefs.mealMinutes} 分钟，不含排队。</p><p>${priceText}${model.facts.party?.children > 0 ? '；儿童收费另核' : ''}</p>
+          ${slot.feedbackChange ? `<p class="mw-feedback-reason">参考这趟已记录的感受，这顿从「${esc(slot.feedbackChange.previousName)}」改选「${esc(slot.name)}」；仍以本次供餐、路线和忌口核对为准。</p>` : ''}
+          ${slot.feedback?.reasons?.length ? `<p class="mw-feedback-reason">这家店的本次用餐记录：${esc(slot.feedback.reasons.join('；'))}。${slot.feedback.priceNotice ? esc(slot.feedback.priceNotice) : ''}</p>` : ''}
+          ${reasons.length ? `<ul>${reasons.map(message => `<li>${esc(message)}</li>`).join('')}</ul>` : ''}</details></div>`;
       row.querySelector('[data-action="replace"]').addEventListener('click', () => chooseForSlot(slot));
+      row.querySelector('[data-action="refine"]').addEventListener('click', event => openRefine(slot, event.currentTarget));
       row.querySelector('[data-action="lock"]').addEventListener('click', () => toggleLock(slot));
-      row.querySelector('[data-action="confirm"]').addEventListener('click', () => confirmSlot(slot)); row.querySelector('[data-action="feedback"]')?.addEventListener('click', () => showFeedback(slot)); timeline.append(row);
+      row.querySelector('[data-action="confirm"]').addEventListener('click', () => confirmSlot(slot));
+      row.querySelector('[data-action="feedback"]')?.addEventListener('click', () => showFeedback(slot));
+      days.get(slot.date).append(row);
     }
-    if (!(model.selected.slots || []).length) timeline.innerHTML = '<p class="mw-empty">先补齐行程日期与同行人数，再把每顿饭接起来。</p>';
+    if (dates.length) selectDay(days.has(selectedDay) ? selectedDay : dates[0]);
+    else timeline.innerHTML = '<p class="mw-empty">先补齐行程日期与同行人数，再把每顿饭接起来。</p>';
     const notes = document.createElement('div'); notes.className = 'mw-plan-notes';
     const unknowns = costView(model.selected).unknown;
     const assumptions = (model.selected.assumptions || []).map(item => typeof item === 'string' ? item : item.message).filter(Boolean);
@@ -269,13 +362,13 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
         showFeedback({...record, kind: record.candidateId === 'hotel-breakfast' ? 'hotel' : 'outside', name});
       }));
     }
-    const tab = document.querySelector('[data-result-tab].active')?.dataset.resultTab;
-    if (tab === 'breakfast') timeline.querySelectorAll('.meal-row').forEach(row => row.classList.toggle('hidden', row.dataset.mealType !== '早餐'));
+
   }
   function publish() { if (current?.selected) onPlanChange(clone(current.selected)); }
   function render() {
     refineRevision++;
     mount(); if (!mounted) return null;
+    setStatus('');
     const facts = getFacts(); ensureContext(facts);
     const calendarDates = [...(facts.selectedHotelBreakfastDates || [])].sort();
     if (JSON.stringify(calendarDates) !== JSON.stringify(state.calendarDates)) {
@@ -478,7 +571,7 @@ export function createMealWorkspace({getFacts, getQuoteBook = () => null, reques
     } catch (error) { setRefineStatus(isCurrent() ? error.message || '这顿的建议暂时不可用，请稍后重试；当前安排已保留。' : '当前条件已变化，刚才的响应已失效。'); }
     finally { refineBusy = false; el('refinePlan').disabled = false; }
   }
-  function reset() { refineRevision++; closeDialog(); state = freshState(); current = null; extraPlaces.clear(); writePreferences(); }
+  function reset() { refineRevision++; closeDialog(); state = freshState(); current = null; selectedDay = null; refineOpen = false; extraPlaces.clear(); writePreferences(); }
   mount();
   return {render, choosePlace, reset, refine, checkRefineTarget};
 }

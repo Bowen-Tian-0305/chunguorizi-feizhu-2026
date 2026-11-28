@@ -3,6 +3,7 @@ import {createQuoteBook, setQuoteContext, replaceQuote, removeQuote, editQuoteFi
 import {createMealWorkspace} from './meal-workspace.js';
 import {createPlanShareUrl} from './plan-share.js';
 import {createQuotaDisplay} from './quota-display.js';
+import {amountBar, updateAmountMarkup} from './amount-bars.js';
 const quotaDisplay = createQuotaDisplay();
 const $ = id => document.getElementById(id);
 const introSplash = $('introSplash');
@@ -255,23 +256,57 @@ function showPane(pane) {
     if(current)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
   });
   if(!changed&&!needsHotel)return;
-  if (needsHotel) $('hotelWorkspace').scrollIntoView({behavior:'instant',block:'start'});
-  else window.scrollTo({top:0,behavior:'instant'});
+  if (needsHotel) { openHotelEntry(); return; }
+  window.scrollTo({top:0,behavior:'instant'});
   const heading=$(pane+'Pane').querySelector('h1, h2');
   if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
 }
 document.querySelectorAll('button[data-pane], a[data-pane]').forEach(button => button.addEventListener('click',()=>showPane(button.dataset.pane)));
-$('startTrip').addEventListener('click',()=>{
-  $('voiceWorkspace').scrollIntoView({behavior:'instant'});
-  $('tripVoiceText').focus({preventScroll:true});
-});
 $('continuePreferences').addEventListener('click',()=>showPane('preferences'));
-function setEntry(mode) {
-  document.querySelectorAll('[data-entry]').forEach(button=>button.classList.toggle('active',button.dataset.entry===mode));
-  $('uploadEntry').classList.remove('hidden');
-  if(mode==='upload')$('uploadEntry').scrollIntoView({behavior:'smooth',block:'center'});
+function selectTab(list, selected) {
+  list.querySelectorAll('[role="tab"]').forEach(tab => {
+    const active = tab === selected;
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+  });
 }
-document.querySelectorAll('[data-entry]').forEach(button=>button.addEventListener('click',()=>setEntry(button.dataset.entry)));
+function bindTabs(list, activate) {
+  const tabs = [...list.querySelectorAll('[role="tab"]')];
+  tabs.forEach(tab => tab.addEventListener('click', () => activate(tab)));
+  list.addEventListener('keydown', event => {
+    const current = tabs.indexOf(event.target);
+    if (current === -1) return;
+    let index;
+    switch (event.key) {
+      case 'ArrowLeft': index = (current + tabs.length - 1) % tabs.length; break;
+      case 'ArrowRight': index = (current + 1) % tabs.length; break;
+      case 'Home': index = 0; break;
+      case 'End': index = tabs.length - 1; break;
+      default: return;
+    }
+    event.preventDefault();
+    tabs.forEach((tab, position) => { tab.tabIndex = position === index ? 0 : -1; });
+    tabs[index].focus();
+  });
+}
+const startTabs = $('startTabs');
+function setEntry(mode, {scroll = false, focus} = {}) {
+  const selected = startTabs.querySelector(`[data-entry="${mode}"]`);
+  selectTab(startTabs, selected);
+  startTabs.querySelectorAll('[data-entry]').forEach(tab => {
+    $(tab.getAttribute('aria-controls')).classList.toggle('hidden', tab !== selected);
+  });
+  if (scroll) $('workbench').scrollIntoView({block:'start', behavior:'instant'});
+  if (focus) (focus === 'tab' ? selected : $(focus)).focus({preventScroll:true});
+}
+function openHotelEntry(focus = 'query') { setEntry('hotel', {scroll:true, focus}); }
+bindTabs(startTabs, tab => setEntry(tab.dataset.entry));
+document.querySelectorAll('[data-start-tab]').forEach(link => link.addEventListener('click', event => {
+  event.preventDefault();
+  const mode = link.dataset.startTab;
+  setEntry(mode, {scroll:true, focus:{hotel:'query', upload:'tab', voice:'tripVoiceText'}[mode]});
+}));
+$('findHotelFromScreenshot').addEventListener('click', () => openHotelEntry());
 $('showExample').addEventListener('click',()=>$('examplePanel').classList.toggle('hidden'));
 api('/api/cities').then(data => {
   const selected=$('city').value; $('city').innerHTML='';
@@ -421,8 +456,9 @@ async function findVoiceHotels(fields){
   const q=fields.hotel_name||fields.lodging_area;
   if(!q){
     if(state.hotel){$('makePlan').click();return;}
-    notice('voiceStatus','需求已经记下。再说出酒店名称，或在下方选一家酒店，我就能结合位置出方案。');
-    $('hotelWorkspace').scrollIntoView({behavior:'smooth'});return;
+    notice('voiceStatus','需求已记下。补充酒店名称，或切到「找酒店」选住处。');
+    notice('searchNotice','旅行需求已记下。选一家酒店后，可以按当前条件生成方案。');
+    openHotelEntry();return;
   }
   if(!fields.hotel_name&&state.hotel){$('makePlan').click();return;}
   notice('voiceStatus',`正在查${fields.hotel_name?'酒店':'区域'}候选，请核对名称和地址…`);
@@ -440,7 +476,7 @@ async function findVoiceHotels(fields){
     button.addEventListener('click',()=>selectVoiceHotel(item).catch(error=>notice('voiceStatus',error.message,true)));
     box.append(button);
   }
-  notice('voiceStatus',result.items.length?`找到 ${result.items.length} 家飞猪候选。请点选你要住的那家，或再说“选第几家”。`:'这次没有找到明确酒店。可以缩短名称重试，或在下方手动核对地址。',!result.items.length);
+    notice('voiceStatus',result.items.length?`找到 ${result.items.length} 家飞猪候选。请点选你要住的那家，或再说“选第几家”。`:'这次没有找到明确酒店。可以缩短名称重试，或切到「找酒店」手动核对地址。',!result.items.length);
 }
 let voiceBusy=false;
 async function planFromVoice(text,refining=false){
@@ -472,9 +508,9 @@ async function planFromVoice(text,refining=false){
       for(const id of ['selectedPanel','planSection','nearbySection'])$(id).classList.add('hidden');
       selectedBreakfastDates.clear();breakfastDateSignature='';mealWorkspace?.reset();changeQuoteContext(null);
       const question=(data.questions||[]).find(item=>/日期|周|哪天|几号|入住/.test(item))||'请确认这次具体哪天入住、哪天退房？';
-      notice(statusId,`${question} 请在下方日历填写并核对入住、退房日期，再主动查询酒店。`,true);
+      notice(statusId,`${question} 请核对入住、退房日期，再主动查询酒店。`,true);
       notice('searchNotice','日期还未确认。已保留人数、住宿晚数和饮食要求；请填写日历后主动查找酒店。',true);
-      showPane('hotel');$('hotelWorkspace').scrollIntoView({behavior:'smooth',block:'start'});$('checkIn').focus({preventScroll:true});
+      showPane('hotel');openHotelEntry('checkIn');
       return;
     }
     const chosen=Number(data.fields.hotel_selection_index);
@@ -1062,6 +1098,7 @@ $('screenshot').addEventListener('change',async event=>{
   const files=[...event.target.files||[]];if(!files.length)return;
   if(files.length>3||files.some(file=>file.size>5_000_000)){$('extractStatus').textContent='最多上传 3 张，每张不超过 5 MB。';event.target.value='';return;}
   const revision=++captureRevision;tripContextRevision++;clearBookingCaptures();state.extracted=null;
+  $('findHotelFromScreenshot').classList.add('hidden');
   for(const slot of ['A','B'])quoteBook=removeQuote(quoteBook,slot);
   state.demo=false;notice('demoNotice','');updateQuoteForm();$('planSection').classList.add('hidden');renderQuoteStatus('正在读取新截图，旧价格已移出比较。');
   $('screenshot').disabled=true;
@@ -1089,6 +1126,7 @@ $('screenshot').addEventListener('change',async event=>{
       changeQuoteContext(null);
     }
     $('extractStatus').textContent=`已保留 ${bookingCaptures.length} 张独立截图资料。${state.hotel?'请在下一步逐张核对并采用 A/B 套餐价格。':'先找酒店并核对位置，再逐张核对和采用价格。'}`;
+    $('findHotelFromScreenshot').classList.toggle('hidden', Boolean(state.hotel));
     if(state.hotel)showPane('preferences');
   }finally{if(revision===captureRevision)$('screenshot').disabled=false;event.target.value='';}
 });
@@ -1120,24 +1158,27 @@ function renderBreakfastComparison() {
   const timingWarning=departure&&earliest&&departure<=earliest&&selectedBreakfastDates.size?`<p class="breakfast-time-warning">你通常 ${escapeHtml(departure)} 出门，公开参考早餐最早 ${escapeHtml(earliest)} 开始。先问酒店能否提前或打包；否则，把赶车的日期改为外出，别把吃不到的早餐算进去。</p>`:'';
   const comparison=$('breakfastComparison');
   const scenariosOpen=comparison.querySelector('.breakfast-scenarios')?.open;
-  comparison.innerHTML=`
+  const maximum = decision.outsideAll !== null && decision.packageAll !== null ? Math.max(decision.outsideAll, decision.packageAll) : null;
+  updateAmountMarkup(comparison,`
     <div class="decision-heading">
-      <div><h3>哪几天在酒店吃早餐？</h3><p>${family?'以下只计算成人早餐，儿童费用与权益待确认。':'点日期切换吃法，套餐的全程差价保持不变。'}</p></div>
-      ${usable?`<div class="breakfast-per-use"><strong>${money(decision.perUse.toFixed(2))}</strong><span>酒店早餐 / 成人 / 次</span></div>`:''}
+      <div><h3>哪几天在酒店吃早餐？</h3><p>点按日期切换酒店或外出早餐。${family?'以下金额只算成人，儿童费用与权益待确认。':'套餐全程差价保持不变。'}</p></div>
+      ${usable?`<div class="breakfast-per-use"><strong data-amount-highlight>${money(decision.perUse.toFixed(2))}</strong><span>酒店早餐 / 成人 / 次</span></div>`:''}
     </div>
     <div class="breakfast-calendar" role="group" aria-label="选择在酒店吃早餐的日期">${dates.map(date=>{
       const selected=selectedBreakfastDates.has(date);
       return `<button type="button" class="breakfast-day ${selected?'active':''}" data-breakfast-date="${date}" aria-pressed="${selected}">
-        <span>${date.slice(5).replace('-','月')}日</span><b>${selected?'酒店早餐':'外出早餐'}</b>
+        <span class="breakfast-date-label">${date.slice(5).replace('-','月')}日 <i class="breakfast-toggle" aria-hidden="true"></i></span><b>${selected?'酒店早餐':'外出早餐'}</b>
         <small>${date===$('checkOut').value?'退房日':'住店日'}</small></button>`;
     }).join('')}</div>
     ${timingWarning}
     ${usable?`
       <div class="breakfast-options">
-        <article><span>全部外出早餐</span><strong>${decision.outsideAll===null?'预算待填':money(decision.outsideAll)}</strong>
-          <p>${number('adults')} 位成人 × ${dates.length} 个早晨${number('outsideBudget')!==null?` × ${money(number('outsideBudget'))}/人`:''}</p></article>
-        <article><span>含早 + 剩余早餐外出</span><strong>${decision.packageAll===null?'预算待填':money(decision.packageAll)}</strong>
-          <p>套餐多 ${money(decision.premium)} + ${dates.length-selectedBreakfastDates.size} 次外出预算</p></article>
+        <article><span>全部外出早餐</span><strong data-amount-highlight>${decision.outsideAll===null?'预算待填':money(decision.outsideAll)}</strong>
+          ${amountBar(decision.outsideAll, maximum)}
+          <p>${number('adults')} 位成人 × ${dates.length} 个早晨${number('outsideBudget')!==null?` × <span class="amount-inline">${money(number('outsideBudget'))}/人</span>`:''}</p></article>
+        <article><span>含早 + 剩余早餐外出</span><strong data-amount-highlight>${decision.packageAll===null?'预算待填':money(decision.packageAll)}</strong>
+          ${amountBar(decision.packageAll, maximum)}
+          <p>套餐多 <span class="amount-inline">${money(decision.premium)}</span> + ${dates.length-selectedBreakfastDates.size} 次外出预算</p></article>
       </div>
       <p class="comparison-scope">均为房费之外的成人早餐增量预算，不含儿童、交通与其他餐费。${state.demo?'房价与权益为示例。':''}</p>
       <details class="breakfast-scenarios" ${scenariosOpen?'open':''}>
@@ -1148,7 +1189,7 @@ function renderBreakfastComparison() {
       <div class="comparison-incomplete">
         <strong>${escapeHtml(breakfastAssessment().headline)}</strong>
         <p>${decision.status==='unused'?'已把所有早晨留给外出。点选日期可重新比较。':'可以先安排每天的吃法，核清价格、份数和可比条件后再比较金额。'}</p>
-      </div>`}`;
+      </div>`}`);
   comparison.querySelectorAll('[data-breakfast-date]').forEach(button=>button.addEventListener('click',()=>{
     const date=button.dataset.breakfastDate;
     if(selectedBreakfastDates.has(date))selectedBreakfastDates.delete(date);else selectedBreakfastDates.add(date);
@@ -1171,7 +1212,6 @@ function updateBreakfastSelection() {
   renderOverview(breakfast);renderBreakfastComparison();renderTimeline();
   const cost=breakfastDecision().perUse;
   $('breakfastUpdate').textContent=`安排了 ${selectedBreakfastDates.size} 次酒店早餐。${cost===undefined?'':`每位成人每次 ${money(cost.toFixed(2))}。`}`;
-  setResultTab(document.querySelector('[data-result-tab].active')?.dataset.resultTab||'all');
   const previousList=$('aiExplainResult').querySelector('ul');
   if(previousList)$('aiExplainResult').replaceChildren(previousList);else $('aiExplainResult').replaceChildren();
   explainRevision++;$('aiExplainStatus').textContent=$('aiExplainResult').innerText?'早餐日期与金额已更新；下方为此前的清单，可点击“更新核对清单”。':'早餐日期与金额已更新。点击“更新核对清单”，或直接复制问店的话。';
@@ -1228,14 +1268,14 @@ function renderOverview(breakfast) {
     ? `同行有 ${children} 位儿童${childAges?`（年龄 ${childAges}）`:''}。先确认按年龄还是身高收费、儿童能否使用套餐份数。${usable?' 下方金额只算成人。':''}`
     : usable?'按你填的预算比较全程成人早餐，外出金额仍需以实际消费为准。'
     : assessment.reasons[0]?.message||'先核对早餐份数、外出人均预算与实际用餐日期。';
-  const metric=usable?`<div class="decision-money"><strong>${difference===0?'持平':money(difference.toFixed(2))}</strong>
+  const metric=usable?`<div class="decision-money"><strong data-amount-highlight>${difference===0?'持平':money(difference.toFixed(2))}</strong>
     <small>${difference===0?'成人早餐预算':decision.saving<0?'外出早餐预算少花':'含早套餐预算少花'}</small></div>`:'';
   const actions=[
     children?'<button type="button" data-decision-action="questions">复制问店清单 <span aria-hidden="true">↗</span></button>':'',
     voucher?'<button type="button" data-decision-action="voucher">核对餐券条件 <span aria-hidden="true">↓</span></button>':'',
     !usable&&!children?'<button type="button" data-decision-action="preferences">回去核对套餐 <span aria-hidden="true">↗</span></button>':''
   ].filter(Boolean).join('');
-  $('planOverview').innerHTML=`
+  updateAmountMarkup($('planOverview'),`
     <div class="decision-summary-card">
       <div class="decision-main">
         <div><span class="decision-scope">${state.demo?'杭州示例 · 测试房价与权益':'本次行程 · 早餐与用餐权益'}</span>
@@ -1243,7 +1283,7 @@ function renderOverview(breakfast) {
         ${metric}
       </div>
       ${actions?`<div class="decision-actions">${actions}</div>`:''}
-    </div>`;
+    </div>`);
   renderClosestWalk();
 }
 $('planOverview').addEventListener('click',event=>{
@@ -1253,6 +1293,7 @@ $('planOverview').addEventListener('click',event=>{
     case 'questions': copyHotelQuestions(button); break;
     case 'preferences': showPane('preferences'); break;
     case 'voucher': {
+      setResultTab('totals');
       const voucher=document.querySelector('#mealPlanWorkspace .mw-voucher');
       if(!voucher)return;
       voucher.open=true;
@@ -1278,6 +1319,7 @@ async function copyHotelQuestions(button) {
     button.textContent='已复制 ✓';
     window.setTimeout(()=>{button.textContent=button.dataset.copyLabel;},1600);
   } catch {
+    setResultTab('totals');
     const result=$('aiExplainResult');
     result.closest('.plan-evidence').open=true;
     const field=document.createElement('textarea');
@@ -1445,7 +1487,7 @@ async function loadPlanExplanation(breakfast, buffet) {
 }
 
 $('makePlan').addEventListener('click', () => {
-  if(state.needsDateConfirmation){showPane('hotel');notice('searchNotice','请先核对日历上的入住、退房日期，再主动查找酒店。',true);$('checkIn').focus();return;}
+  if(state.needsDateConfirmation){showPane('hotel');notice('searchNotice','请先核对日历上的入住、退房日期，再主动查找酒店。',true);openHotelEntry('checkIn');return;}
   if (!state.hotel) {notice('searchNotice', '请先查找并选择酒店。', true);window.scrollTo({top:0,behavior:'smooth'});return;}
   if (stays().length === 0) {showPane('preferences');notice('preferenceNotice', '入住与退房日期需相隔 1–30 晚，请返回住处页修改日期。', true);return;}
   const inputs=['adults','children','roomOnly','roomWith','breakfastCount','outsideBudget','breakfastDays','mealRights'];
@@ -1457,14 +1499,22 @@ $('makePlan').addEventListener('click', () => {
   $('breakfastHeadline').textContent = b.headline; $('breakfastDetails').innerHTML = b.html;
   $('buffetHeadline').textContent = f.headline; $('buffetDetails').innerHTML = f.html;
   renderOverview(b); renderBreakfastComparison(); renderTimeline(); $('planSection').classList.remove('hidden');showPane('result');
-  setResultTab('all');
+  setResultTab('schedule');
   loadPlanExplanation(b, f);
 });
 function setResultTab(tab){
-  document.querySelectorAll('[data-result-tab]').forEach(button=>{const active=button.dataset.resultTab===tab;button.classList.toggle('active',active);if(button.tagName==='BUTTON')button.setAttribute('aria-pressed',String(active));});
-  document.querySelectorAll('#timeline .meal-row').forEach(row=>row.classList.toggle('hidden',tab==='breakfast'&&row.dataset.mealType!=='早餐'));
+  const tabs = $('resultTabs');
+  selectTab(tabs, tabs.querySelector(`[data-result-tab="${tab}"]`));
+  $('mealPlanWorkspace').dataset.view = tab;
+  $('schedulePanel').classList.toggle('hidden', tab !== 'schedule');
+  $('totalsPanel').classList.toggle('hidden', tab !== 'totals');
+  $('nearbySection').setAttribute('role', tab === 'restaurants' ? 'tabpanel' : 'region');
 }
-document.querySelectorAll('[data-result-tab]').forEach(button=>button.addEventListener('click',()=>setResultTab(button.dataset.resultTab)));
+bindTabs($('resultTabs'), button => {
+  const tab = button.dataset.resultTab;
+  setResultTab(tab);
+  if (tab === 'restaurants') findNearby();
+});
 
 function syncPlannerBreakfast(dates){
   selectedBreakfastDates.clear();dates.forEach(date=>selectedBreakfastDates.add(date));

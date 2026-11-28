@@ -1,0 +1,210 @@
+/* Entry and result structure, in the journal's existing travel palette. */
+.start-workbench { scroll-margin-top: 18px; min-width: 0; }
+.workbench-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 13px; }
+.workbench-heading h2 { margin: 0; font: 750 24px/1.3 var(--serif); }
+.workbench-heading .city-badge { margin: 0; white-space: nowrap; }
+.workbench-tabs, #resultTabs { display: flex; align-items: stretch; gap: 5px; margin: 0; border-bottom: 1px solid var(--ui-line); }
+.workbench-tabs { margin-bottom: 17px; }
+.workbench-tabs button, #resultTabs button {
+  flex: 0 1 auto; min-width: 0; min-height: 44px; padding: 8px 15px; border: 0;
+  border-bottom: 2px solid transparent; background: transparent; color: var(--ui-muted);
+  font-size: 14px; font-weight: 700; line-height: 1.3; white-space: nowrap;
+}
+.workbench-tabs button[aria-selected="true"], #resultTabs button[aria-selected="true"] {
+  border-bottom-color: #ae4228; background: #f8eae3; color: #8f341e; border-radius: 8px 8px 0 0;
+}
+.workbench-tabs button:hover, #resultTabs button:hover { color: #8f341e; }
+.start-workbench :is([role="tabpanel"], .search-form, .entry-upload, .upload-box, .voice-composer) { min-width: 0; }
+.start-workbench .entry-voice { margin: 0; padding: 0; border: 0; }
+.start-workbench .entry-upload .upload-box { box-shadow: none; }
+.start-workbench #findHotelFromScreenshot { margin-top: 8px; }
+.start-workbench .upload-button:focus-within, .start-workbench .audio-upload:focus-within { outline: 2px solid #ae4228; outline-offset: 3px; }
+#hotelWorkspace .scope-note { margin-block: 10px; }
+#hotelWorkspace .manual-location { margin-block: 8px 0; }
+
+.result-layout #planSection { width: 100%; }
+.result-layout #planSection > .result-heading { margin: 0 0 15px; }
+.result-heading p { overflow-wrap: anywhere; }
+.result-layout #planDecision { padding-top: 0; border: 0; }
+#planOverview { padding-bottom: 12px; }
+#planOverview .decision-summary-card { background: #233e33; }
+#planOverview .decision-main p, #breakfastComparison .breakfast-options p { text-wrap: pretty; }
+.result-toolbar { display: flex; justify-content: space-between; align-items: end; gap: 10px 18px; margin: 15px 0 16px; }
+.result-toolbar .plan-export-actions { margin: 0; }
+#mealWorkspaceStatus:empty { display: none; }
+#mealPlanWorkspace {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(265px, .54fr);
+  align-items: start; gap: 21px; padding: 0; min-width: 0;
+}
+#schedulePanel, #totalsPanel, #nearbySection { min-width: 0; }
+.result-layout #nearbySection { position: sticky; top: 20px; align-self: start; width: 100%; margin: 0; padding: 16px; }
+.result-layout #nearbySection > .section-heading { display: block; margin: 0 0 10px; }
+#nearbyTitle { margin: 0; font: 750 18px/1.35 var(--serif); }
+#nearbyStart { margin: 0; padding: 0; border: 0; background: transparent; }
+#nearbyStart p { margin: 0 0 10px; color: var(--ui-muted); }
+#nearbyStart .nearby-tools { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0 0; }
+#nearbyStart .chip { min-height: 40px; }
+#nearbySection .decision-walk { margin: 8px 0 0; }
+#mealPlanWorkspace[data-view="restaurants"] { grid-template-columns: minmax(0, 1fr); }
+#mealPlanWorkspace[data-view="restaurants"] #nearbySection { position: static; }
+@media (min-width: 900px) {
+  #planOverview .decision-summary-card { padding: 22px; }
+  #breakfastComparison { padding: 14px 16px; }
+  #breakfastComparison .breakfast-calendar { margin-top: 8px; }
+  #breakfastComparison .breakfast-day { min-height: 64px; padding: 6px 9px; }
+  #breakfastComparison .breakfast-options { margin-top: 8px; }
+  #breakfastComparison .breakfast-options article { padding-block: 10px; }
+  #breakfastComparison .comparison-scope { margin: 7px 0 0; }
+  #breakfastComparison .breakfast-scenarios { padding-top: 3px; margin-top: 6px; }
+  #mealPlanWorkspace:not([data-view="restaurants"]) #nearbySection {
+    max-height: calc(100dvh - 38px); overflow: auto; scrollbar-width: thin;
+  }
+  #mealPlanWorkspace:not([data-view="restaurants"]) #nearbySection:has(.map-explorer.expanded) { overflow: visible; }
+  #mealPlanWorkspace:not([data-view="restaurants"]) .map-body { grid-template-columns: minmax(0, 1fr); }
+  #mealPlanWorkspace:not([data-view="restaurants"]) .map-surface { height: 215px; }
+}
+
+.result-layout #breakfastComparison { margin-bottom: 0; }
+.breakfast-comparison .breakfast-day { text-align: left; transition: background-color .16s ease, border-color .16s ease, transform .16s ease; }
+.breakfast-day:hover { border-color: #708d7e; }
+.breakfast-day:active { transform: translateY(1px); }
+.breakfast-date-label { display: flex; align-items: center; justify-content: space-between; gap: 7px; white-space: nowrap; }
+.breakfast-toggle { display: inline-flex; flex: none; align-items: center; width: 25px; height: 14px; padding: 2px; border-radius: 9px; background: #716a61; }
+.breakfast-toggle::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: white; transition: transform .16s ease; }
+.breakfast-day[aria-pressed="true"] .breakfast-toggle { background: #315848; }
+.breakfast-day[aria-pressed="true"] .breakfast-toggle::before { transform: translateX(11px); }
+.breakfast-day.active b::before { content: none; }
+.amount-track { display: block; width: 100%; height: 5px; margin-block: 5px; border-radius: 5px; overflow: hidden; background: #233e331a; }
+.amount-track [data-amount-fill] { display: block; height: 100%; width: var(--amount-width); border-radius: inherit; background: #3f6957; transition: width .36s ease; }
+.breakfast-options article:last-child [data-amount-fill], .mw-package-card:last-child [data-amount-fill] { background: #ae4228; }
+.amount-updated { animation: amount-flash .57s ease-out; }
+@keyframes amount-flash {
+  from { background-color: #dfac535c; box-shadow: 0 0 0 3px #dfac5348; border-radius: 4px; }
+  to { background-color: transparent; box-shadow: 0 0 0 0 transparent; }
+}
+.mw-package-bar { font-size: 12px; color: var(--ui-muted); margin: 8px 0; }
+.result-layout :is(.decision-money strong, .breakfast-per-use strong, .breakfast-options strong, .mw-costs b, .mw-package-card > strong, .mw-package-card dd, .meal-amount, .amount-inline) {
+  white-space: nowrap; font-variant-numeric: tabular-nums; overflow-wrap: normal;
+}
+.breakfast-options p .amount-inline { display: inline; color: inherit; font-weight: inherit; }
+#totalsPanel .mw-strategies { border-top: 0; margin: 0 0 14px; padding-top: 4px; }
+#totalsPanel .mw-strategy-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 10px; }
+#totalsPanel .mw-strategy {
+  display: flex; flex-direction: column; align-items: stretch;
+  border-radius: 12px; padding: 14px; gap: 0;
+}
+#totalsPanel .mw-costs-compact { display: grid; grid-template-columns: 1fr; min-width: 0; gap: 6px; margin: 8px 0 12px; }
+#totalsPanel .mw-costs-compact > span { display: flex; justify-content: space-between; gap: 4px 10px; flex-wrap: wrap; }
+#totalsPanel .mw-costs-compact b { font-size: 16px; }
+#totalsPanel .mw-package-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 10px; }
+#totalsPanel .mw-package-card { border-radius: 12px; }
+#totalsPanel .mw-package-card dl > div { gap: 8px; }
+#totalsPanel .mw-section-title h3 { font-size: 23px; }
+#totalsPanel .mw-scope { margin: 10px 0 13px; }
+#totalsPanel .mw-voucher { scroll-margin-top: 18px; }
+
+#schedulePanel .timeline-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 0 0 10px; margin: 0; border: 0; }
+#schedulePanel .timeline-head h3 { margin: 0; }
+#schedulePanel .timeline-head p { margin: 2px 0 0; font-size: 12px; }
+#mealScheduleUndo { min-height: 44px; white-space: nowrap; }
+.mw-day-switch { display: flex; gap: 7px; overflow-x: auto; padding: 4px 3px 8px; scrollbar-width: thin; }
+.mw-day-switch button {
+  display: flex; align-items: center; justify-content: center; flex: 0 0 auto; gap: 7px; min-height: 44px;
+  padding: 6px 11px; border-radius: 8px; border: 1px solid var(--ui-line); background: var(--ui-card);
+  color: #233e33; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.mw-day-switch button[aria-pressed="true"] { border-color: #5a786b; background: #e7eee7; }
+.mw-day-switch time { font-size: 12px; }
+#timeline { min-width: 0; }
+#timeline .mw-meal-day { display: grid; gap: 8px; }
+#timeline .mw-meal-day[hidden] { display: none; }
+#timeline .mw-meal-row {
+  display: block; min-width: 0; border: 1px solid var(--ui-line); border-radius: 11px;
+  padding: 11px 13px; background: #fffdf7;
+}
+#timeline .mw-meal-title { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: nowrap; gap: 8px; }
+#timeline .mw-meal-title > div { min-width: 0; flex: 1 1 auto; }
+#timeline .mw-meal-title .meal-type { display: block; color: var(--ui-muted); font-size: 12px; line-height: 1.3; }
+#timeline .mw-meal-title strong { display: block; font: 700 18px/1.45 var(--serif); text-wrap: pretty; word-break: normal; overflow-wrap: anywhere; }
+#timeline .mw-meal-title .meal-state {
+  flex: none; padding: 2px 7px; border-radius: 5px; background: #eee9df;
+  color: #4e4a40; font-size: 11px; white-space: nowrap; line-height: 1.45;
+}
+.mw-meal-facts { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; color: var(--ui-muted); font-size: 12px; }
+.mw-meal-facts:empty { display: none; }
+#timeline .mw-row-actions { gap: 4px 7px; margin-top: 8px; }
+#timeline .mw-row-actions .mw-text { border-radius: 6px; padding: 4px 7px; min-height: 42px; white-space: nowrap; font-size: 13px; }
+#timeline .mw-row-actions .meal-replace { background: #e7eee7; color: #233e33; font-weight: 700; }
+#timeline .mw-row-actions .meal-ai { border: 1px solid #c98b77; color: #8f341e; font-weight: 700; }
+#timeline .mw-reasons { margin-top: 4px; font-size: 12px; }
+#timeline .mw-reasons > summary { min-height: 34px; padding-top: 6px; }
+#timeline .mw-reasons p { font-size: 13px; margin-block: 3px; }
+#timeline .mw-plan-notes { padding-top: 10px; }
+#inlineMealRefine { margin: 8px 0 0; padding: 10px; }
+#inlineMealRefine > div { min-width: 0; }
+#inlineMealRefine input { min-width: 0; }
+#inlineMealRefine #refinePlan { font-size: 13px; white-space: nowrap; }
+#inlineMealRefine p:empty { display: none; }
+
+@media (max-width: 899px) {
+  #mealPlanWorkspace, #mealPlanWorkspace[data-view="restaurants"] { display: block; }
+  #mealPlanWorkspace:not([data-view="restaurants"]) #nearbySection { display: none; }
+  .result-layout #nearbySection { position: static; }
+}
+@media (max-width: 740px) {
+  .start-workbench { scroll-margin-top: 10px; }
+  .workbench-heading { margin-bottom: 6px; }
+  .workbench-heading h2 { font-size: 20px; }
+  .workbench-tabs { margin-bottom: 12px; }
+  .workbench-tabs button, #resultTabs button { flex: 1 1 auto; padding-inline: 5px; font-size: clamp(12px, 3.4vw, 13px); }
+  .trip-cover-actions { gap: 2px 8px; }
+  .trip-cover-actions a { min-height: 42px; }
+  body[data-pane="result"] .journey { padding-block: 6px; }
+  body[data-pane="result"] .topbar { height: 60px; }
+  .result-layout #planSection { padding: 11px; }
+  .result-layout #planSection > .result-heading { margin: 0 0 9px; }
+  .result-layout .result-heading h2 { font-size: 20px; }
+  .result-layout .result-heading p { margin-top: 2px; line-height: 1.45; }
+  #planOverview { padding-bottom: 8px; }
+  #planOverview .decision-summary-card { padding: 12px; }
+  #planOverview .decision-main { gap: 5px; }
+  #planOverview .decision-main h3 { font-size: 20px; }
+  #planOverview .decision-scope, #planOverview .decision-main p { font-size: 11px; line-height: 1.5; margin: 2px 0; }
+  #planOverview .decision-money { font-size: 25px; }
+  #planOverview .decision-money small { margin: 0; font-size: 11px; }
+  #planOverview .decision-actions { margin-top: 7px; }
+  #breakfastComparison { padding: 10px; }
+  #breakfastComparison .decision-heading { gap: 4px; }
+  #breakfastComparison .decision-heading p { margin: 0; line-height: 1.5; }
+  #breakfastComparison .breakfast-calendar { margin-top: 6px; gap: 6px; }
+  #breakfastComparison .breakfast-day { min-width: 104px; min-height: 63px; padding: 6px 7px; }
+  #breakfastComparison .breakfast-options { gap: 6px; margin-top: 7px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+  #breakfastComparison .breakfast-options article { padding: 7px !important; min-width: 0; }
+  #breakfastComparison .breakfast-options :is(span,p) { font-size: 11px; line-height: 1.45; }
+  #breakfastComparison .breakfast-options strong { font-size: clamp(16px, 5.8vw, 24px); }
+  #breakfastComparison .comparison-scope { margin: 6px 0 0; line-height: 1.45; }
+  #breakfastComparison .breakfast-scenarios { margin-top: 2px; }
+  .result-toolbar { display: block; margin: 8px 0 12px; }
+  .result-toolbar .plan-export-actions { margin-top: 5px; }
+  .mw-day-switch button { gap: 3px; padding-inline: 7px; }
+  .mw-day-switch button strong { font-size: 13px; }
+  .mw-day-switch time { font-size: 11px; }
+  #inlineMealRefine #refinePlan { white-space: normal; }
+  .meal-transition { bottom: calc(74px + env(safe-area-inset-bottom, 0px)); }
+}
+@media (max-width: 365px) {
+  .trip-cover-actions a { font-size: 11px; }
+  #timeline .mw-meal-row { padding-inline: 8px; }
+  #timeline .mw-row-actions { gap: 4px; }
+  #timeline .mw-row-actions .mw-text { padding-inline: 5px; font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .amount-updated { animation: none; }
+  .amount-track [data-amount-fill], .breakfast-comparison .breakfast-day, .breakfast-toggle::before { transition: none; }
+  .breakfast-day:active { transform: none; }
+}
+@media print {
+  .result-toolbar, .mw-day-switch, #nearbySection, #inlineMealRefine { display: none !important; }
+  #schedulePanel.hidden, #totalsPanel.hidden, #timeline .mw-meal-day[hidden] { display: block !important; }
+  #mealPlanWorkspace { display: block; }
+}
