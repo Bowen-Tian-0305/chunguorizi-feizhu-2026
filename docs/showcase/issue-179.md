@@ -2,7 +2,7 @@
 
 **最终参赛版本：v1.4.0。** 纯过日子是百炼驱动的响应式网页。从一句话或订房截图出发，核对酒店与套餐，再按日期安排三餐。AI 用于理解条件和提出单餐候选；金额、日期、餐券资格由规则计算，重要选择由用户确认。
 
-[约 76 秒宣传片](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.4.0/promo-v1.4.0.mp4) · [体验网页（免登录）](https://47.238.228.164/) · [查看源码](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.4.0)
+[约 76 秒宣传片](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.4.0/promo-v1.4.0.mp4) · [体验网页（免登录）](https://47.238.228.164/) · [查看源码与交付材料](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/main)
 
 ## 评委快速体验 · 约 30 秒
 
@@ -59,7 +59,7 @@
 
 宣传片以 Google Flow 制作的电影镜头开场和收尾，中段展示 v1.4.0 真实网页和手机操作，配有中文旁白、中文字幕与原创 Lo-fi 配乐。演示房价与套餐权益均标注为示例测试值。
 
-![v1.4.0 宣传片封面](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/main/docs/promo-v1.4.0/cover-v1.4.0.png)
+![v1.4.0 宣传片封面](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/22b122a5d34a46fccfd67ead7eaa340b9b7f2956/docs/promo-v1.4.0/cover-v1.4.0.png)
 
 ![早期演示中的首页与语音入口](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.3/docs/promo-rework/assets/stills/01-input.png)
 
@@ -82,6 +82,6 @@
 - [公网体验](https://47.238.228.164/)（**v1.4.0**，已开放，无需登录）。比赛演示服务保留至 12 月 25 日，服务器设为 12 月 26 日 00:00（北京时间）自动释放。
 - **继续体验**：从杭州示例进入逐餐日程，按天选一顿，点「换一家店」预览差异，或点「AI 换这顿」聚焦这顿的调整输入。也可生成同行只读链接。要体验实时能力，可在首页智能行程工作台的「说需求·语音」输入「杭州住两晚、两位成人、早餐预算每人 35 元、最多步行 15 分钟」，核对百炼提取的条件，再查飞猪候选或地图步行路线。
 - **调用限额**：AI 每 IP 每小时、每天各 12 次，全站每天 120 次。实时酒店和地图查询另计，每 IP 每小时、每天各 20 次，全站每天 100 次。页面显示剩余次数和重置时间。语音转写、文字理解、截图识别和问店清单在参数校验通过且服务端密钥就绪后才预留次数，预留后的上游失败仍计次。达到限额后，固定示例、手动计算及已收录资料仍可使用。
-- [最终版源码与 v1.4.0 发布页](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/tag/v1.4.0) · [本地复现说明](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.4.0#本地复现)。使用 Node.js 20+，把 `.env.example` 复制为本机 `.env` 后运行 `node --env-file=.env server.mjs`，浏览器打开 `http://127.0.0.1:4173/`。无密钥可体验示例及手动计算。若要本地运行实时功能，请按说明配置自己的服务端凭据和 FlyAI CLI。
+- [v1.4.0 发布页](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/tag/v1.4.0) · [本地复现说明](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/main#本地复现)。使用 Node.js 20+，把 `.env.example` 复制为本机 `.env` 后运行 `node --env-file=.env server.mjs`，浏览器打开 `http://127.0.0.1:4173/`。无密钥可体验示例及手动计算。若要本地运行实时功能，请按说明配置自己的服务端凭据和 FlyAI CLI。
 - 全国城市可选择，杭州为深度示范。酒店和餐馆资料集合有重叠，不代表全杭州或全国完整覆盖；来源、采集时间与限制见仓库数据说明。
 - 不发布个人订单、真实用户录音、密钥或控制台资料。原始录音与截图不在服务端持久保存，私人笔记保留在当前浏览器。
