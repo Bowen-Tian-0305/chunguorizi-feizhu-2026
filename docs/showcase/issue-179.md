@@ -2,7 +2,7 @@
 
 **最终参赛版本：v1.4.0。** 纯过日子是百炼驱动的响应式网页。从一句话或订房截图出发，核对酒店与套餐，再按日期安排三餐。AI 用于理解条件和提出单餐候选；金额、日期、餐券资格由规则计算，重要选择由用户确认。
 
-[观看 3D 宣传片（72 秒）](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.3.3/promo-v1.3.3.mp4) · [体验网页（免登录）](https://47.238.228.164/) · [查看源码](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.4.0)
+[约 76 秒宣传片](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.4.0/promo-v1.4.0.mp4) · [体验网页（免登录）](https://47.238.228.164/) · [查看源码](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.4.0)
 
 ## 评委快速体验 · 约 30 秒
 
@@ -55,11 +55,13 @@
 
 ## 效果展示
 
-**3D 宣传片（72 秒）：** [观看／下载 MP4](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.3.3/promo-v1.3.3.mp4) · [中文字幕](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.3.3/captions-v1.3.3.srt) · [中文脚本与分镜](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/tree/v1.3.3/docs/promo-vibe)。以真实 3D 情境开场，用原创配乐、屏幕文字和字幕讲解想法，再展示当前页面的早餐重算、逐餐调整与只读分享等真实操作；没有伪造实时价格、AI 返回或真人评价。
+[约 76 秒宣传片](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.4.0/promo-v1.4.0.mp4) · [中文字幕 SRT](https://github.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/releases/download/v1.4.0/captions-v1.4.0.srt)
 
-![宣传片 3D 开场：酒店、早餐与日期卡](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.3/docs/promo-vibe/cover.png)
+宣传片以 Google Flow 制作的电影镜头开场和收尾，中段展示 v1.4.0 真实网页和手机操作，配有中文旁白、中文字幕与原创 Lo-fi 配乐。演示房价与套餐权益均标注为示例测试值。
 
-![最终版首页与语音入口](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.3/docs/promo-rework/assets/stills/01-input.png)
+![v1.4.0 宣传片封面](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/main/docs/promo-v1.4.0/cover-v1.4.0.png)
+
+![早期演示中的首页与语音入口](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.3/docs/promo-rework/assets/stills/01-input.png)
 
 ![逐日早餐及实际使用次数计算](https://raw.githubusercontent.com/Bowen-Tian-0305/chunguorizi-feizhu-2026/v1.3.3/docs/promo-rework/assets/stills/03-breakfast.png)
 
